@@ -2,9 +2,7 @@ package storage
 
 import (
 	"context"
-	"fmt"
 	"os"
-	"strings"
 	"time"
 
 	ton "immortalcrab.com/e-receipt/internal/token"
