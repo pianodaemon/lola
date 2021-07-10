@@ -1,0 +1,20 @@
+---
+pac:
+  - name: end_point
+    value: http://201.150.37.20/wstest/CFDI.svc?wsdl
+  - name: login
+    value: "1"
+  - name: passwd
+    value: Oryx216
+acl:
+  - user: lola
+    passwd: latrailera
+  - user: quintanilla
+    passwd: 1234qwer
+res_dirs:
+  - name: ssl
+    value: crypto
+  - name: issue
+    value: issue
+  - name: xslt
+    value: xslt
