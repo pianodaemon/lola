@@ -2,12 +2,19 @@ package service
 
 import (
 	"crypto/rsa"
+	"fmt"
+	"net/http"
 
+	"github.com/codegangsta/negroni"
+	"github.com/gorilla/mux"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/sirupsen/logrus"
 
+	co "immortalcrab.com/e-receipt/internal/controllers"
 	"immortalcrab.com/e-receipt/internal/rsapi"
+	dal "immortalcrab.com/e-receipt/internal/storage"
 	ton "immortalcrab.com/e-receipt/internal/token"
+	aut "immortalcrab.com/e-receipt/pkg/authentication"
 )
 
 var apiSettings rsapi.RestAPISettings
@@ -54,5 +61,90 @@ func Engage(logger *logrus.Logger) (merr error) {
 		}
 	}()
 
-	panic("whooo!!")
+	priv, pub, err := getKeys()
+
+	if err != nil {
+
+		goto culminate
+	}
+
+	{
+		// Authentication middleware
+		requireTokenAut := func(rw http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
+
+			isNotBlackListed := func() bool {
+
+				tokenStr := req.Header.Get("Authorization")
+
+				answer, err := dal.IsInBlackList(tokenStr)
+
+				if err != nil {
+
+					logger.Println("Issue detected at data abstraction layer: %s", err.Error())
+					logger.Println("Perhaps token ( %s ) is not blacklisted", tokenStr)
+					return true
+				}
+
+				return !answer
+			}
+
+			tokenReq, err := ton.ExtractFromReq(pub, req, true)
+
+			if err == nil && tokenReq.Valid && isNotBlackListed() {
+				next(rw, req)
+			} else {
+				rw.WriteHeader(http.StatusUnauthorized)
+			}
+		}
+
+		tcSettings := &aut.TokenClerkSettings{priv, pub, getExpDelta()}
+		clerk := aut.NewTokenClerk(logger, tcSettings)
+
+		/* The connection of both components occurs through
+		   the router glue and its adaptive functions */
+		glue := func(api *rsapi.RestAPI) *mux.Router {
+
+			router := mux.NewRouter()
+
+			v1 := router.PathPrefix("/v1").Subrouter()
+
+			mgmt := v1.PathPrefix("/sso").Subrouter()
+
+			mgmt.HandleFunc("/token-auth", co.SignOn(clerk.IssueToken)).Methods("POST")
+
+			mgmt.Handle("/logout", negroni.New(
+				negroni.HandlerFunc(requireTokenAut),
+				negroni.HandlerFunc(
+					func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+
+						co.SignOff(clerk.CeaseToken)(w, r)
+					},
+				),
+			)).Methods("GET")
+
+			{
+				const userIDMask string = "[[:alnum:]\\-]+"
+
+				mgmt.Handle(fmt.Sprintf("/{user_id:%s}/refresh-token-auth", userIDMask), negroni.New(
+					negroni.HandlerFunc(requireTokenAut),
+					negroni.HandlerFunc(
+						func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+
+							co.Revive(clerk.RefreshToken)(w, r)
+						},
+					),
+				)).Methods("POST")
+			}
+
+			return router
+		}
+
+		api := rsapi.NewRestAPI(logger, &apiSettings, glue)
+
+		api.PowerOn()
+	}
+
+culminate:
+
+	return err
 }
