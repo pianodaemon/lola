@@ -9,8 +9,10 @@ pac:
 acl:
   - user: lola
     passwd: latrailera
+    uid: 30799dba-881f-11e6-84ae-024206e5b105
   - user: quintanilla
     passwd: 1234qwer
+    uid: b03108db-65f2-4d7c-b884-bb908d111400
 res_dirs:
   - name: ssl
     value: crypto
