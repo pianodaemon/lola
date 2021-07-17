@@ -5,7 +5,7 @@ x-shared-environment: &commonEnv
 
 services:
     cache_erp:
-        container_name: 'cache_ereceipt'
+        container_name: 'cache_erp'
         image: redis:alpine
         ports:
           - "6379:6379"
