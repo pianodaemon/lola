@@ -29,7 +29,7 @@ var Profile *ConfigProfile
 
 func init() {
 
-	Profile := &ConfigProfile{}
+	Profile = &ConfigProfile{}
 
 	if err := Profile.populate(); err != nil {
 

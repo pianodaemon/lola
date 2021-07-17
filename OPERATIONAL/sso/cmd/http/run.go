@@ -14,7 +14,7 @@ import (
 )
 
 const appName = "sso"
-const release = "flashdance"
+const release = "alphaville"
 
 var pidFile string
 var logger *logrus.Logger
