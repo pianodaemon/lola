@@ -43,6 +43,6 @@ COPY --from=builder /sso $APP_DIR
 COPY scripts/run_service.sh $APP_DIR
 WORKDIR $APP_DIR
 
-EXPOSE 10080
+EXPOSE 10100
 
 CMD ["/run_service.sh"]
