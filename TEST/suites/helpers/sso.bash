@@ -3,7 +3,7 @@ HELPERS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 source $HELPERS_DIR/misc.bash
 
 # authenticate and obtain a token.
-sso_login_in() {
+sso_login() {
 
     local ep="$SSO_URL_BASE/token-auth"
 
@@ -21,6 +21,11 @@ sso_login_in() {
 
 sso_log_out() {
 
-    local ep = "$SSO_URL_BASE/logout"
-    curl $ep 
+    local ep="$SSO_URL_BASE/logout"
+
+    local res=$(curl -H 'Accept: application/json' \
+                     -H "Authorization: Bearer $1" $ep)
+
+    echo $res
 }
+
