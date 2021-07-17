@@ -21,7 +21,7 @@ import (
 // Configuration variables required to spin up
 // the Restful API's server
 type RestAPISettings struct {
-	Sport int   `default:"10090"`
+	Sport int   `default:"10100"`
 	Mmu   int64 `default:"41943040"`
 }
 
