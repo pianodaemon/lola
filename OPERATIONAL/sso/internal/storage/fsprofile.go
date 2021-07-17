@@ -44,7 +44,7 @@ func getProfile() string {
 		return value
 	}
 
-	return "config.yaml"
+	return "/acl/sso.yaml"
 }
 
 func (self *ConfigProfile) populate() error {

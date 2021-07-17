@@ -19,6 +19,7 @@ services:
           - '10100:10100'
         environment: *commonEnv
         volumes:
+          - ./OPERATIONAL/acl:/acl
           - ./OPERATIONAL/keys:/pem
         networks:
           - operational_network
