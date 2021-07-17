@@ -10,19 +10,11 @@ import (
 
 type (
 	ConfigProfile struct {
-		PAC []struct {
-			Name  string `yaml:"name"`
-			Value string `yaml:"value"`
-		} `yaml:"pac"`
 		ACL []struct {
 			Uid    string `yaml:"uid"`
 			User   string `yaml:"user"`
 			Passwd string `yaml:"passwd"`
 		} `yaml:"acl"`
-		ResDirs []struct {
-			Name  string `yaml:"name"`
-			Value string `yaml:"value"`
-		} `yaml:"res_dirs"`
 	}
 
 	User struct {
