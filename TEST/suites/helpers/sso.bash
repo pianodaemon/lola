@@ -19,7 +19,7 @@ sso_login() {
 }
 
 
-sso_log_out() {
+sso_logout() {
 
     local ep="$SSO_URL_BASE/logout"
 
