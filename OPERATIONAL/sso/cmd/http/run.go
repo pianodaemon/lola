@@ -10,10 +10,10 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	platform "immortalcrab.com/e-receipt/pkg/service"
+	platform "immortalcrab.com/sso/pkg/service"
 )
 
-const appName = "e-receipt"
+const appName = "sso"
 const release = "flashdance"
 
 var pidFile string

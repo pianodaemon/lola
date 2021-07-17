@@ -1,4 +1,4 @@
-module immortalcrab.com/e-receipt
+module immortalcrab.com/sso
 
 go 1.14
 

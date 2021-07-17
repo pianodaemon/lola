@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	dal "immortalcrab.com/e-receipt/internal/storage"
-	ton "immortalcrab.com/e-receipt/internal/token"
+	dal "immortalcrab.com/sso/internal/storage"
+	ton "immortalcrab.com/sso/internal/token"
 
 	"github.com/sirupsen/logrus"
 )

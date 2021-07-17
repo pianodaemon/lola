@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	ton "immortalcrab.com/e-receipt/internal/token"
+	ton "immortalcrab.com/sso/internal/token"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis/v8"

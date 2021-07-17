@@ -10,11 +10,11 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/sirupsen/logrus"
 
-	co "immortalcrab.com/e-receipt/internal/controllers"
-	"immortalcrab.com/e-receipt/internal/rsapi"
-	dal "immortalcrab.com/e-receipt/internal/storage"
-	ton "immortalcrab.com/e-receipt/internal/token"
-	aut "immortalcrab.com/e-receipt/pkg/authentication"
+	co "immortalcrab.com/sso/internal/controllers"
+	"immortalcrab.com/sso/internal/rsapi"
+	dal "immortalcrab.com/sso/internal/storage"
+	ton "immortalcrab.com/sso/internal/token"
+	aut "immortalcrab.com/sso/pkg/authentication"
 )
 
 var apiSettings rsapi.RestAPISettings
@@ -40,8 +40,8 @@ func getExpDelta() int {
 func getKeys() (*rsa.PrivateKey, *rsa.PublicKey, error) {
 
 	ref := struct {
-		Private string `default:"/pem/private_key"`
-		Public  string `default:"/pem/public_key.pub"`
+		Private string `default:"/pem/sso_key"`
+		Public  string `default:"/pem/sso_key.pub"`
 	}{"", ""}
 
 	/* It stands for
