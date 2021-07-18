@@ -12,7 +12,7 @@ sso_login() {
 
     echo $res | grep -Fq 'token'
     if [[ $? != 0 ]]; then
-        echo_err "Incorrect credentials"
+        echo_err "login fail: incorrect credentials"
     fi
 
     echo $res | jq -r '.token'
