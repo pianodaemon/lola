@@ -5,6 +5,10 @@ source $HELPERS_DIR/misc.bash
 # authenticate and obtain a token.
 sso_login() {
 
+    # This guy is here to take care of attempts with
+    # a timing less than one second
+    sleep 1
+
     local ep="$SSO_URL_BASE/token-auth"
 
     local res=$(curl -s -X POST -H "Content-Type: application/json" \
