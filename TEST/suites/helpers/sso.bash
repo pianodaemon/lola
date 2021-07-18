@@ -22,10 +22,11 @@ sso_login() {
 sso_logout() {
 
     local ep="$SSO_URL_BASE/logout"
+    local http_status=$(curl -s -o /dev/null -w "%{http_code}"   \
+                                 -H 'Accept: application/json'    \
+                                 -H "Authorization: Bearer $1" $ep)
 
-    local res=$(curl -H 'Accept: application/json' \
-                     -H "Authorization: Bearer $1" $ep)
-
-    echo $res
+    [ $http_status = 200 ] || echo_err "logout fail: http code ${http_status}"
 }
+
 
