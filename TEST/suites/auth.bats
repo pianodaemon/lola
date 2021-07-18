@@ -14,12 +14,12 @@ teardown() {
 
 @test "login - logout" {
 
-    run sso_login "quintanilla" "1234qwer"
+    run sso_login "lola" "latrailera"
     echo "output = ${output}"
     [ "$status" -eq 0 ]
 
-    token=${output}
-    run sso_logout $token
+    # token is expected as the output from prior command
+    run sso_logout ${output}
     echo "output = ${output}"
     [ "$status" -eq 0 ]
 }
