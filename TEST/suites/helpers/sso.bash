@@ -18,7 +18,7 @@ sso_login() {
     echo $res | jq -r '.token'
 }
 
-
+# Carry out a logout if a valid token has been provided
 sso_logout() {
 
     local ep="$SSO_URL_BASE/logout"
