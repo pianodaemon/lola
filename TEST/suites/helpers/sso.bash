@@ -2,11 +2,27 @@ HELPERS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 source $HELPERS_DIR/misc.bash
 
+# obtain a newer token from a prior valid one
+sso_refresh() {
+
+    local ep="${SSO_URL_BASE}/$1/refresh-token-auth"
+    local res=$(curl -s -X POST                          \
+                        -H 'Accept: application/json'    \
+                        -H "Authorization: Bearer $2" $ep)
+
+    echo $res | grep -Fq 'token'
+    if [[ $? != 0 ]]; then
+        echo_err "refresh fail: it is not refreshable"
+    fi
+
+    echo $res | jq -r '.token'
+}
+
 # authenticate and obtain a token.
 sso_login() {
 
-    # This guy is here to take care of attempts with
-    # a timing less than one second
+    # This guy is here to take care of any repetitive
+    # attempt with a timing less than one second
     sleep 1
 
     local ep="$SSO_URL_BASE/token-auth"
