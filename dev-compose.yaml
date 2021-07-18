@@ -2,6 +2,7 @@ version: '3.6'
 
 x-shared-environment: &commonEnv
     TZ: "America/Mexico_City"
+    REDIS_HOST: "cache_erp"
 
 services:
     cache_erp:
@@ -28,7 +29,3 @@ networks:
     operational_network:
         name: operational_network
         driver: bridge
-
-volumes:
-    rdbms_staging_data:
-    rdbms_dos_data:
