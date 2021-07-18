@@ -5,11 +5,11 @@ load helpers/sso
 # Here we should spin up the infra
 setup() {
 
-
+   echo "setup"
 }
 
 teardown() {
-
+   echo "teardown"
 }
 
 @test "login - logout" {
