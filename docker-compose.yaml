@@ -13,7 +13,7 @@ services:
         ports:
           - '8080:8080'
         volumes:
-          - ./DOS/cfdi/service:/yield
+          - ./DOS/keys:/pem
         networks:
           - operational_network
     cache_redis:
