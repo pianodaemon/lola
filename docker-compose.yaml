@@ -11,7 +11,8 @@ services:
         build: './DOS/cfdi'
         environment: *commonEnv
         ports:
-          - '8080:8080'
+          - '8889:8889'
+          - '8888:8888'
         volumes:
           - ./DOS/keys:/pem
         networks:

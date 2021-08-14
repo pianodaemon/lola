@@ -1,6 +1,6 @@
 package com.immortalcrab.workclock.verticles;
 
-import com.immortalcrab.warehouse.applications.Transfers;
+import com.immortalcrab.workclock.applications.Transfers;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;

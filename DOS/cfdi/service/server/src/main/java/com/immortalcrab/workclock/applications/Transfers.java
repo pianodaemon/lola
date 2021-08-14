@@ -1,4 +1,4 @@
-package com.immortalcrab.warehouse.applications;
+package com.immortalcrab.workclock.applications;
 
 import com.immortalcrab.warehouse.persistence.PgsqlInteractions;
 import io.vertx.core.Vertx;

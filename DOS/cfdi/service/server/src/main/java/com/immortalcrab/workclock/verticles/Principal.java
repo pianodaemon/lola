@@ -1,6 +1,6 @@
 package com.immortalcrab.workclock.verticles;
 
-import com.immortalcrab.warehouse.applications.Transfers;
+import com.immortalcrab.workclock.applications.Transfers;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
