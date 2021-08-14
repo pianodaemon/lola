@@ -1,5 +1,3 @@
 #!/bin/bash -eu
 
-DCF="dev-compose.yaml"
-
-docker-compose -f ${DCF} stop
+docker-compose stop

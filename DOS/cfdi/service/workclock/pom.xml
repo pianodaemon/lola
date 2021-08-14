@@ -9,6 +9,6 @@
     <modules>
         <module>../parsers</module>
         <module>../numspatrans</module>
-        <module>../service</module>
+        <module>../server</module>
     </modules>
 </project>
