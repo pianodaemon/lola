@@ -9,9 +9,9 @@ services:
     cfdi:
         container_name: 'cfdi'
         build: './DOS/cfdi'
+        environment: *commonEnv
         ports:
           - '8080:8080'
-        environment: *commonEnv
         volumes:
           - ./DOS/cfdi/service:/yield
         networks:
