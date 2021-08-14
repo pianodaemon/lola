@@ -1,4 +1,4 @@
-package com.immortalcrab.warehouse.verticles;
+package com.immortalcrab.workclock.verticles;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.ext.web.Router;

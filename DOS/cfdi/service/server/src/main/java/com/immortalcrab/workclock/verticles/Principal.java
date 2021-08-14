@@ -1,4 +1,4 @@
-package com.immortalcrab.warehouse.verticles;
+package com.immortalcrab.workclock.verticles;
 
 import com.immortalcrab.warehouse.applications.Transfers;
 import io.vertx.config.ConfigRetriever;

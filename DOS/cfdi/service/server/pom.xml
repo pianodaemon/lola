@@ -19,7 +19,7 @@
     <vertx.version>4.0.3</vertx.version>
     <junit-jupiter.version>5.7.0</junit-jupiter.version>
 
-    <main.verticle>com.immortalcrab.warehouse.verticles.Principal</main.verticle>
+    <main.verticle>com.immortalcrab.workclock.verticles.Principal</main.verticle>
     <launcher.class>io.vertx.core.Launcher</launcher.class>
   </properties>
 
