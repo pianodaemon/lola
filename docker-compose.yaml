@@ -2,28 +2,30 @@ version: '3.6'
 
 x-shared-environment: &commonEnv
     TZ: "America/Mexico_City"
-    REDIS_HOST: "cache_erp"
+    REDIS_HOST: "cache"
+    REDIS_PORT: 6379
 
 services:
-    cache_erp:
-        container_name: 'cache_erp'
+    cfdi:
+        container_name: 'cfdi'
+        build: './DOS/cfdi'
+        environment: *commonEnv
+        ports:
+          - '8889:8889'
+          - '8888:8888'
+        volumes:
+          - ./DOS/keys:/pem
+        networks:
+          - operational_network
+    cache_redis:
+        container_name: 'cache_redis'
         image: redis:alpine
         ports:
           - "6379:6379"
         environment: *commonEnv
         networks:
           - operational_network
-    sso_ereceipt:
-        container_name: 'sso_ereceipt'
-        build: './OPERATIONAL/sso'
-        ports:
-          - '10100:10100'
-        environment: *commonEnv
-        volumes:
-          - ./OPERATIONAL/acl:/acl
-          - ./OPERATIONAL/keys:/pem
-        networks:
-          - operational_network
+
 
 networks:
     operational_network:

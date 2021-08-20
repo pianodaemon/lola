@@ -9,6 +9,8 @@ import (
 
 type FacturaCfdi struct {
 	XMLName           xml.Name `xml:"cfdi:Comprobante"`
+	Version           string   `xml:"Version,attr"`
+	Serie             string   `xml:"Serie,attr"`
 	Folio             string   `xml:"Folio,attr"`
 	Fecha             string   `xml:"Fecha,attr"`
 	FormaPago         string   `xml:"FormaPago,attr"`
@@ -19,6 +21,9 @@ type FacturaCfdi struct {
 	TipoDeComprobante string   `xml:"TipoDeComprobante,attr"`
 	MetodoPago        string   `xml:"MetodoPago,attr"`
 	Moneda            string   `xml:"Moneda,attr"`
+	XmlnsXsi          string   `xml:"xmlns:xsi,attr"`
+	XsiSchemaLocation string   `xml:"xsi:schemaLocation,attr"`
+	XmlnsCfdi         string   `xml:"xmlns:cfdi,attr"`
 }
 
 func (self *FacturaCfdi) PopulateFromJSON(byteValue []byte) error {
@@ -78,22 +83,6 @@ func (self *FacturaCfdi) PopulateFromJSON(byteValue []byte) error {
 				TotalImpuestosTrasladados string `json:"_TotalImpuestosTrasladados"`
 				Prefix                    string `json:"__prefix"`
 			} `json:"Impuestos"`
-			Complemento struct {
-				TimbreFiscalDigital struct {
-					XmlnsXsi          string `json:"_xmlns:xsi"`
-					XsiSchemaLocation string `json:"_xsi:schemaLocation"`
-					FechaTimbrado     string `json:"_FechaTimbrado"`
-					NoCertificadoSAT  string `json:"_NoCertificadoSAT"`
-					RfcProvCertif     string `json:"_RfcProvCertif"`
-					SelloCFD          string `json:"_SelloCFD"`
-					SelloSAT          string `json:"_SelloSAT"`
-					UUID              string `json:"_UUID"`
-					Version           string `json:"_Version"`
-					XmlnsTfd          string `json:"_xmlns:tfd"`
-					Prefix            string `json:"__prefix"`
-				} `json:"TimbreFiscalDigital"`
-				Prefix string `json:"__prefix"`
-			} `json:"Complemento"`
 			XmlnsCfdi         string `json:"_xmlns:cfdi"`
 			XmlnsXsi          string `json:"_xmlns:xsi"`
 			Certificado       string `json:"_Certificado"`
@@ -121,7 +110,9 @@ func (self *FacturaCfdi) PopulateFromJSON(byteValue []byte) error {
 
 	json.Unmarshal(byteValue, &facIn)
 
+	self.Version = "3.3"
 	self.Fecha = facIn.Comprobante.Fecha
+	self.Serie = facIn.Comprobante.Serie
 	self.Folio = facIn.Comprobante.Folio
 	self.FormaPago = facIn.Comprobante.FormaPago
 	self.LugarExpedicion = facIn.Comprobante.LugarExpedicion
@@ -131,6 +122,9 @@ func (self *FacturaCfdi) PopulateFromJSON(byteValue []byte) error {
 	self.Moneda = facIn.Comprobante.Moneda
 	self.TipoCambio = facIn.Comprobante.TipoCambio
 	self.TipoDeComprobante = facIn.Comprobante.TipoDeComprobante
+	self.XmlnsXsi = "http://www.w3.org/2001/XMLSchema-instance"
+	self.XsiSchemaLocation = "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd"
+	self.XmlnsCfdi = "http://www.sat.gob.mx/cfd/3"
 
 	return err
 }
