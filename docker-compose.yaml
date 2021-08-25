@@ -17,8 +17,8 @@ services:
           - ./DOS/keys:/pem
         networks:
           - operational_network
-    cache_redis:
-        container_name: 'cache_redis'
+    cache_redis_lola:
+        container_name: 'cache_redis_lola'
         image: redis:alpine
         ports:
           - "6379:6379"

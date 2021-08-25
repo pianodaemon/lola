@@ -18,7 +18,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-class FacturaParser {
+public class FacturaParser {
 
     private final Map<String, Object> ds = new HashMap<>();
 
@@ -96,7 +96,7 @@ class FacturaParser {
                     }
                 }
 
-                if (qName.equalsIgnoreCase("cfdi:Receptor")) {
+                if (qName.equalsIgnoreCase("cfdi:Comprobante")) {
                     for (int i = 0; i < attr.getLength(); i++) {
                         String k = attr.getQName(i);
                         String v = attr.getValue(i);
