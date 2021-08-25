@@ -1,6 +1,5 @@
 package com.immortalcrab.cfdi.parser;
 
-import com.immortalcrab.cfdi.parser.FacturaParser;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
@@ -14,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            FacturaParser fp = new FacturaParser("/home/j4nusx/Downloads/NV139010.XML");
+            FacturaParser fp = new FacturaParser("/home/userd/Downloads/NV139010.XML");
             Map<String, Object> ds = fp.getDs();
             System.out.println(ds);
         } catch (IOException ex) {
