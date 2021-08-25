@@ -29,22 +29,9 @@ public class Principal extends AbstractVerticle {
         baseRouter.mountSubRouter("/api/v1", apiRouter);
 
         {
+            Transfers.hello(apiRouter.get("/hello"));
+
             bindHealth(baseRouter.get("/health"));
-
-            Transfers.bindExistancePerPresentation(eb,
-                    apiRouter.get("/existence/:warehouseId/:productId/:presentationId"),
-                    this.logger,
-                    vertx);
-
-            Transfers.bindWarehouses(eb,
-                    apiRouter.get("/almacenes/por_empresa/:empresaId"),
-                    this.logger,
-                    vertx);
-
-            Transfers.bindWarehousesTraspasos(eb,
-                    apiRouter.post("/almacenes/traspasos"),
-                    this.logger,
-                    vertx);
         }
 
         vertx.createHttpServer().requestHandler(baseRouter).listen(port, http -> {
@@ -95,7 +82,6 @@ public class Principal extends AbstractVerticle {
     private void gearUpVerticles(Promise<Void> pro, final int port) {
 
         CompositeFuture fut = CompositeFuture.all(
-                syncVerticleDeployer(SyncDbBridge.class, SyncDbBridge.REQUIRED_WORKER_THREADS),
                 asyncVerticleDeployer(StaticFileServer.class),
                 this.spinUpHttpServer(port));
 
