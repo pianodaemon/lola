@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.immortalcrab</groupId>
-  <artifactId>cfdi.sparkserver</artifactId>
+  <artifactId>cfdi-sparkserver</artifactId>
   <version>LOLA-TRAILERA</version>
   <packaging>jar</packaging>
   <name>CFDI server (spark)</name>
