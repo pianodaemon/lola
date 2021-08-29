@@ -37,6 +37,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.immortalcrab</groupId>
+      <artifactId>qrcode</artifactId>
+      <version>LOLA-TRAILERA</version>
+    </dependency>
+
+    <dependency>
       <groupId>net.sf.jasperreports</groupId>
       <artifactId>jasperreports</artifactId>
       <version>6.16.0</version>

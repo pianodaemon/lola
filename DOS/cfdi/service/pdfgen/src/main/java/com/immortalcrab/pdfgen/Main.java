@@ -4,6 +4,7 @@ import com.immortalcrab.cfdi.parser.FacturaParser;
 import com.immortalcrab.numspatrans.Translator;
 import com.immortalcrab.cfdi.utils.CadenaOriginal;
 import com.immortalcrab.cfdi.utils.Signer;
+import com.immortalcrab.qrcode.QRCode;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.util.ResourceUtils;
@@ -72,6 +73,8 @@ public class Main
             ds.put("SELLO", sello);
 
             System.out.println(ds);
+
+            QRCode.generate("34598foijsdof89uj34oij", 1250, 1250, "/home/userd/output.png");
 
             JasperReport jasperReport = getJasperReport("tq_carta_porte.jrxml");
             // JasperReport jasperReport = getJasperReport("report.jrxml");
