@@ -1,4 +1,4 @@
-package com.immortalcrab.pdfgen;
+package com.immortalcrab.cfdi.builders;
 
 import com.immortalcrab.cfdi.parser.FacturaParser;
 import com.immortalcrab.numspatrans.Translator;
