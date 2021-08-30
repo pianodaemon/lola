@@ -16,6 +16,7 @@ public class FacturaXmlBuilder implements DocBuilder {
         ic.buildDoc();
     }
 
+    @Override
     public void buildDoc() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
