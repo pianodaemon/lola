@@ -13,6 +13,18 @@ public class CfdiRequest {
         Map<String, Object> ds = new HashMap<>();
 
         {
+            // previously "CFDI_TOTAL"
+            final String label = "TOTAL";
+            ds.put(label, bruteSearchUniqueAttr(kvs, label));
+        }
+
+        {
+            // previously "CFDI_DES"
+            final String label = "DESCTO";
+            ds.put(label, bruteSearchUniqueAttr(kvs, label));
+        }
+
+        {
             // previously "FORMA_PAGO"
             final String label = "FORPAG";
             ds.put(label, bruteSearchUniqueAttr(kvs, label));
