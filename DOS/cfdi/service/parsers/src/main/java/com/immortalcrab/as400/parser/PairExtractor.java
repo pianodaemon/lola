@@ -6,10 +6,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.javatuples.Pair;
 
 public class PairExtractor {
@@ -18,7 +18,7 @@ public class PairExtractor {
         WRAP_UP, SEEKOUT_KEY, SEEKOUT_VALUE, ERR_MISSING_TOKEN, ERR_TOO_MANY_TOKENS
     }
 
-    static Set<Pair<String, String>> go4it(final String filePath) throws PairExtractorError {
+    public static List<Pair<String, String>> go4it(final String filePath) throws PairExtractorError {
 
         FileReader fr = null;
         try {
@@ -35,21 +35,25 @@ public class PairExtractor {
         }
     }
 
-    static Set<Pair<String, String>> go4it(InputStreamReader inReader) throws PairExtractorError {
+    public static List<Pair<String, String>> go4it(InputStreamReader inReader) throws PairExtractorError {
 
         PairExtractor ic = new PairExtractor();
         return ic.traverseBuffer(inReader);
     }
 
-    private Set<Pair<String, String>> traverseBuffer(InputStreamReader inReader) throws PairExtractorError {
+    private List<Pair<String, String>> traverseBuffer(InputStreamReader inReader) throws PairExtractorError {
         BufferedReader br = new BufferedReader(inReader);
 
-        Set<Pair<String, String>> rset = new LinkedHashSet<>();
+        LinkedList<Pair<String, String>> rset = new LinkedList<>();
         int idx = 0;
         try {
             String st;
             while ((st = br.readLine()) != null) {
-                rset.add(this.parseLine(++idx, st.trim()));
+                ++idx;
+                if (st.isBlank()) {
+                    continue;
+                }
+                rset.add(this.parseLine(idx, st.trim()));
             }
         } catch (IOException ex) {
             throw new PairExtractorError("Issue found when traversing buffer of input tokens", ex);
