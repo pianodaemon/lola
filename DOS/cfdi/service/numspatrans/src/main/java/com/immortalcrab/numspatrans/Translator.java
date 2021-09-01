@@ -3,11 +3,14 @@ package com.immortalcrab.numspatrans;
 import java.io.FileNotFoundException;
 import java.util.Properties;
 import org.springframework.util.ResourceUtils;
-
 import org.python.core.PyString;
 import org.python.util.PythonInterpreter;
 
 public class Translator {
+
+    public static void main(String[] args) {
+        System.out.println(translateIntegerToSpanish(12344));
+    }
 
     public static String translateIntegerToSpanish(long number) {
 

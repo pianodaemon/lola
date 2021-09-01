@@ -14,6 +14,6 @@ WORKDIR /service/workclock
 
 RUN mvn install
 
-WORKDIR /service/server
+WORKDIR /service/server-spark
 
 CMD ["mvn", "exec:java"]
