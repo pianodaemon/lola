@@ -37,7 +37,6 @@ public class FacturaRequest {
         this.ds = new HashMap<>();
 
         {
-
             this.ds.put("IMPTS_TRAS", Map.of(
                     "TOTAL", 0,
                     "DETALLES", new ArrayList<Map<String, String>>()
@@ -49,6 +48,8 @@ public class FacturaRequest {
             ));
 
             this.ds.put("CONCEPTOS", new ArrayList<Map<String, String>>());
+
+            this.ds.put("COMENTARIOS", new ArrayList<String>());
         }
 
     }
@@ -152,6 +153,7 @@ public class FacturaRequest {
         }
 
         this.pickUpDsecBlocks();
+        this.pickUpComments();
 
         return ds;
     }
@@ -167,6 +169,19 @@ public class FacturaRequest {
         }
 
         throw new CfdiRequestError("Unique attr " + label + " not found");
+    }
+
+    private void pickUpComments() {
+
+        for (Iterator<Pair<String, String>> it = this.kvs.iterator(); it.hasNext();) {
+
+            Pair<String, String> p = it.next();
+
+            if ("COMENT".equals(p.getValue0())) {
+                List<String> l = (ArrayList<String>) this.ds.get("COMENTARIOS");
+                l.add(p.getValue1());
+            }
+        }
     }
 
     private void pickUpDsecBlocks() {
