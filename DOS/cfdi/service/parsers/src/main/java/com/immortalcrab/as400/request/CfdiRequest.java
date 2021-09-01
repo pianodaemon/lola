@@ -9,6 +9,13 @@ import org.javatuples.Pair;
 
 public class CfdiRequest {
 
+    enum Transitions {
+        SEEKOUT_DSEC, PICKUP_ATTRS
+    }
+
+    //number of elements ahead per DSEC block
+    final int DESC_SIZE = 15;
+
     private Map<String, Object> ds;
     private List<Pair<String, String>> kvs = null;
 
@@ -47,8 +54,6 @@ public class CfdiRequest {
     }
 
     private Map<String, Object> craft() throws CfdiRequestError {
-
-        Map<String, Object> ds = new HashMap<>();
 
         {
             // previously "CFDI_TOTAL"
@@ -146,6 +151,8 @@ public class CfdiRequest {
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
+        this.pickUpDsecBlocks();
+
         return ds;
     }
 
@@ -160,5 +167,104 @@ public class CfdiRequest {
         }
 
         throw new CfdiRequestError("Unique attr " + label + " not found");
+    }
+
+    private void pickUpDsecBlocks() {
+
+        Map<String, String> c = null;
+        int offset = 0;
+        Transitions stage = Transitions.SEEKOUT_DSEC;
+
+        for (Iterator<Pair<String, String>> it = this.kvs.iterator(); it.hasNext();) {
+
+            Pair<String, String> p = it.next();
+
+            switch (stage) {
+
+                case SEEKOUT_DSEC: {
+
+                    if ("DSEC".equals(p.getValue0())) {
+                        c = new HashMap<>();
+                        offset = this.DESC_SIZE;
+                        stage = Transitions.PICKUP_ATTRS;
+                    }
+                    break;
+                }
+                case PICKUP_ATTRS: {
+
+                    offset--;
+
+                    if ("DITEM".equals(p.getValue0())) {
+                        c.put("DITEM", p.getValue1());
+                    }
+
+                    if ("DCVESERV".equals(p.getValue0())) {
+                        c.put("DCVESERV", p.getValue1());
+                    }
+
+                    // previously "Cantidad"
+                    if ("DCANT".equals(p.getValue0())) {
+                        c.put("DCANT", p.getValue1());
+                    }
+
+                    if ("DCUME".equals(p.getValue0())) {
+                        c.put("DCUME", p.getValue1());
+                    }
+
+                    if ("DUME".equals(p.getValue0())) {
+                        c.put("DUME", p.getValue1());
+                    }
+
+                    // previously "Descripcion"
+                    if ("DDESL".equals(p.getValue0())) {
+                        c.put("DDESL", p.getValue1());
+                    }
+
+                    // previously "ValorUnitario"
+                    if ("DUNIT".equals(p.getValue0())) {
+                        c.put("DUNIT", p.getValue1());
+                    }
+
+                    // previously "Importe"
+                    if ("DIMPO".equals(p.getValue0())) {
+                        c.put("DIMPO", p.getValue1());
+                    }
+
+                    if ("DIDESCTO".equals(p.getValue0())) {
+                        c.put("DIDESCTO", p.getValue1());
+                    }
+
+                    if ("DBASE".equals(p.getValue0())) {
+                        c.put("DBASE", p.getValue1());
+                    }
+
+                    if ("DITIMP".equals(p.getValue0())) {
+                        c.put("DITIMP", p.getValue1());
+                    }
+
+                    if ("DITI".equals(p.getValue0())) {
+                        c.put("DITI", p.getValue1());
+                    }
+
+                    if ("DITTF".equals(p.getValue0())) {
+                        c.put("DITTF", p.getValue1());
+                    }
+
+                    if ("DITTC".equals(p.getValue0())) {
+                        c.put("DITTC", p.getValue1());
+                    }
+
+                    if (offset == 0) {
+                        List<Map<String, String>> l = (ArrayList<Map<String, String>>) this.ds.get("CONCEPTOS");
+                        l.add(c);
+                        stage = Transitions.SEEKOUT_DSEC;
+                    }
+
+                    break;
+                }
+            }
+
+        }
+
     }
 }
