@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import org.javatuples.Pair;
 
-public class CfdiRequest {
+public class FacturaRequest {
 
     enum Transitions {
         SEEKOUT_DSEC, PICKUP_ATTRS
@@ -19,9 +19,9 @@ public class CfdiRequest {
     private Map<String, Object> ds;
     private List<Pair<String, String>> kvs = null;
 
-    public static CfdiRequest render(final List<Pair<String, String>> kvs) throws CfdiRequestError {
+    public static FacturaRequest render(final List<Pair<String, String>> kvs) throws CfdiRequestError {
 
-        CfdiRequest ic = new CfdiRequest(kvs);
+        FacturaRequest ic = new FacturaRequest(kvs);
         ic.craft();
 
         return ic;
@@ -31,7 +31,7 @@ public class CfdiRequest {
         return ds;
     }
 
-    private CfdiRequest(final List<Pair<String, String>> kvs) throws CfdiRequestError {
+    private FacturaRequest(final List<Pair<String, String>> kvs) throws CfdiRequestError {
 
         this.kvs = kvs;
         this.ds = new HashMap<>();
