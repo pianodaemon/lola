@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.immortalcrab.as400.parser.PairExtractor;
+import com.immortalcrab.as400.parser.PairExtractorError;
 import com.immortalcrab.as400.request.FacturaRequest;
+import com.immortalcrab.as400.request.CfdiRequestError;
 import org.javatuples.Pair;
 
 
@@ -33,16 +35,16 @@ public class Server
                 l = PairExtractor.go4it(isr);
                 System.out.println(l);
 
-            } catch (Exception e) {
+            } catch (PairExtractorError e) {
                 System.out.println(e);
             }
 
             Map<String, Object> ds = null;
             try {
-                FacturaRequest fact = FacturaRequest.render(l);
-                ds = fact.getDs();
+                ds = FacturaRequest.render(l).getDs();
                 System.out.println(ds);
-            } catch (Exception e) {
+
+            } catch (CfdiRequestError e) {
                 System.out.println(e);
             }
 
