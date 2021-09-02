@@ -2,6 +2,15 @@ package com.immortalcrab.cfdi.server;
 
 import static spark.Spark.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
+
+import com.immortalcrab.as400.parser.PairExtractor;
+import com.immortalcrab.as400.request.FacturaRequest;
+import org.javatuples.Pair;
+
 
 public class Server 
 {
@@ -15,11 +24,30 @@ public class Server
         });
 
         post("/cfdi", (req, res) -> {
-            String body = req.body();
-            System.out.println(body);
+            byte[] body = req.bodyAsBytes();
+
+            List<Pair<String, String>> l = null;
+            try {
+                var bais = new ByteArrayInputStream(body);
+                var isr = new InputStreamReader(bais);
+                l = PairExtractor.go4it(isr);
+                System.out.println(l);
+
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+
+            Map<String, Object> ds = null;
+            try {
+                FacturaRequest fact = FacturaRequest.render(l);
+                ds = fact.getDs();
+                System.out.println(ds);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
 
             res.type("application/json");
-            return "{\"msg\": \"" + body + "\"}";
+            return "{\"msg\": \"OK!!\"}";
         });
     }
 }
