@@ -57,6 +57,12 @@ public class FacturaRequest {
     private Map<String, Object> craft() throws CfdiRequestError {
 
         {
+            // At cfdi is aka LugarExpedicion
+            final String label = "EXPZIP";
+            ds.put(label, bruteSearchUniqueAttr(label));
+        }
+
+        {
             // "CFDI_TOTAL"
             final String label = "TOTAL";
             ds.put(label, bruteSearchUniqueAttr(label));
