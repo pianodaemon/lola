@@ -9,7 +9,7 @@ import org.javatuples.Pair;
 
 public class FacturaRequest {
 
-    enum Transitions {
+    enum SearchSeqStages {
         SEEKOUT_DSEC, PICKUP_ATTRS
     }
 
@@ -57,97 +57,97 @@ public class FacturaRequest {
     private Map<String, Object> craft() throws CfdiRequestError {
 
         {
-            // previously "CFDI_TOTAL"
+            // "CFDI_TOTAL"
             final String label = "TOTAL";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "CFDI_DES"
+            // "CFDI_DES"
             final String label = "DESCTO";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "TIPO_CAMBIO"
+            // "TIPO_CAMBIO"
             final String label = "TPOCAM";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "FORMA_PAGO"
+            // "FORMA_PAGO"
             final String label = "FORPAG";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "METODO_PAGO"
+            // "METODO_PAGO"
             final String label = "METPAG";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "CFDI_CERT_NO"
+            // "CFDI_CERT_NO"
             final String label = "CDIGITAL";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "CFDI_FOLIO"
+            // "CFDI_FOLIO"
             final String label = "FOLIO";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "CFDI_SERIE"
+            // "CFDI_SERIE"
             final String label = "SERIE";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "CFDI_DATE"
+            // "CFDI_DATE"
             final String label = "FECHOR";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "EMISOR_NOMBRE"
+            // "EMISOR_NOMBRE"
             final String label = "EMINOM";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "EMISOR_RFC"
+            // "EMISOR_RFC"
             final String label = "EMIRFC";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "EMISOR_REG"
+            // "EMISOR_REG"
             final String label = "REGIMEN";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "EMISOR_CP"
+            // "EMISOR_CP"
             final String label = "EMIZIP";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "RECEPTOR_NOMBRE"
+            // "RECEPTOR_NOMBRE"
             final String label = "CTENOM";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "RECEPTOR_RFC"
+            // "RECEPTOR_RFC"
             final String label = "CTERFC";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
         {
-            // previously "RECEPTOR_USO"
+            // "RECEPTOR_USO"
             final String label = "USOCFDI";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
@@ -188,7 +188,7 @@ public class FacturaRequest {
 
         Map<String, String> c = null;
         int offset = 0;
-        Transitions stage = Transitions.SEEKOUT_DSEC;
+        SearchSeqStages stage = SearchSeqStages.SEEKOUT_DSEC;
 
         for (Iterator<Pair<String, String>> it = this.kvs.iterator(); it.hasNext();) {
 
@@ -198,10 +198,12 @@ public class FacturaRequest {
 
                 case SEEKOUT_DSEC: {
 
+                    /* Row number from AS400 system
+                       where the concept has been included */
                     if ("DSEC".equals(p.getValue0())) {
                         c = new HashMap<>();
                         offset = this.DESC_SIZE;
-                        stage = Transitions.PICKUP_ATTRS;
+                        stage = SearchSeqStages.PICKUP_ATTRS;
                     }
                     break;
                 }
@@ -209,38 +211,42 @@ public class FacturaRequest {
 
                     offset--;
 
+                    // At cfdi is aka "NoIdentificacion"
                     if ("DITEM".equals(p.getValue0())) {
                         c.put("DITEM", p.getValue1());
                     }
 
+                    // At cfdi is aka "ClaveProdServ"
                     if ("DCVESERV".equals(p.getValue0())) {
                         c.put("DCVESERV", p.getValue1());
                     }
 
-                    // previously "Cantidad"
+                    // At cfdi is aka "Cantidad"
                     if ("DCANT".equals(p.getValue0())) {
                         c.put("DCANT", p.getValue1());
                     }
 
+                    // At cfdi is aka "ClaveUnidad"
                     if ("DCUME".equals(p.getValue0())) {
                         c.put("DCUME", p.getValue1());
                     }
 
+                    // unidad medida
                     if ("DUME".equals(p.getValue0())) {
                         c.put("DUME", p.getValue1());
                     }
 
-                    // previously "Descripcion"
+                    // At cfdi is aka "Descripcion"
                     if ("DDESL".equals(p.getValue0())) {
                         c.put("DDESL", p.getValue1());
                     }
 
-                    // previously "ValorUnitario"
+                    // At cfdi is aka "ValorUnitario"
                     if ("DUNIT".equals(p.getValue0())) {
                         c.put("DUNIT", p.getValue1());
                     }
 
-                    // previously "Importe"
+                    // At cfdi is aka "Importe"
                     if ("DIMPO".equals(p.getValue0())) {
                         c.put("DIMPO", p.getValue1());
                     }
@@ -272,7 +278,7 @@ public class FacturaRequest {
                     if (offset == 0) {
                         List<Map<String, String>> l = (ArrayList<Map<String, String>>) this.ds.get("CONCEPTOS");
                         l.add(c);
-                        stage = Transitions.SEEKOUT_DSEC;
+                        stage = SearchSeqStages.SEEKOUT_DSEC;
                     }
 
                     break;
