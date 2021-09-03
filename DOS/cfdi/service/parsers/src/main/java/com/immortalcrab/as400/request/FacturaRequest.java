@@ -16,7 +16,7 @@ public class FacturaRequest {
     //number of elements ahead per DSEC block
     final int DESC_SIZE = 15;
 
-    private Map<String, Object> ds;
+    private Map<String, Object> ds = null;
     private List<Pair<String, String>> kvs = null;
 
     public static FacturaRequest render(final List<Pair<String, String>> kvs) throws CfdiRequestError {
