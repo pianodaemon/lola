@@ -158,6 +158,45 @@ public class FacturaRequest {
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
+        {
+            // Remitente
+            {
+                final String label = "REMNOM";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "REMDIR";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+        }
+
+        {
+            // Destinatario
+            {
+                final String label = "DESNOM";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "DESDIR";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+        }
+
+        {
+            // Agente Aduanal data
+            {
+                final String label = "AGENOM";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "AGEDIR";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+        }
+
         this.pickUpDsecBlocks();
         this.pickUpComments();
 
