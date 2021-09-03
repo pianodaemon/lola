@@ -78,8 +78,5 @@ abstract class CfdiRequest {
         captureSymbol("CTEDIR");
 
         captureSymbol("CTEZIP");
-
-        // "RECEPTOR_USO"
-        captureSymbol("USOCFDI");
     }
 }

@@ -51,173 +51,118 @@ public class FacturaRequest extends CfdiRequest {
         }
 
         {
-            // Data sobre la carga
-            {
-                // Cantidad Convenida
-                captureSymbol("CNTCON");
-            }
+            // Genera remision
+            captureSymbol("CVEREM");
 
-            {
-                // Valor Declarado
-                captureSymbol("VALDEC");
-            }
-
-            {
-                // Cantidad de Bultos
-                captureSymbol("CNTBUL");
-            }
-
-            {
-                // Peso Estimado
-                captureSymbol("PESEST");
-            }
-
-            {
-                // Contenidos
-                captureSymbol("CONTEN");
-            }
-
-            {
-                captureSymbol("CAJAS");
-            }
-
-            {
-                captureSymbol("TRACTOR");
-            }
-
-            {
-                captureSymbol("DOCUMENTA");
-            }
+            // Uso que se le dara al cfdi
+            captureSymbol("USOCFDI");
         }
 
+        // Data sobre la carga
         {
-            // Oficinas
-            {
-                // Oficina que Elabora
-                captureSymbol("OFIDOC");
-            }
+            // Cantidad Convenida
+            captureSymbol("CNTCON");
 
-            {
-                // Oficina que Cobra
-                captureSymbol("OFICOB");
-            }
+            // Valor Declarado
+            captureSymbol("VALDEC");
+
+            // Cantidad de Bultos
+            captureSymbol("CNTBUL");
+
+            // Peso Estimado
+            captureSymbol("PESEST");
+
+            // Contenidos
+            captureSymbol("CONTEN");
+
+            captureSymbol("CAJAS");
+
+            captureSymbol("TRACTOR");
+
+            captureSymbol("DOCUMENTA");
         }
 
+        // Oficinas
         {
-            // Expedido en
-            {
-                // At cfdi is aka LugarExpedicion
-                captureSymbol("EXPZIP");
-            }
+            // Oficina que Elabora
+            captureSymbol("OFIDOC");
 
-            {
-                captureSymbol("EXPDIR");
-            }
-
-            {
-                captureSymbol("EXPNOM");
-            }
+            // Oficina que Cobra
+            captureSymbol("OFICOB");
         }
 
+        // Expedido en
         {
-            // Totales
-            {
-                // "CFDI_TOTAL"
-                captureSymbol("TOTAL");
-            }
+            // At cfdi is aka LugarExpedicion
+            captureSymbol("EXPZIP");
 
-            {
-                captureSymbol("SUBTOT");
-            }
+            captureSymbol("EXPDIR");
 
-            {
-                captureSymbol("SUBTOT2");
-            }
-
-            {
-                // "CFDI_DES"
-                captureSymbol("DESCTO");
-            }
-
-            {
-                captureSymbol("IVA");
-            }
-
-            {
-                captureSymbol("IVARET");
-            }
-
-            {
-                captureSymbol("CIVA");
-            }
-
-            {
-                captureSymbol("CIVARET");
-            }
-
-            {
-                // "TIPO_CAMBIO"
-                captureSymbol("TPOCAM");
-            }
-
-            {
-                captureSymbol("MONEDA");
-            }
+            captureSymbol("EXPNOM");
         }
 
+        // Totales
         {
-            // Pago detalles
-            {
-                // "FORMA_PAGO"
-                captureSymbol("FORPAG");
-            }
+            // "CFDI_TOTAL"
+            captureSymbol("TOTAL");
 
-            {
-                // "METODO_PAGO"
-                captureSymbol("METPAG");
-            }
+            captureSymbol("SUBTOT");
 
-            {
-                // Condiciones de pago
-                captureSymbol("CONPAG");
-            }
+            captureSymbol("SUBTOT2");
+
+            // "CFDI_DES"
+            captureSymbol("DESCTO");
+
+            captureSymbol("IVA");
+
+            captureSymbol("IVARET");
+
+            captureSymbol("CIVA");
+
+            captureSymbol("CIVARET");
+
+            // "TIPO_CAMBIO"
+            captureSymbol("TPOCAM");
+
+            captureSymbol("MONEDA");
+
+        }
+
+        // Pago detalles
+        {
+            // "FORMA_PAGO"
+            captureSymbol("FORPAG");
+
+            // "METODO_PAGO"
+            captureSymbol("METPAG");
+
+            // Condiciones de pago
+            captureSymbol("CONPAG");
         }
 
         captureControlSymbols();
         captureEmisorSymbols();
         captureReceptorSymbols();
 
+        // Remitente
         {
-            // Remitente
-            {
-                captureSymbol("REMNOM");
-            }
+            captureSymbol("REMNOM");
 
-            {
-                captureSymbol("REMDIR");
-            }
+            captureSymbol("REMDIR");
         }
 
+        // Destinatario
         {
-            // Destinatario
-            {
-                captureSymbol("DESNOM");
-            }
+            captureSymbol("DESNOM");
 
-            {
-                captureSymbol("DESDIR");
-            }
+            captureSymbol("DESDIR");
         }
 
+        // Agente Aduanal data
         {
-            // Agente Aduanal data
-            {
-                captureSymbol("AGENOM");
-            }
+            captureSymbol("AGENOM");
 
-            {
-                captureSymbol("AGEDIR");
-            }
+            captureSymbol("AGEDIR");
         }
 
         this.pickUpDsecBlocks();
