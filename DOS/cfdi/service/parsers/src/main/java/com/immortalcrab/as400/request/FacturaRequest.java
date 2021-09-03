@@ -284,6 +284,24 @@ public class FacturaRequest {
             }
         }
 
+        {
+            // Datos adicionales
+            {
+                final String label = "CAJAS";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "TRACTOR";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "DOCUMENTA";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+        }
+
         this.pickUpDsecBlocks();
         this.pickUpComments();
 
