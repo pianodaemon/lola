@@ -224,6 +224,21 @@ public class FacturaRequest {
             }
 
             {
+                final String label = "CTEMAIL";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "CTEDIR";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "CTEZIP";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
                 // "RECEPTOR_USO"
                 final String label = "USOCFDI";
                 ds.put(label, bruteSearchUniqueAttr(label));
@@ -270,7 +285,6 @@ public class FacturaRequest {
         }
 
         this.pickUpDsecBlocks();
-
         this.pickUpComments();
 
         return ds;
