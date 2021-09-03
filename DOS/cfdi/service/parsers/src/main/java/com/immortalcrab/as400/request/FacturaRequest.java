@@ -91,21 +91,59 @@ public class FacturaRequest {
         }
 
         {
-            // "CFDI_TOTAL"
-            final String label = "TOTAL";
-            ds.put(label, bruteSearchUniqueAttr(label));
-        }
+            // Totales
+            {
+                // "CFDI_TOTAL"
+                final String label = "TOTAL";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
 
-        {
-            // "CFDI_DES"
-            final String label = "DESCTO";
-            ds.put(label, bruteSearchUniqueAttr(label));
-        }
+            {
+                final String label = "SUBTOT";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
 
-        {
-            // "TIPO_CAMBIO"
-            final String label = "TPOCAM";
-            ds.put(label, bruteSearchUniqueAttr(label));
+            {
+                final String label = "SUBTOT2";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                // "CFDI_DES"
+                final String label = "DESCTO";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "IVA";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "IVARET";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "CIVA";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "CIVARET";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                // "TIPO_CAMBIO"
+                final String label = "TPOCAM";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "MONEDA";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
         }
 
         {
