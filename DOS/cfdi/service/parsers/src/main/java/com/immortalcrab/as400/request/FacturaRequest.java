@@ -57,6 +57,7 @@ public class FacturaRequest {
     private Map<String, Object> craft() throws CfdiRequestError {
 
         {
+            // Oficinas
             {
                 // Oficina que Elabora
                 final String label = "OFIDOC";
@@ -71,9 +72,22 @@ public class FacturaRequest {
         }
 
         {
-            // At cfdi is aka LugarExpedicion
-            final String label = "EXPZIP";
-            ds.put(label, bruteSearchUniqueAttr(label));
+            // Expedido en
+            {
+                // At cfdi is aka LugarExpedicion
+                final String label = "EXPZIP";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "EXPDIR";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "EXPNOM";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
         }
 
         {
@@ -149,30 +163,33 @@ public class FacturaRequest {
                 final String label = "EMIZIP";
                 ds.put(label, bruteSearchUniqueAttr(label));
             }
+
+            {
+                // "EMISOR_REG"
+                final String label = "REGIMEN";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
         }
 
         {
-            // "EMISOR_REG"
-            final String label = "REGIMEN";
-            ds.put(label, bruteSearchUniqueAttr(label));
-        }
+            // Receptor
+            {
+                // "RECEPTOR_NOMBRE"
+                final String label = "CTENOM";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
 
-        {
-            // "RECEPTOR_NOMBRE"
-            final String label = "CTENOM";
-            ds.put(label, bruteSearchUniqueAttr(label));
-        }
+            {
+                // "RECEPTOR_RFC"
+                final String label = "CTERFC";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
 
-        {
-            // "RECEPTOR_RFC"
-            final String label = "CTERFC";
-            ds.put(label, bruteSearchUniqueAttr(label));
-        }
-
-        {
-            // "RECEPTOR_USO"
-            final String label = "USOCFDI";
-            ds.put(label, bruteSearchUniqueAttr(label));
+            {
+                // "RECEPTOR_USO"
+                final String label = "USOCFDI";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
         }
 
         {
