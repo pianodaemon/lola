@@ -206,58 +206,8 @@ public class FacturaRequest extends CfdiRequest {
             }
         }
 
-        {
-            // Emisor
-            {
-                // "EMISOR_NOMBRE"
-                captureSymbol("EMINOM");
-            }
-
-            {
-                // "EMISOR_RFC"
-                captureSymbol("EMIRFC");
-            }
-
-            {
-                // "EMISOR_CP"
-                captureSymbol("EMIZIP");
-            }
-
-            {
-                // "EMISOR_REG"
-                captureSymbol("REGIMEN");
-            }
-        }
-
-        {
-            // Receptor
-            {
-                // "RECEPTOR_NOMBRE"
-                captureSymbol("CTENOM");
-            }
-
-            {
-                // "RECEPTOR_RFC"
-                captureSymbol("CTERFC");
-            }
-
-            {
-                captureSymbol("CTEMAIL");
-            }
-
-            {
-                captureSymbol("CTEDIR");
-            }
-
-            {
-                captureSymbol("CTEZIP");
-            }
-
-            {
-                // "RECEPTOR_USO"
-                captureSymbol("USOCFDI");
-            }
-        }
+        captureEmisorSymbols();
+        captureReceptorSymbols();
 
         {
             // Remitente
