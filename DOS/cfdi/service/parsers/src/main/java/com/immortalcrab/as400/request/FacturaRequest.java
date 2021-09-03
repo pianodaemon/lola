@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import org.javatuples.Pair;
 
-public class FacturaRequest {
+public class FacturaRequest extends CfdiRequest {
 
     enum SearchSeqStages {
         SEEKOUT_DSEC, PICKUP_ATTRS
@@ -17,7 +17,6 @@ public class FacturaRequest {
     final int DESC_SIZE = 15;
 
     private Map<String, Object> ds = null;
-    private List<Pair<String, String>> kvs = null;
 
     public static FacturaRequest render(final List<Pair<String, String>> kvs) throws CfdiRequestError {
 
@@ -33,74 +32,61 @@ public class FacturaRequest {
 
     private FacturaRequest(final List<Pair<String, String>> kvs) throws CfdiRequestError {
 
-        this.kvs = kvs;
-        this.ds = new HashMap<>();
-
-        {
-            this.ds.put("IMPTS_TRAS", Map.of(
-                    "TOTAL", 0,
-                    "DETALLES", new ArrayList<Map<String, String>>()
-            ));
-
-            this.ds.put("IMPTS_RET", Map.of(
-                    "TOTAL", 0,
-                    "DETALLES", new ArrayList<Map<String, String>>()
-            ));
-
-            this.ds.put("CONCEPTOS", new ArrayList<Map<String, String>>());
-
-            this.ds.put("COMENTARIOS", new ArrayList<String>());
-        }
-
+        super(kvs);
     }
 
-    private Map<String, Object> craft() throws CfdiRequestError {
+    @Override
+    void captureSymbolImpt(final String label, final Object value) {
+        this.ds.put(label, (String) value);
+    }
+
+    @Override
+    Map<String, Object> craft() throws CfdiRequestError {
+
+        // We start off with fresh 
+        {
+            this.ds = new HashMap<>();
+            this.ds.put("CONCEPTOS", new ArrayList<Map<String, String>>());
+            this.ds.put("COMENTARIOS", new ArrayList<String>());
+        }
 
         {
             // Data sobre la carga
             {
                 // Cantidad Convenida
-                final String label = "CNTCON";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("CNTCON");
             }
 
             {
                 // Valor Declarado
-                final String label = "VALDEC";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("VALDEC");
             }
 
             {
                 // Cantidad de Bultos
-                final String label = "CNTBUL";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("CNTBUL");
             }
 
             {
                 // Peso Estimado
-                final String label = "PESEST";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("PESEST");
             }
 
             {
                 // Contenidos
-                final String label = "CONTEN";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("CONTEN");
             }
 
             {
-                final String label = "CAJAS";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("CAJAS");
             }
 
             {
-                final String label = "TRACTOR";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("TRACTOR");
             }
 
             {
-                final String label = "DOCUMENTA";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("DOCUMENTA");
             }
         }
 
@@ -108,14 +94,12 @@ public class FacturaRequest {
             // Oficinas
             {
                 // Oficina que Elabora
-                final String label = "OFIDOC";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("OFIDOC");
             }
 
             {
                 // Oficina que Cobra
-                final String label = "OFICOB";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("OFICOB");
             }
         }
 
@@ -123,18 +107,15 @@ public class FacturaRequest {
             // Expedido en
             {
                 // At cfdi is aka LugarExpedicion
-                final String label = "EXPZIP";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("EXPZIP");
             }
 
             {
-                final String label = "EXPDIR";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("EXPDIR");
             }
 
             {
-                final String label = "EXPNOM";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("EXPNOM");
             }
         }
 
@@ -142,55 +123,45 @@ public class FacturaRequest {
             // Totales
             {
                 // "CFDI_TOTAL"
-                final String label = "TOTAL";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("TOTAL");
             }
 
             {
-                final String label = "SUBTOT";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("SUBTOT");
             }
 
             {
-                final String label = "SUBTOT2";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("SUBTOT2");
             }
 
             {
                 // "CFDI_DES"
-                final String label = "DESCTO";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("DESCTO");
             }
 
             {
-                final String label = "IVA";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("IVA");
             }
 
             {
-                final String label = "IVARET";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("IVARET");
             }
 
             {
-                final String label = "CIVA";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("CIVA");
             }
 
             {
-                final String label = "CIVARET";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("CIVARET");
             }
 
             {
                 // "TIPO_CAMBIO"
-                final String label = "TPOCAM";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("TPOCAM");
             }
 
             {
-                final String label = "MONEDA";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("MONEDA");
             }
         }
 
@@ -198,70 +169,63 @@ public class FacturaRequest {
             // Pago detalles
             {
                 // "FORMA_PAGO"
-                final String label = "FORPAG";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("FORPAG");
             }
 
             {
                 // "METODO_PAGO"
-                final String label = "METPAG";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("METPAG");
             }
 
             {
-                final String label = "CONPAG";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                // Condiciones de pago
+                captureSymbol("CONPAG");
             }
         }
 
         {
-            // "CFDI_CERT_NO"
-            final String label = "CDIGITAL";
-            ds.put(label, bruteSearchUniqueAttr(label));
-        }
+            // Identificadore de Factura
+            {
+                // "CFDI_CERT_NO"
+                captureSymbol("CDIGITAL");
+            }
 
-        {
-            // "CFDI_FOLIO"
-            final String label = "FOLIO";
-            ds.put(label, bruteSearchUniqueAttr(label));
-        }
+            {
+                // "CFDI_FOLIO"
+                captureSymbol("FOLIO");
+            }
 
-        {
-            // "CFDI_SERIE"
-            final String label = "SERIE";
-            ds.put(label, bruteSearchUniqueAttr(label));
-        }
+            {
+                // "CFDI_SERIE"
+                captureSymbol("SERIE");
+            }
 
-        {
-            // "CFDI_DATE"
-            final String label = "FECHOR";
-            ds.put(label, bruteSearchUniqueAttr(label));
+            {
+                // "CFDI_DATE"
+                captureSymbol("FECHOR");
+            }
         }
 
         {
             // Emisor
             {
                 // "EMISOR_NOMBRE"
-                final String label = "EMINOM";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("EMINOM");
             }
 
             {
                 // "EMISOR_RFC"
-                final String label = "EMIRFC";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("EMIRFC");
             }
 
             {
                 // "EMISOR_CP"
-                final String label = "EMIZIP";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("EMIZIP");
             }
 
             {
                 // "EMISOR_REG"
-                final String label = "REGIMEN";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("REGIMEN");
             }
         }
 
@@ -269,74 +233,62 @@ public class FacturaRequest {
             // Receptor
             {
                 // "RECEPTOR_NOMBRE"
-                final String label = "CTENOM";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("CTENOM");
             }
 
             {
                 // "RECEPTOR_RFC"
-                final String label = "CTERFC";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("CTERFC");
             }
 
             {
-                final String label = "CTEMAIL";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("CTEMAIL");
             }
 
             {
-                final String label = "CTEDIR";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("CTEDIR");
             }
 
             {
-                final String label = "CTEZIP";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("CTEZIP");
             }
 
             {
                 // "RECEPTOR_USO"
-                final String label = "USOCFDI";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("USOCFDI");
             }
         }
 
         {
             // Remitente
             {
-                final String label = "REMNOM";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("REMNOM");
             }
 
             {
-                final String label = "REMDIR";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("REMDIR");
             }
         }
 
         {
             // Destinatario
             {
-                final String label = "DESNOM";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("DESNOM");
             }
 
             {
-                final String label = "DESDIR";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("DESDIR");
             }
         }
 
         {
             // Agente Aduanal data
             {
-                final String label = "AGENOM";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("AGENOM");
             }
 
             {
-                final String label = "AGEDIR";
-                ds.put(label, bruteSearchUniqueAttr(label));
+                captureSymbol("AGEDIR");
             }
         }
 
@@ -344,19 +296,6 @@ public class FacturaRequest {
         this.pickUpComments();
 
         return ds;
-    }
-
-    private String bruteSearchUniqueAttr(final String label) throws CfdiRequestError {
-
-        for (Iterator<Pair<String, String>> it = this.kvs.iterator(); it.hasNext();) {
-
-            Pair<String, String> p = it.next();
-            if (p.getValue0().equals(label)) {
-                return p.getValue1();
-            }
-        }
-
-        throw new CfdiRequestError("Unique attr " + label + " not found");
     }
 
     private void pickUpComments() {
