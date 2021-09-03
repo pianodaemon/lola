@@ -57,6 +57,20 @@ public class FacturaRequest {
     private Map<String, Object> craft() throws CfdiRequestError {
 
         {
+            {
+                // Oficina que Elabora
+                final String label = "OFIDOC";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                // Oficina que Cobra
+                final String label = "OFICOB";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+        }
+
+        {
             // At cfdi is aka LugarExpedicion
             final String label = "EXPZIP";
             ds.put(label, bruteSearchUniqueAttr(label));
@@ -201,6 +215,7 @@ public class FacturaRequest {
         }
 
         this.pickUpDsecBlocks();
+
         this.pickUpComments();
 
         return ds;
