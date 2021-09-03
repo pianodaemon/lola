@@ -57,6 +57,54 @@ public class FacturaRequest {
     private Map<String, Object> craft() throws CfdiRequestError {
 
         {
+            // Data sobre la carga
+            {
+                // Cantidad Convenida
+                final String label = "CNTCON";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                // Valor Declarado
+                final String label = "VALDEC";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                // Cantidad de Bultos
+                final String label = "CNTBUL";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                // Peso Estimado
+                final String label = "PESEST";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                // Contenidos
+                final String label = "CONTEN";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "CAJAS";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "TRACTOR";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "DOCUMENTA";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+        }
+
+        {
             // Oficinas
             {
                 // Oficina que Elabora
@@ -147,15 +195,23 @@ public class FacturaRequest {
         }
 
         {
-            // "FORMA_PAGO"
-            final String label = "FORPAG";
-            ds.put(label, bruteSearchUniqueAttr(label));
-        }
+            // Pago detalles
+            {
+                // "FORMA_PAGO"
+                final String label = "FORPAG";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
 
-        {
-            // "METODO_PAGO"
-            final String label = "METPAG";
-            ds.put(label, bruteSearchUniqueAttr(label));
+            {
+                // "METODO_PAGO"
+                final String label = "METPAG";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                final String label = "CONPAG";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
         }
 
         {
@@ -280,24 +336,6 @@ public class FacturaRequest {
 
             {
                 final String label = "AGEDIR";
-                ds.put(label, bruteSearchUniqueAttr(label));
-            }
-        }
-
-        {
-            // Datos adicionales
-            {
-                final String label = "CAJAS";
-                ds.put(label, bruteSearchUniqueAttr(label));
-            }
-
-            {
-                final String label = "TRACTOR";
-                ds.put(label, bruteSearchUniqueAttr(label));
-            }
-
-            {
-                final String label = "DOCUMENTA";
                 ds.put(label, bruteSearchUniqueAttr(label));
             }
         }
