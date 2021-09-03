@@ -37,7 +37,7 @@ public class FacturaRequest extends CfdiRequest {
 
     @Override
     void captureSymbolImpt(final String label, final Object value) {
-        this.ds.put(label, (String) value);
+        this.ds.put(label, value);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class FacturaRequest extends CfdiRequest {
         // We start off with fresh 
         {
             this.ds = new HashMap<>();
-            this.ds.put("CONCEPTOS", new ArrayList<Map<String, String>>());
-            this.ds.put("COMENTARIOS", new ArrayList<String>());
+            captureSymbolImpt("CONCEPTOS", new ArrayList<Map<String, String>>());
+            captureSymbolImpt("COMENTARIOS", new ArrayList<String>());
         }
 
         {
