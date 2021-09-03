@@ -35,29 +35,34 @@ abstract class CfdiRequest {
         this.captureSymbolImpt(label, bruteSearchUniqueAttr(label));
     }
 
+    protected void captureControlSymbols() throws CfdiRequestError {
+
+        // "CFDI_CERT_NO"
+        captureSymbol("CDIGITAL");
+
+        // "CFDI_FOLIO"
+        captureSymbol("FOLIO");
+
+        // "CFDI_SERIE"
+        captureSymbol("SERIE");
+
+        // "CFDI_DATE"
+        captureSymbol("FECHOR");
+    }
+
     protected void captureEmisorSymbols() throws CfdiRequestError {
-        {
-            // Emisor
-            {
-                // "EMISOR_NOMBRE"
-                captureSymbol("EMINOM");
-            }
 
-            {
-                // "EMISOR_RFC"
-                captureSymbol("EMIRFC");
-            }
+        // "EMISOR_NOMBRE"
+        captureSymbol("EMINOM");
 
-            {
-                // "EMISOR_CP"
-                captureSymbol("EMIZIP");
-            }
+        // "EMISOR_RFC"
+        captureSymbol("EMIRFC");
 
-            {
-                // "EMISOR_REG"
-                captureSymbol("REGIMEN");
-            }
-        }
+        // "EMISOR_CP"
+        captureSymbol("EMIZIP");
+
+        // "EMISOR_REG"
+        captureSymbol("REGIMEN");
     }
 
     protected void captureReceptorSymbols() throws CfdiRequestError {
@@ -76,6 +81,5 @@ abstract class CfdiRequest {
 
         // "RECEPTOR_USO"
         captureSymbol("USOCFDI");
-
     }
 }

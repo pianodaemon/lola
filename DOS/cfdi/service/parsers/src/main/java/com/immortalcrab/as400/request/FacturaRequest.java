@@ -183,29 +183,7 @@ public class FacturaRequest extends CfdiRequest {
             }
         }
 
-        {
-            // Identificadore de Factura
-            {
-                // "CFDI_CERT_NO"
-                captureSymbol("CDIGITAL");
-            }
-
-            {
-                // "CFDI_FOLIO"
-                captureSymbol("FOLIO");
-            }
-
-            {
-                // "CFDI_SERIE"
-                captureSymbol("SERIE");
-            }
-
-            {
-                // "CFDI_DATE"
-                captureSymbol("FECHOR");
-            }
-        }
-
+        captureControlSymbols();
         captureEmisorSymbols();
         captureReceptorSymbols();
 
