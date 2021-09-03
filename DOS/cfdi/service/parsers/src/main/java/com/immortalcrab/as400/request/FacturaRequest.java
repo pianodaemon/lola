@@ -117,26 +117,29 @@ public class FacturaRequest {
         }
 
         {
-            // "EMISOR_NOMBRE"
-            final String label = "EMINOM";
-            ds.put(label, bruteSearchUniqueAttr(label));
-        }
+            // Emisor
+            {
+                // "EMISOR_NOMBRE"
+                final String label = "EMINOM";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
 
-        {
-            // "EMISOR_RFC"
-            final String label = "EMIRFC";
-            ds.put(label, bruteSearchUniqueAttr(label));
+            {
+                // "EMISOR_RFC"
+                final String label = "EMIRFC";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
+
+            {
+                // "EMISOR_CP"
+                final String label = "EMIZIP";
+                ds.put(label, bruteSearchUniqueAttr(label));
+            }
         }
 
         {
             // "EMISOR_REG"
             final String label = "REGIMEN";
-            ds.put(label, bruteSearchUniqueAttr(label));
-        }
-
-        {
-            // "EMISOR_CP"
-            final String label = "EMIZIP";
             ds.put(label, bruteSearchUniqueAttr(label));
         }
 
