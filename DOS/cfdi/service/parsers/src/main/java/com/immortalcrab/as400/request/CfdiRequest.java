@@ -9,7 +9,7 @@ abstract class CfdiRequest {
 
     protected List<Pair<String, String>> kvs = null;
 
-    abstract Map<String, Object> craft() throws CfdiRequestError;
+    abstract Map<String, Object> craftImpt() throws CfdiRequestError;
 
     abstract void captureSymbolImpt(final String label, final Object value);
 
@@ -29,6 +29,14 @@ abstract class CfdiRequest {
         }
 
         throw new CfdiRequestError("Unique attr " + label + " not found");
+    }
+
+    protected Map<String, Object> craft() throws CfdiRequestError {
+
+        captureControlSymbols();
+        captureEmisorSymbols();
+        captureReceptorSymbols();
+        return this.craftImpt();
     }
 
     protected void captureSymbol(final String label) throws CfdiRequestError {

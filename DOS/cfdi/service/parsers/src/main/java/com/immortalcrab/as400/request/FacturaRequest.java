@@ -33,6 +33,7 @@ public class FacturaRequest extends CfdiRequest {
     private FacturaRequest(final List<Pair<String, String>> kvs) throws CfdiRequestError {
 
         super(kvs);
+        this.ds = new HashMap<>();
     }
 
     @Override
@@ -41,11 +42,9 @@ public class FacturaRequest extends CfdiRequest {
     }
 
     @Override
-    Map<String, Object> craft() throws CfdiRequestError {
+    Map<String, Object> craftImpt() throws CfdiRequestError {
 
-        // We start off with fresh 
         {
-            this.ds = new HashMap<>();
             captureSymbolImpt("CONCEPTOS", new ArrayList<Map<String, String>>());
             captureSymbolImpt("COMENTARIOS", new ArrayList<String>());
         }
@@ -125,7 +124,6 @@ public class FacturaRequest extends CfdiRequest {
             captureSymbol("TPOCAM");
 
             captureSymbol("MONEDA");
-
         }
 
         // Pago detalles
@@ -139,10 +137,6 @@ public class FacturaRequest extends CfdiRequest {
             // Condiciones de pago
             captureSymbol("CONPAG");
         }
-
-        captureControlSymbols();
-        captureEmisorSymbols();
-        captureReceptorSymbols();
 
         // Remitente
         {
