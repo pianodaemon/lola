@@ -5,7 +5,7 @@ LABEL MAINTAINER="Edward Nygma <j4nusx@yahoo.com>"
 
 WORKDIR /go/src/immortalcrab.com/sso
 
-COPY Makefile go.mod ./
+COPY go.mod ./
 
 RUN go mod download
 
@@ -15,8 +15,10 @@ COPY internal internal
 
 COPY cmd cmd
 
-RUN apk add make
-RUN make clean build
+RUN CGO_ENABLED=0 \
+    GOOS=linux    \
+    GOARCH=amd64  \
+    go build -ldflags="-w -s" -o /sso cmd/http/run.go
 
 # Final image
 FROM ubuntu:bionic

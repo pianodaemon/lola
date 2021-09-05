@@ -1,0 +1,24 @@
+#!/bin/sh +x
+
+
+# default disk for minikube
+MINIKUBE_DISK="$IMPT_ROOT/:/DISK/"
+
+case "$1" in
+start)
+  minikube start --driver=docker --mount --mount-string="$MINIKUBE_DISK"
+
+  # This arbitrary time has been the price for including registry
+  minikube addons enable registry
+  sleep 60
+  ;;
+destroy)
+  minukube stop
+  minikube delete
+  ;;
+stop)
+  minikube stop
+  ;;
+*)
+  echo "Usage: `basename "$0"` {start|stop|destroy}"
+esac

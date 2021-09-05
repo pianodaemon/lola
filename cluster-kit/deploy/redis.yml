@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis-srv
+    project: as400-extension
+  name: redis-srv
+  namespace: trailera
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    app: redis
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis-dpl
+    project: as400-extension
+  namespace: trailera
+  name: redis-dpl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+        project: as400-extension
+    spec:
+      containers:
+      - image: redis:alpine
+        name: redis
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 6379
