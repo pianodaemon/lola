@@ -1,0 +1,33 @@
+version: '3.6'
+
+x-shared-environment: &commonEnv
+    TZ: "America/Mexico_City"
+    REDIS_HOST: "cache"
+    REDIS_PORT: 6379
+
+services:
+    cfdi:
+        container_name: 'cfdi'
+        build: './DOS/cfdi'
+        environment: *commonEnv
+        ports:
+          - '8889:8889'
+          - '8888:8888'
+        volumes:
+          - ./DOS/keys:/pem
+        networks:
+          - operational_network
+    cache_redis_lola:
+        container_name: 'cache_redis_lola'
+        image: redis:alpine
+        ports:
+          - "6379:6379"
+        environment: *commonEnv
+        networks:
+          - operational_network
+
+
+networks:
+    operational_network:
+        name: operational_network
+        driver: bridge
