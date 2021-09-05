@@ -6,10 +6,9 @@ import com.immortalcrab.numspatrans.Translator;
 import com.immortalcrab.qrcode.QRCode;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.springframework.util.ResourceUtils;
+import java.io.InputStream;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
@@ -20,18 +19,18 @@ import org.xml.sax.SAXException;
 public class FacturaPdfBuilder implements DocBuilder {
 
     private Map<String, Object> ds;
-    private String templatePath;
+    private String templateFilename;
     private String outputFilename;
 
-    private FacturaPdfBuilder(final Map<String, Object> ds, final String templatePath, String outputFilename) {
+    private FacturaPdfBuilder(final Map<String, Object> ds, final String templateFilename, String outputFilename) {
         this.ds = ds;
-        this.templatePath = templatePath;
+        this.templateFilename = templateFilename;
         this.outputFilename = outputFilename;
     }
 
-    static void render(final Map<String, Object> ds, String templatePath, String outputFilename) {
+    static void render(final Map<String, Object> ds, String templateFilename, String outputFilename) {
 
-        FacturaPdfBuilder ic = new FacturaPdfBuilder(ds, templatePath, outputFilename);
+        FacturaPdfBuilder ic = new FacturaPdfBuilder(ds, templateFilename, outputFilename);
         ic.buildDoc();
     }
 
@@ -70,7 +69,8 @@ public class FacturaPdfBuilder implements DocBuilder {
             System.out.println(ds);
 
             // PDF generation
-            JasperReport jasperReport = getJasperReport(templatePath);
+            InputStream is = Main.class.getResourceAsStream("/" + templateFilename);
+            JasperReport jasperReport = JasperCompileManager.compileReport(is);
             JRDataSource conceptos = new JRBeanCollectionDataSource(
                     (ArrayList<Map<String, String>>) ds.get("CONCEPTOS"));
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, ds, conceptos);
@@ -88,11 +88,5 @@ public class FacturaPdfBuilder implements DocBuilder {
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    static JasperReport getJasperReport(String jreport) throws FileNotFoundException, JRException {
-
-        File template = ResourceUtils.getFile("classpath:" + jreport);
-        return JasperCompileManager.compileReport(template.getAbsolutePath());
     }
 }

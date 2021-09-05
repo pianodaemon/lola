@@ -7,12 +7,10 @@ import com.immortalcrab.cfdi.utils.Signer;
 import com.immortalcrab.qrcode.QRCode;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.springframework.util.ResourceUtils;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.xml.sax.SAXException;
@@ -60,7 +58,8 @@ public class Main
             System.out.println(ds);
 
             // PDF generation
-            JasperReport jasperReport = getJasperReport("tq_carta_porte.jrxml");
+            InputStream is = Main.class.getResourceAsStream("/tq_carta_porte.jrxml");
+            JasperReport jasperReport = JasperCompileManager.compileReport(is);
             JRDataSource conceptos = new JRBeanCollectionDataSource((ArrayList<Map<String, String>>) ds.get("CONCEPTOS"));
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, ds, conceptos);
             JasperExportManager.exportReportToPdfFile(jasperPrint, "NV139010-5.pdf");
@@ -77,11 +76,5 @@ public class Main
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    static JasperReport getJasperReport(String jreport) throws FileNotFoundException, JRException {
-
-        File template = ResourceUtils.getFile("classpath:" + jreport);
-        return JasperCompileManager.compileReport(template.getAbsolutePath());
     }
 }
