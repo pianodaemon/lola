@@ -52,6 +52,11 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 10100
+        env:
+        - name: REDIS_HOST
+          value: redis-srv
+        - name: REDIS_PORT
+          value: "6379"
         volumeMounts:
         - mountPath: /acl
           name: acl
