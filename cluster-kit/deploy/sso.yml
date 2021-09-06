@@ -7,10 +7,12 @@ metadata:
   name: sso-srv
   namespace: trailera
 spec:
+  type: NodePort
   ports:
   - port: 10100
     protocol: TCP
     targetPort: 10100
+    nodePort: 30100
   selector:
     app: sso
 
