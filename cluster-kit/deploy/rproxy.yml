@@ -4,7 +4,6 @@ metadata:
   name: tq-rproxy
   namespace: trailera
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
