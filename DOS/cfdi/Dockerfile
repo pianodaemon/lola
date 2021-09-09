@@ -10,9 +10,15 @@ RUN apt-get install -y openjdk-11-jdk default-jdk \
 ENV JAVA_HOME="/usr/lib/jvm/default-java"
 
 COPY service /service
+
+# Gear up the jars to be included into the fat jar
+WORKDIR /service/workclock
+RUN mvn install
+
+# Begin of the fat jar creation
 WORKDIR /service/server
 
-# This tirck makes possible the fat jar
+# This trick makes possible the fat jar
 RUN mkdir -p .mvn
 RUN tar -xvf mvnw.tar -C .mvn
 RUN ./mvnw clean package
