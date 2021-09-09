@@ -9,10 +9,10 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 4567
+  - port: 8080
     protocol: TCP
-    targetPort: 4567
-    nodePort: 30567
+    targetPort: 8080
+    nodePort: 30080
   selector:
     app: cfdi
 
@@ -42,7 +42,7 @@ spec:
         name: cfdi
         imagePullPolicy: Always
         ports:
-        - containerPort: 4567
+        - containerPort: 8080
         env:
         - name: REDIS_HOST
           value: redis-srv
