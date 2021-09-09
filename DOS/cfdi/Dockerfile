@@ -10,20 +10,21 @@ RUN apt-get install -y openjdk-11-jdk default-jdk \
 ENV JAVA_HOME="/usr/lib/jvm/default-java"
 
 COPY service /service
-WORKDIR /service/workclock
-
-RUN mvn install
-
 WORKDIR /service/server
 
-RUN mvn package
+# This tirck makes possible the fat jar
+RUN mkdir -p .mvn
+RUN tar -xvf mvnw.tar -C .mvn
+RUN ./mvnw clean package
 
 FROM adoptopenjdk/openjdk11:alpine
 
+ENV APP_DIR=/
 # Copy the jar to the production image from the builder stage.
-COPY --from=builder /service/server/target/web-server-LOLA-TRAILERA-fat.jar srv.jar
+COPY --from=builder /service/server/target/web-server-LOLA-TRAILERA.jar $APP_DIR/server-fat.jar
+COPY scripts/run_service.sh $APP_DIR
+WORKDIR $APP_DIR
 
-EXPOSE 4567
+EXPOSE 8080
 
-# Run the web service on container startup.
-CMD ["java", "-cp", "srv.jar", "com.immortalcrab.cfdi.server.Launcher"]
+CMD ["/run_service.sh"]
