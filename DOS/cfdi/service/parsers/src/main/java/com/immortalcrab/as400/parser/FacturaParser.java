@@ -1,4 +1,4 @@
-package com.immortalcrab.cfdi.parser;
+package com.immortalcrab.as400.parser;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

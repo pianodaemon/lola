@@ -9,6 +9,7 @@
     <modules>
         <module>../parsers</module>
         <module>../numspatrans</module>
+        <module>../engine</module>
         <module>../server</module>
     </modules>
 </project>

@@ -29,6 +29,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+                <dependency>
+			<groupId>com.immortalcrab</groupId>
+			<artifactId>parsers</artifactId>
+			<version>LOLA-TRAILERA</version>
+		</dependency>
+                <dependency>
+			<groupId>com.immortalcrab</groupId>
+			<artifactId>engine</artifactId>
+			<version>LOLA-TRAILERA</version>
+		</dependency>
 		<dependency>
 			<groupId>com.immortalcrab</groupId>
 			<artifactId>parsers</artifactId>

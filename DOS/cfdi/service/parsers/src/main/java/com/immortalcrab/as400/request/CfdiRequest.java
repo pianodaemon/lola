@@ -1,5 +1,6 @@
 package com.immortalcrab.as400.request;
 
+import com.immortalcrab.as400.engine.ErrorCodes;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ abstract class CfdiRequest {
             }
         }
 
-        throw new CfdiRequestError("Unique attr " + label + " not found");
+        throw new CfdiRequestError("Unique attr " + label + " not found", ErrorCodes.REQUEST_INCOMPLETE);
     }
 
     protected Map<String, Object> craft() throws CfdiRequestError {

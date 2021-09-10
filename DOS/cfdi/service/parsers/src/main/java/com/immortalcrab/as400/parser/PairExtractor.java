@@ -1,5 +1,6 @@
 package com.immortalcrab.as400.parser;
 
+import com.immortalcrab.as400.engine.ErrorCodes;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -54,7 +55,7 @@ public class PairExtractor {
                 rset.add(this.parseLine(idx, st.trim()));
             }
         } catch (IOException ex) {
-            throw new PairExtractorError("Issue found when traversing buffer of input tokens", ex);
+            throw new PairExtractorError("Issue found when traversing buffer of input tokens", ex, ErrorCodes.REQUEST_INVALID);
         }
 
         return rset;
@@ -105,7 +106,7 @@ public class PairExtractor {
 
                     case ERR_TOO_MANY_TOKENS:
                     case ERR_MISSING_TOKEN:
-                        throw new PairExtractorError("Line " + idx + " is malformed (" + stage.toString() + ")");
+                        throw new PairExtractorError("Line " + idx + " is malformed (" + stage.toString() + ")", ErrorCodes.REQUEST_INVALID);
                 }
             } while (!done);
         }
