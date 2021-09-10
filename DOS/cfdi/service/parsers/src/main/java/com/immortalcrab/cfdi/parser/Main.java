@@ -1,28 +1,25 @@
 package com.immortalcrab.cfdi.parser;
 
-import java.io.IOException;
-import java.util.Map;
+import com.immortalcrab.as400.parser.PairExtractor;
+import com.immortalcrab.as400.parser.PairExtractorError;
+import com.immortalcrab.as400.request.FacturaRequest;
+import com.immortalcrab.as400.request.CfdiRequestError;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
-
 
 public class Main {
 
-
     public static void main(String[] args) {
+
         try {
-            FacturaParser fp = new FacturaParser("/home/userd/Downloads/NV139010.XML");
-            Map<String, Object> ds = fp.getDs();
-            System.out.println(ds);
-        } catch (IOException ex) {
+
+            System.out.println(FacturaRequest.render(PairExtractor.go4it("/home/j4nusx/xxx.txt")).getDs());
+        } catch (CfdiRequestError ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParserConfigurationException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SAXException ex) {
+
+        } catch (PairExtractorError ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }
