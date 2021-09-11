@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,11 +30,10 @@ public class IssueController {
 
     @RequestMapping(
             path = "/{kind}",
-            value = "uploadTokensDoc",
             method = RequestMethod.POST,
-            headers = {"content-type=multipart/form-data"})
+            consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     ResponseEntity<Map<String, Object>> issue(
-            @PathVariable("name") String kind,
+            @PathVariable("kind") String kind,
             @RequestPart MultipartFile tokensDoc) throws IOException {
 
         Map<String, Object> rhm = new HashMap<>() {
