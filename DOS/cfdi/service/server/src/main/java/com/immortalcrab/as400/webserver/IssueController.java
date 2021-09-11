@@ -10,9 +10,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,15 +27,21 @@ public class IssueController {
         return "Hello World!";
     }
 
-    @RequestMapping(value = "uploadTokensDoc", method = RequestMethod.POST,
+    @RequestMapping(
+            path = "/{kind}",
+            value = "uploadTokensDoc",
+            method = RequestMethod.POST,
             headers = {"content-type=multipart/form-data"})
-    Map<String, Object> issue(
-            @RequestParam String kind,
+    ResponseEntity<Map<String, Object>> issue(
+            @PathVariable("name") String kind,
             @RequestPart MultipartFile tokensDoc) throws IOException {
 
-        Map<String, Object> rhm = new HashMap<>();
-        rhm.put("platcode", ErrorCodes.SUCCESS.toString());
-        rhm.put("desccode", "");
+        Map<String, Object> rhm = new HashMap<>() {
+            {
+                put("code", ErrorCodes.SUCCESS.toString());
+                put("desc", "");
+            }
+        };
 
         InputStream is = tokensDoc.getInputStream();
 
@@ -41,11 +49,13 @@ public class IssueController {
             Pipeline.issue(kind, new InputStreamReader(is));
         } catch (PairExtractorError | CfdiRequestError | PipelineError ex) {
 
-            rhm.put("platcode", ex.getErrorCode());
-            rhm.put("desccode", ex.getMessage());
+            rhm.put("code", ex.getErrorCode());
+            rhm.put("desc", ex.getMessage());
+
+            return new ResponseEntity<>(rhm, HttpStatus.BAD_REQUEST);
         }
 
-        return rhm;
+        return new ResponseEntity<>(rhm, HttpStatus.CREATED);
     }
 
 }
