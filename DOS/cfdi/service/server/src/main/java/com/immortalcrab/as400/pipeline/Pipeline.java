@@ -38,7 +38,7 @@ public class Pipeline {
     public static void issue(final String kind, InputStreamReader reader) throws PairExtractorError, CfdiRequestError, PipelineError {
 
         PipelineFlow g = Pipeline.getInstance().incept(kind);
-        g.render(PairExtractor.go4it(reader));
+        System.out.println(g.render(PairExtractor.go4it(reader)).getDs());
     }
 
 }

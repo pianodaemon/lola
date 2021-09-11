@@ -16,18 +16,12 @@ public class FacturaRequest extends CfdiRequest {
     //number of elements ahead per DSEC block
     final int DESC_SIZE = 15;
 
-    private Map<String, Object> ds = null;
-
     public static FacturaRequest render(final List<Pair<String, String>> kvs) throws CfdiRequestError {
 
         FacturaRequest ic = new FacturaRequest(kvs);
         ic.craft();
 
         return ic;
-    }
-
-    public Map<String, Object> getDs() {
-        return ds;
     }
 
     private FacturaRequest(final List<Pair<String, String>> kvs) throws CfdiRequestError {
