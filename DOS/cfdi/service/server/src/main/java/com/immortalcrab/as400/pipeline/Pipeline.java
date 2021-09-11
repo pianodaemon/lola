@@ -22,9 +22,7 @@ public class Pipeline {
 
         if (ic == null) {
             ic = new Pipeline();
-            Triplet<StepDecode, StepXml, StepPdf> fac;
-            fac = new Triplet<>(FacturaRequest::render, FacturaXml::render, FacturaPdf::render);
-            ic.scenarios.put("fac", fac);
+            ic.scenarios.put("fac", new Triplet<>(FacturaRequest::render, FacturaXml::render, FacturaPdf::render));
         }
 
         return ic;
