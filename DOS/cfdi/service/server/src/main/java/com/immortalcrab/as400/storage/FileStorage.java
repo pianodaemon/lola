@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
+import com.immortalcrab.as400.engine.ErrorCodes;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -22,7 +23,7 @@ class FileStore {
     public void upload(String path,
             String fileName,
             Optional<Map<String, String>> optionalMetaData,
-            InputStream inputStream) {
+            InputStream inputStream) throws FileStorageError {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         optionalMetaData.ifPresent(map -> {
             if (!map.isEmpty()) {
@@ -31,18 +32,18 @@ class FileStore {
         });
         try {
             amazonS3.putObject(path, fileName, inputStream, objectMetadata);
-        } catch (AmazonServiceException e) {
-            throw new IllegalStateException("Failed to upload the file", e);
+        } catch (AmazonServiceException ex) {
+            throw new FileStorageError("Failed to upload the file", ex, ErrorCodes.THIRD_PARTY_ISSUES);
         }
     }
 
-    public byte[] download(String path, String key) {
+    public byte[] download(String path, String key) throws FileStorageError {
         try {
             S3Object object = amazonS3.getObject(path, key);
             S3ObjectInputStream objectContent = object.getObjectContent();
             return IOUtils.toByteArray(objectContent);
-        } catch (AmazonServiceException | IOException e) {
-            throw new IllegalStateException("Failed to download the file", e);
+        } catch (AmazonServiceException | IOException ex) {
+            throw new FileStorageError("Failed to download the file", ex, ErrorCodes.THIRD_PARTY_ISSUES);
         }
     }
 

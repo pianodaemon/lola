@@ -23,11 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class IssueController {
 
-    @RequestMapping("/")
-    String hellow() {
-        return "Hello World!";
-    }
-
     @RequestMapping(
             path = "/{kind}",
             method = RequestMethod.POST,
@@ -38,7 +33,7 @@ public class IssueController {
 
         Map<String, Object> rhm = new HashMap<>() {
             {
-                put("code", ErrorCodes.SUCCESS.toString());
+                put("code", ErrorCodes.SUCCESS.getCode());
                 put("desc", "");
             }
         };
