@@ -5,7 +5,7 @@ import com.immortalcrab.as400.request.CfdiRequestError;
 import java.util.List;
 import org.javatuples.Pair;
 
-public interface PipelineFlow {
+public interface StepDecode {
 
     public CfdiRequest render(List<Pair<String, String>> kvs) throws CfdiRequestError;
 }
