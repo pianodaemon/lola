@@ -6,9 +6,14 @@ import java.util.List;
 import java.util.Map;
 import org.javatuples.Pair;
 
-abstract class CfdiRequest {
+public abstract class CfdiRequest {
 
     protected List<Pair<String, String>> kvs = null;
+    protected Map<String, Object> ds = null;
+
+    public Map<String, Object> getDs() {
+        return ds;
+    }
 
     abstract Map<String, Object> craftImpt() throws CfdiRequestError;
 
