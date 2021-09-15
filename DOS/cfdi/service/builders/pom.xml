@@ -6,7 +6,7 @@
   <artifactId>cfdi-builders</artifactId>
   <version>LOLA-TRAILERA</version>
   <packaging>jar</packaging>
-  <name>Builders (pdf)</name>
+  <name>Builders (xml, pdf)</name>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -66,5 +66,38 @@
       <version>2.9.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>javaee-jaxb-ri</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/jaxb-api.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>javaee-jaxb-ri</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>2.3.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/jaxb-runtime.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>javaee-jaxb-ri</groupId>
+      <artifactId>istack-commons-runtime</artifactId>
+      <version>2.3.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/istack-commons-runtime.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>javaee-jaxb-ri</groupId>
+      <artifactId>javax.activation-api</artifactId>
+      <version>2.3.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/javax.activation-api.jar</systemPath>
+    </dependency>
+
   </dependencies>
+
 </project>
