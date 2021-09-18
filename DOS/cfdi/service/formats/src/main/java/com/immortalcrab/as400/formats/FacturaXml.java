@@ -40,13 +40,7 @@ public class FacturaXml {
             var cfdi = cfdiFactory.createComprobante();
             cfdi.setLugarExpedicion((String) ds.get("EMIZIP"));
             cfdi.setMetodoPago(CMetodoPago.fromValue(((String) ds.get("METPAG")).split(":")[0]));
-            CTipoDeComprobante ingresoEnum;
-            if ("INGRESO".equals((String) ds.get("TPOCOM"))) {
-                ingresoEnum = CTipoDeComprobante.I;
-            } else {
-                ingresoEnum = CTipoDeComprobante.E;
-            }
-            cfdi.setTipoDeComprobante(ingresoEnum);
+            cfdi.setTipoDeComprobante(CTipoDeComprobante.I);
             cfdi.setTotal(new BigDecimal((String) ds.get("TOTAL")));
             cfdi.setMoneda(CMoneda.fromValue((String) ds.get("MONEDA")));
             cfdi.setCertificado(//TODO: hardcoded
