@@ -7,12 +7,13 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 import com.immortalcrab.as400.engine.ErrorCodes;
+import com.immortalcrab.as400.pipeline.Storage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 
-class FileStore {
+class FileStore implements Storage {
 
     private final AmazonS3 amazonS3;
 
@@ -20,6 +21,7 @@ class FileStore {
         this.amazonS3 = amazonS3;
     }
 
+    @Override
     public void upload(String path,
             String fileName,
             Optional<Map<String, String>> optionalMetaData,
@@ -37,6 +39,7 @@ class FileStore {
         }
     }
 
+    @Override
     public byte[] download(String path, String key) throws FileStorageError {
         try {
             S3Object object = amazonS3.getObject(path, key);
