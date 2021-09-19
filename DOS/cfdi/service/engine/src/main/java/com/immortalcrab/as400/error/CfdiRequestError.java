@@ -1,7 +1,7 @@
-package com.immortalcrab.as400.request;
+package com.immortalcrab.as400.error;
 
-import com.immortalcrab.as400.engine.EngineError;
-import com.immortalcrab.as400.engine.ErrorCodes;
+import com.immortalcrab.as400.error.EngineError;
+import com.immortalcrab.as400.error.ErrorCodes;
 
 public class CfdiRequestError extends EngineError {
 

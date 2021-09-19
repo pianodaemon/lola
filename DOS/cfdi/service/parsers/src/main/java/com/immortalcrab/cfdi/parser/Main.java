@@ -1,9 +1,9 @@
 package com.immortalcrab.cfdi.parser;
 
 import com.immortalcrab.as400.parser.PairExtractor;
-import com.immortalcrab.as400.parser.PairExtractorError;
+import com.immortalcrab.as400.error.PairExtractorError;
 import com.immortalcrab.as400.request.FacturaRequest;
-import com.immortalcrab.as400.request.CfdiRequestError;
+import com.immortalcrab.as400.error.CfdiRequestError;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

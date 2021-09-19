@@ -1,7 +1,4 @@
-package com.immortalcrab.as400.parser;
-
-import com.immortalcrab.as400.engine.EngineError;
-import com.immortalcrab.as400.engine.ErrorCodes;
+package com.immortalcrab.as400.error;
 
 public class PairExtractorError extends EngineError {
 

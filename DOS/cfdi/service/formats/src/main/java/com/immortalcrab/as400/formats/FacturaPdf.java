@@ -1,6 +1,6 @@
 package com.immortalcrab.as400.formats;
 
-import com.immortalcrab.as400.request.CfdiRequest;
+import com.immortalcrab.as400.engine.CfdiRequest;
 
 public class FacturaPdf {
 

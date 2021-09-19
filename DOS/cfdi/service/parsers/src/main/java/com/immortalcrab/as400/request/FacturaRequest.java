@@ -1,5 +1,7 @@
 package com.immortalcrab.as400.request;
 
+import com.immortalcrab.as400.engine.CfdiRequest;
+import com.immortalcrab.as400.error.CfdiRequestError;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,12 +33,12 @@ public class FacturaRequest extends CfdiRequest {
     }
 
     @Override
-    void captureSymbolImpt(final String label, final Object value) {
+    protected void captureSymbolImpt(final String label, final Object value) {
         this.ds.put(label, value);
     }
 
     @Override
-    Map<String, Object> craftImpt() throws CfdiRequestError {
+    protected Map<String, Object> craftImpt() throws CfdiRequestError {
 
         {
             captureSymbolImpt("CONCEPTOS", new ArrayList<Map<String, String>>());

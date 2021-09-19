@@ -1,6 +1,7 @@
 package com.immortalcrab.as400.parser;
 
-import com.immortalcrab.as400.engine.ErrorCodes;
+import com.immortalcrab.as400.error.PairExtractorError;
+import com.immortalcrab.as400.error.ErrorCodes;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

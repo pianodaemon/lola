@@ -1,6 +1,6 @@
-package com.immortalcrab.as400.pipeline;
+package com.immortalcrab.as400.engine;
 
-import com.immortalcrab.as400.storage.StorageError;
+import com.immortalcrab.as400.error.StorageError;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;

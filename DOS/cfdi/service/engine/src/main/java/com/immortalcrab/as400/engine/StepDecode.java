@@ -1,7 +1,6 @@
-package com.immortalcrab.as400.pipeline;
+package com.immortalcrab.as400.engine;
 
-import com.immortalcrab.as400.request.CfdiRequest;
-import com.immortalcrab.as400.request.CfdiRequestError;
+import com.immortalcrab.as400.error.CfdiRequestError;
 import java.util.List;
 import org.javatuples.Pair;
 

@@ -1,4 +1,4 @@
-package com.immortalcrab.as400.engine;
+package com.immortalcrab.as400.error;
 
 public enum ErrorCodes {
 

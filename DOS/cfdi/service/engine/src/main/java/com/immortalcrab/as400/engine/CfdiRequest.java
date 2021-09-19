@@ -1,6 +1,7 @@
-package com.immortalcrab.as400.request;
+package com.immortalcrab.as400.engine;
 
-import com.immortalcrab.as400.engine.ErrorCodes;
+import com.immortalcrab.as400.error.ErrorCodes;
+import com.immortalcrab.as400.error.CfdiRequestError;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +16,9 @@ public abstract class CfdiRequest {
         return ds;
     }
 
-    abstract Map<String, Object> craftImpt() throws CfdiRequestError;
+    protected abstract Map<String, Object> craftImpt() throws CfdiRequestError;
 
-    abstract void captureSymbolImpt(final String label, final Object value);
+    protected abstract void captureSymbolImpt(final String label, final Object value);
 
     public CfdiRequest(final List<Pair<String, String>> kvs) throws CfdiRequestError {
 

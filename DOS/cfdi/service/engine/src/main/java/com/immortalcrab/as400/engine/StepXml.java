@@ -1,6 +1,5 @@
-package com.immortalcrab.as400.pipeline;
+package com.immortalcrab.as400.engine;
 
-import com.immortalcrab.as400.request.CfdiRequest;
 import java.io.OutputStream;
 
 public interface StepXml {

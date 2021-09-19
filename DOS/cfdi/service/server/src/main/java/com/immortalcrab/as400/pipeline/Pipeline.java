@@ -1,14 +1,19 @@
 package com.immortalcrab.as400.pipeline;
 
-import com.immortalcrab.as400.engine.ErrorCodes;
+import com.immortalcrab.as400.error.PipelineError;
+import com.immortalcrab.as400.engine.StepDecode;
+import com.immortalcrab.as400.engine.StepXml;
+import com.immortalcrab.as400.engine.StepPdf;
+import com.immortalcrab.as400.engine.Storage;
+import com.immortalcrab.as400.error.ErrorCodes;
 import com.immortalcrab.as400.formats.FacturaPdf;
 import com.immortalcrab.as400.formats.FacturaXml;
 import com.immortalcrab.as400.parser.PairExtractor;
-import com.immortalcrab.as400.parser.PairExtractorError;
-import com.immortalcrab.as400.request.CfdiRequest;
-import com.immortalcrab.as400.request.CfdiRequestError;
+import com.immortalcrab.as400.error.PairExtractorError;
+import com.immortalcrab.as400.engine.CfdiRequest;
+import com.immortalcrab.as400.error.CfdiRequestError;
 import com.immortalcrab.as400.request.FacturaRequest;
-import com.immortalcrab.as400.storage.StorageError;
+import com.immortalcrab.as400.error.StorageError;
 import com.immortalcrab.as400.storage.SthreeStorage;
 import org.javatuples.Triplet;
 import java.io.InputStreamReader;

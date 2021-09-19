@@ -1,13 +1,13 @@
 package com.immortalcrab.as400.storage;
 
+import com.immortalcrab.as400.error.StorageError;
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
-import com.immortalcrab.as400.engine.ErrorCodes;
-import com.immortalcrab.as400.pipeline.Storage;
+import com.immortalcrab.as400.error.ErrorCodes;
+import com.immortalcrab.as400.engine.Storage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;

@@ -1,11 +1,11 @@
 package com.immortalcrab.as400.webserver;
 
-import com.immortalcrab.as400.engine.ErrorCodes;
+import com.immortalcrab.as400.error.ErrorCodes;
 import com.immortalcrab.as400.pipeline.Pipeline;
-import com.immortalcrab.as400.pipeline.PipelineError;
-import com.immortalcrab.as400.parser.PairExtractorError;
-import com.immortalcrab.as400.request.CfdiRequestError;
-import com.immortalcrab.as400.storage.StorageError;
+import com.immortalcrab.as400.error.PipelineError;
+import com.immortalcrab.as400.error.PairExtractorError;
+import com.immortalcrab.as400.error.CfdiRequestError;
+import com.immortalcrab.as400.error.StorageError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

@@ -9,7 +9,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeFactory;
 
-import com.immortalcrab.as400.request.CfdiRequest;
+import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.request.FacturaRequest;
 import com.immortalcrab.as400.parser.PairExtractor;
 import java.io.OutputStream;
