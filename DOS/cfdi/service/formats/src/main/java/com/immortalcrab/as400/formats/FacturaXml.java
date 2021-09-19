@@ -10,6 +10,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeFactory;
 
 import com.immortalcrab.as400.engine.CfdiRequest;
+import com.immortalcrab.as400.engine.Storage;
 import com.immortalcrab.as400.request.FacturaRequest;
 import com.immortalcrab.as400.parser.PairExtractor;
 import java.io.OutputStream;
@@ -23,17 +24,7 @@ import mx.gob.sat.sitio_internet.cfd.catalogos.CUsoCFDI;
 
 public class FacturaXml {
 
-    public static void main(String[] args) {
-        try {
-            var isr = new InputStreamReader(new FileInputStream("/home/userd/Downloads/NV139360-changed.txt"), StandardCharsets.UTF_8);
-            var facReq = FacturaRequest.render(PairExtractor.go4it(isr));
-            render(facReq, System.out);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-    public static void render(CfdiRequest cfdiReq, OutputStream out) {
+    public static void render(CfdiRequest cfdiReq, Storage st) {
         try {
             var ds = cfdiReq.getDs();
             var cfdiFactory = new ObjectFactory();
@@ -137,7 +128,7 @@ public class FacturaXml {
             marshaller.setProperty("jaxb.schemaLocation", "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd");
             marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new CfdiNamespaceMapper());
             marshaller.setProperty("jaxb.formatted.output", true);
-            marshaller.marshal(cfdi, out);
+            marshaller.marshal(cfdi, System.out);
 
         } catch (Exception e) {
             System.out.println(e);
