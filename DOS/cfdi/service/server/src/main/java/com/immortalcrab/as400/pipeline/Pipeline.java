@@ -8,20 +8,30 @@ import com.immortalcrab.as400.parser.PairExtractorError;
 import com.immortalcrab.as400.request.CfdiRequest;
 import com.immortalcrab.as400.request.CfdiRequestError;
 import com.immortalcrab.as400.request.FacturaRequest;
+import com.immortalcrab.as400.storage.StorageError;
+import com.immortalcrab.as400.storage.SthreeStorage;
 import org.javatuples.Triplet;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Pipeline {
 
     private static Pipeline ic = null;
+    private static Storage st = null;
     private final Map<String, Triplet<StepDecode, StepXml, StepPdf>> scenarios = new HashMap<>();
 
-    public static synchronized Pipeline getInstance() {
+    public static synchronized Pipeline getInstance() throws StorageError {
 
         if (ic == null) {
             ic = new Pipeline();
+
+            st = SthreeStorage.configure(
+                    System.getenv("BUCKET_REGION"),
+                    System.getenv("BUCKET_KEY"),
+                    System.getenv("BUCKET_SECRET"));
+
             ic.scenarios.put("fac", new Triplet<>(FacturaRequest::render, FacturaXml::render, FacturaPdf::render));
         }
 
@@ -39,7 +49,7 @@ public class Pipeline {
         throw new PipelineError("cfdi " + kind + " is unsupported", ErrorCodes.DOCBUILD_ERROR);
     }
 
-    public static void issue(final String kind, InputStreamReader reader) throws PairExtractorError, CfdiRequestError, PipelineError {
+    public static void issue(final String kind, InputStreamReader reader) throws PairExtractorError, CfdiRequestError, PipelineError, StorageError {
 
         Triplet<StepDecode, StepXml, StepPdf> stages = Pipeline.getInstance().incept(kind);
 
@@ -52,7 +62,7 @@ public class Pipeline {
         /* Second stage of the pipeline
            It stands for hand craft a valid xml at sat */
         StepXml sxml = stages.getValue1();
-        Object rxml = sxml.render(cfdiReq);
+        sxml.render(cfdiReq, System.out);
 
         /* Third stage of the pipeline
            It stands for hand craft a arbitrary
@@ -62,5 +72,4 @@ public class Pipeline {
 
         System.out.println(cfdiReq.getDs());
     }
-
 }

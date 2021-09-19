@@ -5,6 +5,7 @@ import com.immortalcrab.as400.pipeline.Pipeline;
 import com.immortalcrab.as400.pipeline.PipelineError;
 import com.immortalcrab.as400.parser.PairExtractorError;
 import com.immortalcrab.as400.request.CfdiRequestError;
+import com.immortalcrab.as400.storage.StorageError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,7 +43,7 @@ public class IssueController {
 
         try {
             Pipeline.issue(kind, new InputStreamReader(is));
-        } catch (PairExtractorError | CfdiRequestError | PipelineError ex) {
+        } catch (PairExtractorError | CfdiRequestError | PipelineError | StorageError ex) {
 
             rhm.put("code", ex.getErrorCode());
             rhm.put("desc", ex.getMessage());
