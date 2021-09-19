@@ -5,7 +5,7 @@ import com.immortalcrab.as400.engine.Storage;
 
 public class FacturaPdf {
 
-    public static Object render(final CfdiRequest cfdiReq, Storage st) {
-        return null;
+    public static void render(final CfdiRequest cfdiReq, Storage st) {
+
     }
 }
