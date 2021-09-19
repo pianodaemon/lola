@@ -17,22 +17,26 @@ import com.immortalcrab.as400.error.StorageError;
 import com.immortalcrab.as400.storage.SthreeStorage;
 import org.javatuples.Triplet;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Pipeline {
 
     private static Pipeline ic = null;
-    private static Storage st = null;
+    private Storage st = null;
+
     private final Map<String, Triplet<StepDecode, StepXml, StepPdf>> scenarios = new HashMap<>();
+
+    public Storage getStorage() {
+        return st;
+    }
 
     public static synchronized Pipeline getInstance() throws StorageError {
 
         if (ic == null) {
             ic = new Pipeline();
 
-            st = SthreeStorage.configure(
+            ic.st = SthreeStorage.configure(
                     System.getenv("BUCKET_REGION"),
                     System.getenv("BUCKET_KEY"),
                     System.getenv("BUCKET_SECRET"));
@@ -64,17 +68,17 @@ public class Pipeline {
         StepDecode sdec = stages.getValue0();
         CfdiRequest cfdiReq = sdec.render(PairExtractor.go4it(reader));
 
+        System.out.println(cfdiReq.getDs());
+
         /* Second stage of the pipeline
            It stands for hand craft a valid xml at sat */
         StepXml sxml = stages.getValue1();
-        sxml.render(cfdiReq, System.out);
+        sxml.render(cfdiReq, Pipeline.getInstance().getStorage());
 
         /* Third stage of the pipeline
            It stands for hand craft a arbitrary
            representation of a cfdi in pdf format  */
         StepPdf spdf = stages.getValue2();
-        Object rpdf = spdf.render(cfdiReq);
-
-        System.out.println(cfdiReq.getDs());
+        Object rpdf = spdf.render(cfdiReq, Pipeline.getInstance().getStorage());
     }
 }
