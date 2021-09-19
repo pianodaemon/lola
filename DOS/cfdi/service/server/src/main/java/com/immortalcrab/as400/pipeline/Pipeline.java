@@ -79,6 +79,6 @@ public class Pipeline {
            It stands for hand craft a arbitrary
            representation of a cfdi in pdf format  */
         StepPdf spdf = stages.getValue2();
-        Object rpdf = spdf.render(cfdiReq, Pipeline.getInstance().getStorage());
+        spdf.render(cfdiReq, Pipeline.getInstance().getStorage());
     }
 }
