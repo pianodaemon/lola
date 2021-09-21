@@ -1,9 +1,11 @@
 package com.immortalcrab.as400.formats;
 
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+// import java.io.FileInputStream;
+// import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
+// import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -11,9 +13,9 @@ import javax.xml.datatype.DatatypeFactory;
 
 import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.engine.Storage;
-import com.immortalcrab.as400.request.FacturaRequest;
-import com.immortalcrab.as400.parser.PairExtractor;
-import java.io.OutputStream;
+// import com.immortalcrab.as400.request.FacturaRequest;
+// import com.immortalcrab.as400.parser.PairExtractor;
+// import java.io.OutputStream;
 
 import mx.gob.sat.cfd._3.ObjectFactory;
 import mx.gob.sat.sitio_internet.cfd.catalogos.CMetodoPago;
@@ -23,6 +25,16 @@ import mx.gob.sat.sitio_internet.cfd.catalogos.CTipoFactor;
 import mx.gob.sat.sitio_internet.cfd.catalogos.CUsoCFDI;
 
 public class FacturaXml {
+
+    // public static void main(String[] args) {
+    //     try {
+    //         var isr = new InputStreamReader(new FileInputStream("/home/userd/Downloads/NV139360-changed.txt"), StandardCharsets.UTF_8);
+    //         var facReq = FacturaRequest.render(PairExtractor.go4it(isr));
+    //         render(facReq, System.out);
+    //     } catch (Exception e) {
+    //         System.out.println(e);
+    //     }
+    // }
 
     public static void render(CfdiRequest cfdiReq, Storage st) {
         try {
@@ -45,7 +57,6 @@ public class FacturaXml {
             cfdi.setSello(//TODO: hardcoded
                     "StQ+XBUuN23YX1w5u1NGQMA7pewppUL88ZkiKnNKo+Mo2fEaoSXjIwMNoFREKyXX4NH9SiljdNaVi0bYFdDyFanezMAOzysuL2/2krQTWTWcujANVaHcLFPZ2nBE43BVRrekuo5GfIomD9nCR3j7c336KV5CIJa1vSPJpv+LTx/mkiNW3iR4/vxSIOzAreioewAfnbGqe7r00R14XxxpqIjb4cUg7b9e1t/xVlNtieJFX5iRtVrgV3jFi76JJJQKF+JupDa/gd/MV+u4KweFlDmJ6qIKMchEkTtm7k4SO8WnPVcSYEJloQigauC9EcOs2W1HJOxX44u5FwGPH0Rrlg==");
             cfdi.setVersion("3.3");
-
             cfdi.setFecha(DatatypeFactory.newInstance().newXMLGregorianCalendar((String) ds.get("FECHOR")));
 
             // Emisor
@@ -62,68 +73,75 @@ public class FacturaXml {
             receptor.setUsoCFDI(CUsoCFDI.fromValue(((String) ds.get("USOCFDI")).split(":")[0]));
             cfdi.setReceptor(receptor);
 
+            // Conceptos
             var conceptos = cfdiFactory.createComprobanteConceptos();
-            // Concepto 1
-            var concepto = cfdiFactory.createComprobanteConceptosConcepto();
-            concepto.setClaveProdServ("81111600");
-            concepto.setCantidad(new BigDecimal("1.0"));
-            concepto.setClaveUnidad("E48");
-            concepto.setUnidad("Servicio");
-            concepto.setDescripcion(
-                    "DESARROLLO DE SOFTWARE PARA EL SEGUIMIENTO DE OBSERVACIONES DE AUDITORIA POR EL MES DE JUNIO 2020");
-            concepto.setValorUnitario(new BigDecimal("20000.00"));
-            concepto.setImporte(new BigDecimal("20000.00"));
-            // Concepto 1 Impuestos - Traslados
-            var conceptoImpuestos = cfdiFactory.createComprobanteConceptosConceptoImpuestos();
-            var traslados = cfdiFactory.createComprobanteConceptosConceptoImpuestosTraslados();
-            var trasladoList = traslados.getTraslado();
-            var traslado = cfdiFactory.createComprobanteConceptosConceptoImpuestosTrasladosTraslado();
-            traslado.setBase(new BigDecimal("20000.00"));
-            traslado.setImpuesto("002");
-            traslado.setTipoFactor(CTipoFactor.TASA);
-            traslado.setTasaOCuota(new BigDecimal("0.160000"));
-            traslado.setImporte(new BigDecimal("3200.00"));
-            trasladoList.add(traslado);
-            conceptoImpuestos.setTraslados(traslados);
-            // Concepto 1 Impuestos - Retenciones
-            var retenciones = cfdiFactory.createComprobanteConceptosConceptoImpuestosRetenciones();
-            var retencionList = retenciones.getRetencion();
-            var retencion = cfdiFactory.createComprobanteConceptosConceptoImpuestosRetencionesRetencion();
-            retencion.setBase(new BigDecimal("20000.00"));
-            retencion.setImpuesto("001");
-            retencion.setTipoFactor(CTipoFactor.TASA);
-            retencion.setTasaOCuota(new BigDecimal("0.100000"));
-            retencion.setImporte(new BigDecimal("2000.00"));
-            retencionList.add(retencion);
-            conceptoImpuestos.setRetenciones(retenciones);
 
-            concepto.setImpuestos(conceptoImpuestos);
-            conceptos.getConcepto().add(concepto);
+            for (var c: (ArrayList<HashMap<String, String>>) ds.get("CONCEPTOS")) {
+
+                var concepto = cfdiFactory.createComprobanteConceptosConcepto();
+                concepto.setClaveProdServ(c.get("DCVESERV"));
+                concepto.setCantidad(new BigDecimal(c.get("DCANT")));
+                concepto.setClaveUnidad(c.get("DCUME"));
+                concepto.setUnidad(c.get("DUME"));
+                concepto.setDescripcion(c.get("DDESL"));
+                concepto.setValorUnitario(new BigDecimal(c.get("DUNIT")));
+                concepto.setImporte(new BigDecimal(c.get("DIMPO")));
+
+                // Concepto - Impuestos
+                var conceptoImpuestos = cfdiFactory.createComprobanteConceptosConceptoImpuestos();
+
+                // Traslados
+                var traslados = cfdiFactory.createComprobanteConceptosConceptoImpuestosTraslados();
+                var traslado = cfdiFactory.createComprobanteConceptosConceptoImpuestosTrasladosTraslado();
+                traslado.setBase(new BigDecimal(c.get("DBASE")));
+                traslado.setImpuesto(c.get("DITI"));
+                traslado.setTipoFactor(CTipoFactor.fromValue(c.get("DITTF")));
+                traslado.setTasaOCuota(new BigDecimal(c.get("DITTC")));
+                traslado.setImporte(new BigDecimal(c.get("DITIMP")));
+                traslados.getTraslado().add(traslado);
+                conceptoImpuestos.setTraslados(traslados);
+
+                // Retenciones
+                var retenciones = cfdiFactory.createComprobanteConceptosConceptoImpuestosRetenciones();
+                var retencion = cfdiFactory.createComprobanteConceptosConceptoImpuestosRetencionesRetencion();
+                retencion.setBase(new BigDecimal(c.get("DBASE")));
+                retencion.setImpuesto(c.get("DIRI"));
+                retencion.setTipoFactor(CTipoFactor.fromValue(c.get("DIRTF")));
+                retencion.setTasaOCuota(new BigDecimal(c.get("DIRTC")));
+                retencion.setImporte(new BigDecimal(c.get("DIRIMP")));
+                retenciones.getRetencion().add(retencion);
+                conceptoImpuestos.setRetenciones(retenciones);
+
+                concepto.setImpuestos(conceptoImpuestos);
+                conceptos.getConcepto().add(concepto);
+            }
+
             cfdi.setConceptos(conceptos);
 
             // Impuestos
             var impuestos = cfdiFactory.createComprobanteImpuestos();
-            impuestos.setTotalImpuestosRetenidos(new BigDecimal("2000.00"));
-            impuestos.setTotalImpuestosTrasladados(new BigDecimal("3200.00"));
+            impuestos.setTotalImpuestosTrasladados(new BigDecimal((String) ds.get("IVA")));
+            impuestos.setTotalImpuestosRetenidos(new BigDecimal((String) ds.get("IVARET")));
             var impuestosTraslados = cfdiFactory.createComprobanteImpuestosTraslados();
             var impuestosTrasladoList = impuestosTraslados.getTraslado();
             var impuestosTraslado = cfdiFactory.createComprobanteImpuestosTrasladosTraslado();
             impuestosTraslado.setImpuesto("002");
             impuestosTraslado.setTipoFactor(CTipoFactor.TASA);
-            impuestosTraslado.setTasaOCuota(new BigDecimal("0.160000"));
-            impuestosTraslado.setImporte(new BigDecimal("3200.00"));
+            impuestosTraslado.setTasaOCuota(new BigDecimal(String.format("0.%s0000", (String) ds.get("CIVA"))));
+            impuestosTraslado.setImporte(new BigDecimal((String) ds.get("IVA")));
             impuestosTrasladoList.add(impuestosTraslado);
             impuestos.setTraslados(impuestosTraslados);
             var impuestosRetenciones = cfdiFactory.createComprobanteImpuestosRetenciones();
             var impuestosRetencionList = impuestosRetenciones.getRetencion();
             var impuestosRetencion = cfdiFactory.createComprobanteImpuestosRetencionesRetencion();
-            impuestosRetencion.setImpuesto("001");
-            impuestosRetencion.setImporte(new BigDecimal("2000.00"));
+            impuestosRetencion.setImpuesto("002");
+            impuestosRetencion.setImporte(new BigDecimal((String) ds.get("IVARET")));
             impuestosRetencionList.add(impuestosRetencion);
             impuestos.setRetenciones(impuestosRetenciones);
             cfdi.setImpuestos(impuestos);
 
-            JAXBContext context = JAXBContext.newInstance("mx.gob.sat.cfd._3:mx.gob.sat.cartaporte");
+            // JAXBContext context = JAXBContext.newInstance("mx.gob.sat.cfd._3:mx.gob.sat.cartaporte");
+            JAXBContext context = JAXBContext.newInstance("mx.gob.sat.cfd._3");
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty("jaxb.schemaLocation", "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd");
             marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new CfdiNamespaceMapper());

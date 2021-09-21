@@ -16,7 +16,7 @@ public class FacturaRequest extends CfdiRequest {
     }
 
     //number of elements ahead per DSEC block
-    final int DESC_SIZE = 15;
+    final int DESC_SIZE = 19;
 
     public static FacturaRequest render(final List<Pair<String, String>> kvs) throws CfdiRequestError {
 
@@ -241,31 +241,55 @@ public class FacturaRequest extends CfdiRequest {
                         c.put("DIMPO", p.getValue1());
                     }
 
-                    if ("DIDESCTO".equals(p.getValue0())) {
-                        c.put("DIDESCTO", p.getValue1());
+                    if ("DESCTO".equals(p.getValue0())) {
+                        c.put("DESCTO", p.getValue1());
                     }
 
                     if ("DBASE".equals(p.getValue0())) {
                         c.put("DBASE", p.getValue1());
                     }
 
+                    // Traslado Importe
                     if ("DITIMP".equals(p.getValue0())) {
                         c.put("DITIMP", p.getValue1());
                     }
 
+                    // Traslado Impuesto
                     if ("DITI".equals(p.getValue0())) {
                         c.put("DITI", p.getValue1());
                     }
 
+                    // Traslado Tipo Factor
                     if ("DITTF".equals(p.getValue0())) {
                         c.put("DITTF", p.getValue1());
                     }
 
+                    // Traslado Tasa o Cuota
                     if ("DITTC".equals(p.getValue0())) {
                         c.put("DITTC", p.getValue1());
                     }
 
-                    if (offset == 0) {
+                    // Retencion Importe
+                    if ("DIRIMP".equals(p.getValue0())) {
+                        c.put("DIRIMP", p.getValue1());
+                    }
+
+                    // Retencion Impuesto
+                    if ("DIRI".equals(p.getValue0())) {
+                        c.put("DIRI", p.getValue1());
+                    }
+
+                    // Retencion Tipo Factor
+                    if ("DIRTF".equals(p.getValue0())) {
+                        c.put("DIRTF", p.getValue1());
+                    }
+
+                    // Retencion Tasa o Cuota
+                    if ("DIRTC".equals(p.getValue0())) {
+                        c.put("DIRTC", p.getValue1());
+                    }
+
+                    if (offset == 1) {
                         List<Map<String, String>> l = (ArrayList<Map<String, String>>) this.ds.get("CONCEPTOS");
                         l.add(c);
                         stage = SearchSeqStages.SEEKOUT_DSEC;
