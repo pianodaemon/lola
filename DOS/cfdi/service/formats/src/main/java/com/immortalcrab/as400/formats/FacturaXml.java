@@ -15,6 +15,7 @@ import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.engine.Storage;
 import com.immortalcrab.as400.error.ErrorCodes;
 import com.immortalcrab.as400.error.FormatError;
+import java.io.StringWriter;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 // import com.immortalcrab.as400.request.FacturaRequest;
@@ -39,9 +40,37 @@ public class FacturaXml {
     //         System.out.println(e);
     //     }
     // }
+    private final CfdiRequest cfdiReq;
+    private final Storage st;
+
+    private FacturaXml(CfdiRequest cfdiReq, Storage st) {
+        this.cfdiReq = cfdiReq;
+        this.st = st;
+    }
+
     public static void render(CfdiRequest cfdiReq, Storage st) throws FormatError {
+
+        FacturaXml ic = new FacturaXml(cfdiReq, st);
+        ic.save(ic.shape());
+    }
+
+    private void save(StringWriter sw) throws FormatError {
+
+        /*
+        Here we should store what stringwriter contains within the aws bucket
+        
+        Please use in here st (Storage member)
+         */
+        String xmlContent = sw.toString();
+        System.out.println(xmlContent);
+    }
+
+    private StringWriter shape() throws FormatError {
+
+        StringWriter sw = new StringWriter();
+
         try {
-            var ds = cfdiReq.getDs();
+            var ds = this.cfdiReq.getDs();
             var cfdiFactory = new ObjectFactory();
 
             // Comprobante
@@ -152,10 +181,12 @@ public class FacturaXml {
             marshaller.setProperty("jaxb.schemaLocation", "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd");
             marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new CfdiNamespaceMapper());
             marshaller.setProperty("jaxb.formatted.output", true);
-            marshaller.marshal(cfdi, System.out);
+            marshaller.marshal(cfdi, sw);
 
         } catch (JAXBException | DatatypeConfigurationException ex) {
             throw new FormatError("An error ocurried when forming the factura xml", ex, ErrorCodes.DOCBUILD_ERROR);
         }
+
+        return sw;
     }
 }
