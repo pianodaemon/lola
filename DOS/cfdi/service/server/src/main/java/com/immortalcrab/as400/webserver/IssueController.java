@@ -5,6 +5,7 @@ import com.immortalcrab.as400.pipeline.Pipeline;
 import com.immortalcrab.as400.error.PipelineError;
 import com.immortalcrab.as400.error.PairExtractorError;
 import com.immortalcrab.as400.error.CfdiRequestError;
+import com.immortalcrab.as400.error.FormatError;
 import com.immortalcrab.as400.error.StorageError;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +28,7 @@ public class IssueController {
     @RequestMapping(
             path = "/{kind}",
             method = RequestMethod.POST,
-            consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     ResponseEntity<Map<String, Object>> issue(
             @PathVariable("kind") String kind,
             @RequestPart MultipartFile tokensDoc) throws IOException {
@@ -43,7 +44,7 @@ public class IssueController {
 
         try {
             Pipeline.issue(kind, new InputStreamReader(is));
-        } catch (PairExtractorError | CfdiRequestError | PipelineError | StorageError ex) {
+        } catch (FormatError | PairExtractorError | CfdiRequestError | PipelineError | StorageError ex) {
 
             rhm.put("code", ex.getErrorCode());
             rhm.put("desc", ex.getMessage());
