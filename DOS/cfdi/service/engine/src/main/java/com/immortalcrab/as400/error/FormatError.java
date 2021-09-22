@@ -1,25 +1,12 @@
 package com.immortalcrab.as400.error;
 
-import com.immortalcrab.as400.error.EngineError;
-import com.immortalcrab.as400.error.ErrorCodes;
-
 public class FormatError extends EngineError {
 
     public FormatError(String message) {
-        super(message);
-    }
-
-    public FormatError(String message, ErrorCodes errorCode) {
-        super(message);
-        this.errorCode = errorCode.getCode();
+        super(message, ErrorCodes.FORMAT_BUILDER_ISSUE);
     }
 
     public FormatError(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public FormatError(String message, Throwable cause, ErrorCodes errorCode) {
-        super(message, cause);
-        this.errorCode = errorCode.getCode();
+        super(message, cause, ErrorCodes.FORMAT_BUILDER_ISSUE);
     }
 }

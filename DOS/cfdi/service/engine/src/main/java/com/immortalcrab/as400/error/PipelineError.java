@@ -1,25 +1,12 @@
 package com.immortalcrab.as400.error;
 
-import com.immortalcrab.as400.error.EngineError;
-import com.immortalcrab.as400.error.ErrorCodes;
-
 public class PipelineError extends EngineError {
 
     public PipelineError(String message) {
-        super(message);
-    }
-
-    public PipelineError(String message, ErrorCodes errorCode) {
-        super(message);
-        this.errorCode = errorCode.getCode();
+        super(message, ErrorCodes.PIPELINE_NOT_SPINNED_UP);
     }
 
     public PipelineError(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public PipelineError(String message, Throwable cause, ErrorCodes errorCode) {
-        super(message, cause);
-        this.errorCode = errorCode.getCode();
+        super(message, cause, ErrorCodes.PIPELINE_NOT_SPINNED_UP);
     }
 }

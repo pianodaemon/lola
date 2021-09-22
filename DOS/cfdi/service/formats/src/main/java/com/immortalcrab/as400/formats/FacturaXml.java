@@ -13,7 +13,6 @@ import javax.xml.datatype.DatatypeFactory;
 
 import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.engine.Storage;
-import com.immortalcrab.as400.error.ErrorCodes;
 import com.immortalcrab.as400.error.FormatError;
 import java.io.StringWriter;
 import javax.xml.bind.JAXBException;
@@ -184,7 +183,7 @@ public class FacturaXml {
             marshaller.marshal(cfdi, sw);
 
         } catch (JAXBException | DatatypeConfigurationException ex) {
-            throw new FormatError("An error ocurried when forming the factura xml", ex, ErrorCodes.DOCBUILD_ERROR);
+            throw new FormatError("An error ocurried when forming the factura xml", ex);
         }
 
         return sw;

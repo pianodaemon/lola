@@ -1,6 +1,5 @@
 package com.immortalcrab.as400.webserver;
 
-import com.immortalcrab.as400.error.ErrorCodes;
 import com.immortalcrab.as400.pipeline.Pipeline;
 import com.immortalcrab.as400.error.PipelineError;
 import com.immortalcrab.as400.error.PairExtractorError;
@@ -35,7 +34,7 @@ public class IssueController {
 
         Map<String, Object> rhm = new HashMap<>() {
             {
-                put("code", ErrorCodes.SUCCESS.getCode());
+                put("code", 0);
                 put("desc", "");
             }
         };

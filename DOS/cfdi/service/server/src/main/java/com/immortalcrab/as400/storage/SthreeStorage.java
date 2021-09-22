@@ -6,7 +6,6 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
-import com.immortalcrab.as400.error.ErrorCodes;
 import com.immortalcrab.as400.engine.Storage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,15 +25,15 @@ public class SthreeStorage implements Storage {
             final String accessKey, final String accessSecret) throws StorageError {
 
         if (region == null) {
-            throw new StorageError("aws region was not found", ErrorCodes.STORAGE_PROVIDEER_ISSUES);
+            throw new StorageError("aws region was not found");
         }
 
         if (accessKey == null) {
-            throw new StorageError("aws key was not found", ErrorCodes.STORAGE_PROVIDEER_ISSUES);
+            throw new StorageError("aws key was not found");
         }
 
         if (accessSecret == null) {
-            throw new StorageError("aws secret was not found", ErrorCodes.STORAGE_PROVIDEER_ISSUES);
+            throw new StorageError("aws secret was not found");
         }
 
         AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, accessSecret);
@@ -62,7 +61,7 @@ public class SthreeStorage implements Storage {
         try {
             amazonS3.putObject(path, fileName, inputStream, objectMetadata);
         } catch (AmazonServiceException ex) {
-            throw new StorageError("Failed to upload the file", ex, ErrorCodes.PAC_PARTY_ISSUES);
+            throw new StorageError("Failed to upload the file", ex);
         }
     }
 
@@ -73,7 +72,7 @@ public class SthreeStorage implements Storage {
             S3ObjectInputStream objectContent = object.getObjectContent();
             return IOUtils.toByteArray(objectContent);
         } catch (AmazonServiceException | IOException ex) {
-            throw new StorageError("Failed to download the file", ex, ErrorCodes.PAC_PARTY_ISSUES);
+            throw new StorageError("Failed to download the file", ex);
         }
     }
 

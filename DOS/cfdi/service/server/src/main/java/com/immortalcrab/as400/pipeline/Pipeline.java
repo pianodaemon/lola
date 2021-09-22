@@ -5,7 +5,6 @@ import com.immortalcrab.as400.engine.StepDecode;
 import com.immortalcrab.as400.engine.StepXml;
 import com.immortalcrab.as400.engine.StepPdf;
 import com.immortalcrab.as400.engine.Storage;
-import com.immortalcrab.as400.error.ErrorCodes;
 import com.immortalcrab.as400.formats.FacturaPdf;
 import com.immortalcrab.as400.formats.FacturaXml;
 import com.immortalcrab.as400.parser.PairExtractor;
@@ -56,7 +55,7 @@ public class Pipeline {
             return pf;
         }
 
-        throw new PipelineError("cfdi " + kind + " is unsupported", ErrorCodes.DOCBUILD_ERROR);
+        throw new PipelineError("cfdi " + kind + " is unsupported");
     }
 
     public static void issue(final String kind, InputStreamReader reader)
