@@ -12,6 +12,7 @@ import com.immortalcrab.as400.parser.PairExtractor;
 import com.immortalcrab.as400.error.PairExtractorError;
 import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.error.CfdiRequestError;
+import com.immortalcrab.as400.error.FormatError;
 import com.immortalcrab.as400.request.FacturaRequest;
 import com.immortalcrab.as400.error.StorageError;
 import com.immortalcrab.as400.storage.SthreeStorage;
@@ -58,7 +59,8 @@ public class Pipeline {
         throw new PipelineError("cfdi " + kind + " is unsupported", ErrorCodes.DOCBUILD_ERROR);
     }
 
-    public static void issue(final String kind, InputStreamReader reader) throws PairExtractorError, CfdiRequestError, PipelineError, StorageError {
+    public static void issue(final String kind, InputStreamReader reader)
+            throws PairExtractorError, CfdiRequestError, PipelineError, StorageError, FormatError {
 
         Triplet<StepDecode, StepXml, StepPdf> stages = Pipeline.getInstance().incept(kind);
 
