@@ -28,7 +28,7 @@ public class FacturaXml {
 
     // public static void main(String[] args) {
     //     try {
-    //         var isr = new InputStreamReader(new FileInputStream("/home/userd/Downloads/NV139360-changed.txt"), StandardCharsets.UTF_8);
+    //         var isr = new InputStreamReader(new FileInputStream("/home/userd/Downloads/NV139360-changed2.txt"), StandardCharsets.UTF_8);
     //         var facReq = FacturaRequest.render(PairExtractor.go4it(isr));
     //         render(facReq, System.out);
     //     } catch (Exception e) {
@@ -102,15 +102,18 @@ public class FacturaXml {
                 conceptoImpuestos.setTraslados(traslados);
 
                 // Retenciones
-                var retenciones = cfdiFactory.createComprobanteConceptosConceptoImpuestosRetenciones();
-                var retencion = cfdiFactory.createComprobanteConceptosConceptoImpuestosRetencionesRetencion();
-                retencion.setBase(new BigDecimal(c.get("DBASE")));
-                retencion.setImpuesto(c.get("DIRI"));
-                retencion.setTipoFactor(CTipoFactor.fromValue(c.get("DIRTF")));
-                retencion.setTasaOCuota(new BigDecimal(c.get("DIRTC")));
-                retencion.setImporte(new BigDecimal(c.get("DIRIMP")));
-                retenciones.getRetencion().add(retencion);
-                conceptoImpuestos.setRetenciones(retenciones);
+                var diri = c.get("DIRI");
+                if (diri != null) {
+                    var retenciones = cfdiFactory.createComprobanteConceptosConceptoImpuestosRetenciones();
+                    var retencion = cfdiFactory.createComprobanteConceptosConceptoImpuestosRetencionesRetencion();
+                    retencion.setBase(new BigDecimal(c.get("DBASE")));
+                    retencion.setImpuesto(diri);
+                    retencion.setTipoFactor(CTipoFactor.fromValue(c.get("DIRTF")));
+                    retencion.setTasaOCuota(new BigDecimal(c.get("DIRTC")));
+                    retencion.setImporte(new BigDecimal(c.get("DIRIMP")));
+                    retenciones.getRetencion().add(retencion);
+                    conceptoImpuestos.setRetenciones(retenciones);
+                }
 
                 concepto.setImpuestos(conceptoImpuestos);
                 conceptos.getConcepto().add(concepto);

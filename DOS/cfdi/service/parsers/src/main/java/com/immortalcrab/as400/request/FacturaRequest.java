@@ -3,20 +3,15 @@ package com.immortalcrab.as400.request;
 import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.error.CfdiRequestError;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.javatuples.Pair;
 
 public class FacturaRequest extends CfdiRequest {
-
-    enum SearchSeqStages {
-        SEEKOUT_DSEC, PICKUP_ATTRS
-    }
-
-    //number of elements ahead per DSEC block
-    final int DESC_SIZE = 19;
 
     public static FacturaRequest render(final List<Pair<String, String>> kvs) throws CfdiRequestError {
 
@@ -177,129 +172,49 @@ public class FacturaRequest extends CfdiRequest {
     private void pickUpDsecBlocks() {
 
         Map<String, String> c = null;
-        int offset = 0;
-        SearchSeqStages stage = SearchSeqStages.SEEKOUT_DSEC;
+        var attributeSet = new HashSet<String>(Arrays.asList(
+            "DITEM",     // NoIdentificacion
+            "DCVESERV",  // ClaveProdServ
+            "DCANT",     // Cantidad
+            "DCUME",     // ClaveUnidad
+            "DUME",      // Unidad Medida
+            "DDESL",     // Descripcion
+            "DUNIT",     // ValorUnitario
+            "DIMPO",     // Importe
+            "DIDESCTO",  // Descuento
+            "DBASE",     // Base
+            "DITIMP",    // Traslado Importe
+            "DITI",      // Traslado Impuesto
+            "DITTF",     // Traslado Tipo Factor
+            "DITTC",     // Traslado Tasa o Cuota
+            "DIRIMP",    // Retencion Importe
+            "DIRI",      // Retencion Impuesto
+            "DIRTF",     // Retencion Tipo Factor
+            "DIRTC"      // Retencion Tasa o Cuota
+        ));
+        List<Map<String, String>> l = (ArrayList<Map<String, String>>) this.ds.get("CONCEPTOS");
+        boolean dsecFound = false;
 
         for (Iterator<Pair<String, String>> it = this.kvs.iterator(); it.hasNext();) {
 
             Pair<String, String> p = it.next();
 
-            switch (stage) {
+            if ("DSEC".equals(p.getValue0())) {
 
-                case SEEKOUT_DSEC: {
+                if (dsecFound) {
+                    l.add(c);
+                }
+                c = new HashMap<>();
+                dsecFound = true;
 
-                    /* Row number from AS400 system
-                       where the concept has been included */
-                    if ("DSEC".equals(p.getValue0())) {
-                        c = new HashMap<>();
-                        offset = this.DESC_SIZE;
-                        stage = SearchSeqStages.PICKUP_ATTRS;
-                    }
+            } else if (dsecFound) {
+
+                if (!attributeSet.contains(p.getValue0())) {
+                    l.add(c);
                     break;
                 }
-                case PICKUP_ATTRS: {
-
-                    offset--;
-
-                    // At cfdi is aka "NoIdentificacion"
-                    if ("DITEM".equals(p.getValue0())) {
-                        c.put("DITEM", p.getValue1());
-                    }
-
-                    // At cfdi is aka "ClaveProdServ"
-                    if ("DCVESERV".equals(p.getValue0())) {
-                        c.put("DCVESERV", p.getValue1());
-                    }
-
-                    // At cfdi is aka "Cantidad"
-                    if ("DCANT".equals(p.getValue0())) {
-                        c.put("DCANT", p.getValue1());
-                    }
-
-                    // At cfdi is aka "ClaveUnidad"
-                    if ("DCUME".equals(p.getValue0())) {
-                        c.put("DCUME", p.getValue1());
-                    }
-
-                    // unidad medida
-                    if ("DUME".equals(p.getValue0())) {
-                        c.put("DUME", p.getValue1());
-                    }
-
-                    // At cfdi is aka "Descripcion"
-                    if ("DDESL".equals(p.getValue0())) {
-                        c.put("DDESL", p.getValue1());
-                    }
-
-                    // At cfdi is aka "ValorUnitario"
-                    if ("DUNIT".equals(p.getValue0())) {
-                        c.put("DUNIT", p.getValue1());
-                    }
-
-                    // At cfdi is aka "Importe"
-                    if ("DIMPO".equals(p.getValue0())) {
-                        c.put("DIMPO", p.getValue1());
-                    }
-
-                    if ("DESCTO".equals(p.getValue0())) {
-                        c.put("DESCTO", p.getValue1());
-                    }
-
-                    if ("DBASE".equals(p.getValue0())) {
-                        c.put("DBASE", p.getValue1());
-                    }
-
-                    // Traslado Importe
-                    if ("DITIMP".equals(p.getValue0())) {
-                        c.put("DITIMP", p.getValue1());
-                    }
-
-                    // Traslado Impuesto
-                    if ("DITI".equals(p.getValue0())) {
-                        c.put("DITI", p.getValue1());
-                    }
-
-                    // Traslado Tipo Factor
-                    if ("DITTF".equals(p.getValue0())) {
-                        c.put("DITTF", p.getValue1());
-                    }
-
-                    // Traslado Tasa o Cuota
-                    if ("DITTC".equals(p.getValue0())) {
-                        c.put("DITTC", p.getValue1());
-                    }
-
-                    // Retencion Importe
-                    if ("DIRIMP".equals(p.getValue0())) {
-                        c.put("DIRIMP", p.getValue1());
-                    }
-
-                    // Retencion Impuesto
-                    if ("DIRI".equals(p.getValue0())) {
-                        c.put("DIRI", p.getValue1());
-                    }
-
-                    // Retencion Tipo Factor
-                    if ("DIRTF".equals(p.getValue0())) {
-                        c.put("DIRTF", p.getValue1());
-                    }
-
-                    // Retencion Tasa o Cuota
-                    if ("DIRTC".equals(p.getValue0())) {
-                        c.put("DIRTC", p.getValue1());
-                    }
-
-                    if (offset == 1) {
-                        List<Map<String, String>> l = (ArrayList<Map<String, String>>) this.ds.get("CONCEPTOS");
-                        l.add(c);
-                        stage = SearchSeqStages.SEEKOUT_DSEC;
-                    }
-
-                    break;
-                }
+                c.put(p.getValue0(), p.getValue1());
             }
-
         }
-
     }
 }
