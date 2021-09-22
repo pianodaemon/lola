@@ -13,6 +13,10 @@ import javax.xml.datatype.DatatypeFactory;
 
 import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.engine.Storage;
+import com.immortalcrab.as400.error.ErrorCodes;
+import com.immortalcrab.as400.error.FormatError;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
 // import com.immortalcrab.as400.request.FacturaRequest;
 // import com.immortalcrab.as400.parser.PairExtractor;
 // import java.io.OutputStream;
@@ -35,8 +39,7 @@ public class FacturaXml {
     //         System.out.println(e);
     //     }
     // }
-
-    public static void render(CfdiRequest cfdiReq, Storage st) {
+    public static void render(CfdiRequest cfdiReq, Storage st) throws FormatError {
         try {
             var ds = cfdiReq.getDs();
             var cfdiFactory = new ObjectFactory();
@@ -76,7 +79,7 @@ public class FacturaXml {
             // Conceptos
             var conceptos = cfdiFactory.createComprobanteConceptos();
 
-            for (var c: (ArrayList<HashMap<String, String>>) ds.get("CONCEPTOS")) {
+            for (var c : (ArrayList<HashMap<String, String>>) ds.get("CONCEPTOS")) {
 
                 var concepto = cfdiFactory.createComprobanteConceptosConcepto();
                 concepto.setClaveProdServ(c.get("DCVESERV"));
@@ -151,8 +154,8 @@ public class FacturaXml {
             marshaller.setProperty("jaxb.formatted.output", true);
             marshaller.marshal(cfdi, System.out);
 
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (JAXBException | DatatypeConfigurationException ex) {
+            throw new FormatError("An error ocurried when forming the factura xml", ex, ErrorCodes.DOCBUILD_ERROR);
         }
     }
 }
