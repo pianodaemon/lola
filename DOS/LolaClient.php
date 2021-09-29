@@ -13,7 +13,7 @@ abstract class LolaClient {
         if ( !in_array($co, self::$supportedCompanies) ) {
 
             $errMsg = "Error: No esta configurada su company para timbrar\r Verifiquelo con el Administrador";
-            exit($errMsg);
+            throw new Exception($errMsg);
         }
 
         $this->company= $co;
