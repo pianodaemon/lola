@@ -37,6 +37,11 @@ spec:
         app: cfdi
         project: as400-extension
     spec:
+      volumes:
+      - name: pem
+        hostPath:
+          path: "/DISK/DOS/keys"
+          type: Directory
       containers:
       - image: localhost:5000/lola/cfdi:latest
         name: cfdi
@@ -48,3 +53,6 @@ spec:
           value: redis-srv
         - name: REDIS_PORT
           value: "6379"
+        volumeMounts:
+        - mountPath: /pem
+          name: pem
