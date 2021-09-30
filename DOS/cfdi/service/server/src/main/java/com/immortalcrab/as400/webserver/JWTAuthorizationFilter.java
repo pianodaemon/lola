@@ -5,17 +5,12 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import java.io.FileInputStream;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import javax.servlet.ServletException;
-import java.io.IOException;
-import java.security.PublicKey;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
+import org.apache.commons.codec.binary.Base64;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +18,18 @@ import javax.servlet.FilterChain;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.function.Function;
 
 @Component
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
@@ -41,7 +48,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
         try {
             String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
-            return Jwts.parser().setSigningKey(loadPublicKey(PUB_KEY_PATH)).parseClaimsJws(jwtToken).getBody();
+            return Jwts.parser().setSigningKey(loadPublicKey(new FileInputStream(PUB_KEY_PATH))).parseClaimsJws(jwtToken).getBody();
         } catch (Exception ex) {
             throw new UnsupportedJwtException(ex.getMessage());
         }
@@ -52,11 +59,34 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         return claimsResolver.apply(claims);
     }
 
-    public static PublicKey loadPublicKey(String filename) throws Exception {
+    private static Key loadKey(InputStream in, Function<byte[], Key> keyParser) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            String line;
+            StringBuilder content = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                if (!(line.contains("BEGIN") || line.contains("END"))) {
+                    content.append(line).append('\n');
+                }
+            }
+            byte[] encoded = Base64.decodeBase64(content.toString());
+            return keyParser.apply(encoded);
+        }
+    }
 
-        CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        Certificate cert = cf.generateCertificate(new FileInputStream(filename));
-        return cert.getPublicKey();
+    public static Key loadPublicKey(InputStream in) throws IOException, NoSuchAlgorithmException {
+
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+
+        return loadKey(in, bytes -> {
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(bytes);
+            try {
+                X509EncodedKeySpec spec
+                        = new X509EncodedKeySpec(bytes);
+                return keyFactory.generatePublic(spec);
+            } catch (InvalidKeySpecException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void setUpSpringAuthentication(Claims claims) {
