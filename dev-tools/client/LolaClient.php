@@ -66,16 +66,39 @@ class LolaClient
         throw new Exception('Login Fail');
     }
 
-    private function logOut()
+    private function logOut(string &$token)
     {
-        return;
+        $ch = curl_init();
+
+        $reqTemplate = 'http://$host/api/auth/v1/sso/logout';
+        $targetUrl = strtr($reqTemplate, array(
+            '$host' => self::$supportedCompanies[$this->company]['host']
+        ));
+
+        curl_setopt($ch, CURLOPT_URL, $targetUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Accept: application/json',
+            'Authorization: Bearer ' . $token
+        ));
+
+        $res = curl_exec($ch);
+        $httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ( (int)$httpStatus = 200 ) {
+
+            return;
+        }
+
+        throw new Exception('Logout fail');
     }
 
     public function doIssue(string $issueFilePath)
     {
         $token = $this->logIn();
         $this->postTokensDocument($issueFilePath, $token);
-        $this->logOut();
+        $this->logOut($token);
     }
 
     private function postTokensDocument(string &$issueFilePath, string &$token)
