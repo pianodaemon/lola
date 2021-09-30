@@ -122,10 +122,29 @@ class LolaClient
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, ["tokensDoc" => $cf]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Authorization: Bearer ' . $token
+        ));
 
-        $result = curl_exec($ch);
-
+        $res = curl_exec($ch);
+        $httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
+        if ( (int)$httpStatus == 201 ) {
+
+            return;
+        }
+
+        $errMsg = "";
+        {
+            $d = json_decode($res, true);
+            if ( (int)$httpStatus == 400 ) {
+                $errMsg .= $d['desc'] . "(code - " . $d['code'] . ")";
+            } else {
+                $errMsg .= $d["error"] . "(http-status - " . $d['status'] . ")";
+            }
+        }
+
+        throw new Exception($errMsg);
     }
 }
 
