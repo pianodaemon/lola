@@ -53,6 +53,16 @@ spec:
           value: redis-srv
         - name: REDIS_PORT
           value: "6379"
+        - name: BUCKET_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: lola-out-a-cmap
+              key: region
+        - name: BUCKET_TARGET
+          valueFrom:
+            configMapKeyRef:
+              name: lola-out-a-cmap
+              key: target
         volumeMounts:
         - mountPath: /pem
           name: pem
