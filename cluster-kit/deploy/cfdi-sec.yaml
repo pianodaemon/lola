@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: lola-out-sec
+type: Opaque
+data:
+  aws_access_key_id: S3ViZXJuZXRlc1JvY2tzIQ==
+  aws_secret_access_key: S4ViZXJuZXRlc2JvY2tzIQ==
