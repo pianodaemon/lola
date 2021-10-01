@@ -47,7 +47,7 @@ public class IssueController {
             Pipeline.issue(kind, new InputStreamReader(is));
         } catch (FormatError | PairExtractorError | CfdiRequestError | PipelineError | StorageError ex) {
 
-            LOGGER.error(ex.getMessage());
+            LOGGER.error(ex.getCause().getMessage());
 
             rhm.put("code", ex.getErrorCode());
             rhm.put("desc", ex.getMessage());
