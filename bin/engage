@@ -6,6 +6,7 @@ echo "Populating local registry with the images required"
 make -f $IMPT_ROOT/cluster-kit/populate.mk
 kubectl create namespace trailera
 kubectl apply -f $IMPT_ROOT/cluster-kit/deploy/cfdi-confmap.yml
+kubectl apply -f $IMPT_ROOT/cluster-kit/deploy/cfdi-sec.yaml
 kubectl apply -f $IMPT_ROOT/cluster-kit/deploy/redis.yml
 kubectl apply -f $IMPT_ROOT/cluster-kit/deploy/sso.yml
 kubectl apply -f $IMPT_ROOT/cluster-kit/deploy/cfdi.yml
