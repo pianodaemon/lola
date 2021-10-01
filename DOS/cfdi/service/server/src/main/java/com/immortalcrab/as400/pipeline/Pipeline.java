@@ -19,11 +19,15 @@ import org.javatuples.Triplet;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Pipeline {
 
     private static Pipeline ic = null;
+
     private Storage st = null;
+    private Logger LOGGER = null;
 
     private final Map<String, Triplet<StepDecode, StepXml, StepPdf>> scenarios = new HashMap<>();
 
@@ -31,15 +35,23 @@ public class Pipeline {
         return st;
     }
 
+    public Logger getLOGGER() {
+        return LOGGER;
+    }
+
     public static synchronized Pipeline getInstance() throws StorageError {
 
         if (ic == null) {
-            ic = new Pipeline();
 
-            ic.st = SthreeStorage.configure(
+            SthreeStorage sti = SthreeStorage.configure(
                     System.getenv("BUCKET_REGION"),
                     System.getenv("BUCKET_KEY"),
                     System.getenv("BUCKET_SECRET"));
+
+            ic = new Pipeline();
+
+            ic.LOGGER = LoggerFactory.getLogger(ic.getClass());
+            ic.st = sti;
 
             ic.scenarios.put("fac", new Triplet<>(FacturaRequest::render, FacturaXml::render, FacturaPdf::render));
         }
@@ -69,7 +81,7 @@ public class Pipeline {
         StepDecode sdec = stages.getValue0();
         CfdiRequest cfdiReq = sdec.render(PairExtractor.go4it(reader));
 
-        System.out.println(cfdiReq.getDs());
+        Pipeline.getInstance().getLOGGER().info(cfdiReq.getDs().toString());
 
         /* Second stage of the pipeline
            It stands for hand craft a valid xml at sat */
