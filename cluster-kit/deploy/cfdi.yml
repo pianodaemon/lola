@@ -68,6 +68,11 @@ spec:
             secretKeyRef:
               name: lola-out-sec
               key: aws_access_key_id
+        - name: BUCKET_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: lola-out-sec
+              key: aws_secret_access_key
         volumeMounts:
         - mountPath: /pem
           name: pem
