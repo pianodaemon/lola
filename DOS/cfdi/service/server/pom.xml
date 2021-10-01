@@ -78,6 +78,11 @@
             <systemPath>${project.basedir}/lib/jaxb-runtime.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.0-b170127.1453</version>
+        </dependency>
+        <dependency>
             <groupId>javaee-jaxb-ri</groupId>
             <artifactId>istack-commons-runtime</artifactId>
             <version>2.3.1</version>
