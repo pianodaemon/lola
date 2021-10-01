@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lola-out-a-cmap
+  namespace: trailera
+data:
+  region: us-east-2
+  target: workclock-out-a
