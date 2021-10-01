@@ -4,5 +4,6 @@ make -f $IMPT_ROOT/cluster-kit/populate.mk clean
 kubectl delete -f $IMPT_ROOT/cluster-kit/deploy/redis.yml
 kubectl delete -f $IMPT_ROOT/cluster-kit/deploy/sso.yml
 kubectl delete -f $IMPT_ROOT/cluster-kit/deploy/cfdi.yml
+kubectl delete -f $IMPT_ROOT/cluster-kit/deploy/cfdi-sec.yaml
 kubectl delete -f $IMPT_ROOT/cluster-kit/deploy/cfdi-confmap.yml
 kubectl delete namespace trailera
