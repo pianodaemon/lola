@@ -66,7 +66,7 @@ public class FacturaXml {
 
         {
             final String path = "workclock-out-a";
-            final String fileName = (String) ds.get("FOLIO") + (String) ds.get("SERIE") + ".xml";
+            final String fileName = (String) ds.get("SERIE") + (String) ds.get("FOLIO") + ".xml";
 
             Map<String, String> metadata = new HashMap<>();
             metadata.put("Content-Type", "text/xml");
