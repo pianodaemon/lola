@@ -65,10 +65,9 @@ public class FacturaXml {
         var ds = this.cfdiReq.getDs();
 
         {
-            final String path = "workclock-out-a";
             final String fileName = (String) ds.get("SERIE") + (String) ds.get("FOLIO") + ".xml";
 
-            this.st.upload("text/xml", in.length, path, fileName, new ByteArrayInputStream(in));
+            this.st.upload("text/xml", in.length, fileName, new ByteArrayInputStream(in));
         }
     }
 

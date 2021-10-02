@@ -7,9 +7,6 @@ public interface Storage {
 
     public void upload(final String cType,
             final long len,
-            final String path,
             final String fileName,
             InputStream inputStream) throws StorageError;
-
-    public byte[] download(String path, String key) throws StorageError;
 }

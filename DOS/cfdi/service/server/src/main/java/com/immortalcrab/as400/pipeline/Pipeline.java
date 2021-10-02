@@ -43,10 +43,7 @@ public class Pipeline {
 
         if (ic == null) {
 
-            SthreeStorage sti = SthreeStorage.configure(
-                    System.getenv("BUCKET_REGION"),
-                    System.getenv("BUCKET_KEY"),
-                    System.getenv("BUCKET_SECRET"));
+            SthreeStorage sti = SthreeStorage.configure();
 
             ic = new Pipeline();
 

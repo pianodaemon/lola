@@ -9,8 +9,6 @@ import com.amazonaws.util.IOUtils;
 import com.immortalcrab.as400.engine.Storage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
-import java.util.Optional;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -21,24 +19,27 @@ public class SthreeStorage implements Storage {
 
     private final AmazonS3 amazonS3;
 
-    static public SthreeStorage configure(final String region,
-            final String accessKey, final String accessSecret) throws StorageError {
+    static public SthreeStorage configure() throws StorageError {
 
-        if (region == null) {
-            throw new StorageError("aws region was not found");
+        if (System.getenv("BUCKET_REGION") == null) {
+            throw new StorageError("aws region was not fed");
         }
 
-        if (accessKey == null) {
-            throw new StorageError("aws key was not found");
+        if (System.getenv("BUCKET_KEY") == null) {
+            throw new StorageError("aws key was not fed");
         }
 
-        if (accessSecret == null) {
-            throw new StorageError("aws secret was not found");
+        if (System.getenv("BUCKET_SECRET") == null) {
+            throw new StorageError("aws secret was not fed");
         }
 
-        AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, accessSecret);
+        if (System.getenv("BUCKET_TARGET") == null) {
+            throw new StorageError("aws bucket was not fed");
+        }
 
-        return new SthreeStorage(AmazonS3ClientBuilder.standard().withRegion(region).withCredentials(
+        AWSCredentials awsCredentials = new BasicAWSCredentials(System.getenv("BUCKET_KEY"), System.getenv("BUCKET_SECRET"));
+
+        return new SthreeStorage(AmazonS3ClientBuilder.standard().withRegion(System.getenv("BUCKET_REGION")).withCredentials(
                 new AWSStaticCredentialsProvider(awsCredentials)
         ).build());
     }
@@ -51,28 +52,15 @@ public class SthreeStorage implements Storage {
     public void upload(
             final String cType,
             final long len,
-            final String path,
             final String fileName,
             InputStream inputStream) throws StorageError {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(cType);
         objectMetadata.setContentLength(len);
         try {
-            amazonS3.putObject(path, fileName, inputStream, objectMetadata);
+            amazonS3.putObject(System.getenv("BUCKET_TARGET"), fileName, inputStream, objectMetadata);
         } catch (AmazonServiceException ex) {
             throw new StorageError("Failed to upload the file", ex);
         }
     }
-
-    @Override
-    public byte[] download(String path, String key) throws StorageError {
-        try {
-            S3Object object = amazonS3.getObject(path, key);
-            S3ObjectInputStream objectContent = object.getObjectContent();
-            return IOUtils.toByteArray(objectContent);
-        } catch (AmazonServiceException | IOException ex) {
-            throw new StorageError("Failed to download the file", ex);
-        }
-    }
-
 }
