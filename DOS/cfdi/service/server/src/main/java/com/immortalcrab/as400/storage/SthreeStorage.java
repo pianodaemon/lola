@@ -48,16 +48,15 @@ public class SthreeStorage implements Storage {
     }
 
     @Override
-    public void upload(String path,
-            String fileName,
-            Optional<Map<String, String>> optionalMetaData,
+    public void upload(
+            final String cType,
+            final long len,
+            final String path,
+            final String fileName,
             InputStream inputStream) throws StorageError {
         ObjectMetadata objectMetadata = new ObjectMetadata();
-        optionalMetaData.ifPresent(map -> {
-            if (!map.isEmpty()) {
-                map.forEach(objectMetadata::addUserMetadata);
-            }
-        });
+        objectMetadata.setContentType(cType);
+        objectMetadata.setContentLength(len);
         try {
             amazonS3.putObject(path, fileName, inputStream, objectMetadata);
         } catch (AmazonServiceException ex) {
