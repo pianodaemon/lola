@@ -14,7 +14,12 @@ import javax.xml.datatype.DatatypeFactory;
 import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.engine.Storage;
 import com.immortalcrab.as400.error.FormatError;
+import com.immortalcrab.as400.error.StorageError;
+import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Optional;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 // import com.immortalcrab.as400.request.FacturaRequest;
@@ -47,21 +52,27 @@ public class FacturaXml {
         this.st = st;
     }
 
-    public static void render(CfdiRequest cfdiReq, Storage st) throws FormatError {
+    public static void render(CfdiRequest cfdiReq, Storage st) throws FormatError, StorageError {
 
         FacturaXml ic = new FacturaXml(cfdiReq, st);
         ic.save(ic.shape());
     }
 
-    private void save(StringWriter sw) throws FormatError {
+    private void save(StringWriter sw) throws FormatError, StorageError {
 
-        /*
-        Here we should store what stringwriter contains within the aws bucket
-        
-        Please use in here st (Storage member)
-         */
-        String xmlContent = sw.toString();
-        System.out.println(xmlContent);
+        StringBuffer buf = sw.getBuffer();
+        byte[] in = buf.toString().getBytes(StandardCharsets.UTF_8);
+        var ds = this.cfdiReq.getDs();
+
+        {
+            final String path = "workclock-out-a";
+            final String fileName = (String) ds.get("FOLIO") + (String) ds.get("SERIE") + ".xml";
+
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put("Content-Type", "text/xml");
+            metadata.put("Content-Length", String.valueOf(in.length));
+            this.st.upload(path, fileName, Optional.of(metadata), new ByteArrayInputStream(in));
+        }
     }
 
     private StringWriter shape() throws FormatError {
