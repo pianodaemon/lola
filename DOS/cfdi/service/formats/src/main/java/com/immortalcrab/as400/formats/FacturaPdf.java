@@ -19,29 +19,29 @@ import com.immortalcrab.cfdi.utils.Signer;
 import com.immortalcrab.numspatrans.Translator;
 import com.immortalcrab.qrcode.QRCode;
 
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import com.immortalcrab.as400.request.FacturaRequest;
-import com.immortalcrab.as400.parser.PairExtractor;
+// import java.io.FileInputStream;
+// import java.io.InputStreamReader;
+// import java.nio.charset.StandardCharsets;
+// import com.immortalcrab.as400.request.FacturaRequest;
+// import com.immortalcrab.as400.parser.PairExtractor;
 
 public class FacturaPdf {
 
-    public static void main(String[] args) {
-        try {
-            var isr = new InputStreamReader(new FileInputStream("/home/userd/Downloads/NV139360-changed2.txt"), StandardCharsets.UTF_8);
-            var facReq = FacturaRequest.render(PairExtractor.go4it(isr));
-            var template = "/tq_carta_porte.jrxml";
-            var output   = "tq_carta_porte.pdf";
-            render(facReq, template, output);
+    // public static void main(String[] args) {
+    //     try {
+    //         var isr = new InputStreamReader(new FileInputStream("/home/userd/Downloads/NV139360-changed2.txt"), StandardCharsets.UTF_8);
+    //         var facReq = FacturaRequest.render(PairExtractor.go4it(isr));
+    //         var template = "/tq_carta_porte.jrxml";
+    //         var output   = "tq_carta_porte.pdf";
+    //         render(facReq, template, output);
 
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
+    //     } catch (Exception e) {
+    //         System.out.println(e);
+    //     }
+    // }
 
-    public static void render(final CfdiRequest cfdiReq, String pdfTemplate, String output) {
-    // public static void render(final CfdiRequest cfdiReq, Storage st) {
+    // public static void render(final CfdiRequest cfdiReq, String pdfTemplate, String output) {
+    public static void render(final CfdiRequest cfdiReq, Storage st) {
 
         try {
             var ds = cfdiReq.getDs();
@@ -79,14 +79,14 @@ public class FacturaPdf {
             System.out.println(ds);
 
             // PDF generation
-            InputStream is = FacturaPdf.class.getResourceAsStream(pdfTemplate);
-            // InputStream is = FacturaPdf.class.getResourceAsStream("/tq_carta_porte.jrxml");
+            // InputStream is = FacturaPdf.class.getResourceAsStream(pdfTemplate);
+            InputStream is = FacturaPdf.class.getResourceAsStream("/tq_carta_porte.jrxml");
             JasperReport jasperReport = JasperCompileManager.compileReport(is);
             JRDataSource conceptos = new JRBeanCollectionDataSource(
                     (ArrayList<Map<String, String>>) ds.get("CONCEPTOS"));
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, ds, conceptos);
-            JasperExportManager.exportReportToPdfFile(jasperPrint, output);
-            // JasperExportManager.exportReportToPdfFile(jasperPrint, "tq_carta_porte.pdf");
+            // JasperExportManager.exportReportToPdfFile(jasperPrint, output);
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "tq_carta_porte.pdf");
 
         } catch (IOException ex) {
             Logger.getLogger(FacturaPdf.class.getName()).log(Level.SEVERE, null, ex);
