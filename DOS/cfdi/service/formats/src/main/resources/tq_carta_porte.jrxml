@@ -377,7 +377,7 @@
 			</textField>
 			<image hAlign="Center" vAlign="Middle">
 				<reportElement x="10" y="-4" width="99" height="61" uuid="a4fcf80f-62cc-4437-bb06-c0022e0d37d1"/>
-				<imageExpression><![CDATA["/home/userd/Downloads/tquintanilla.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["/resources/logo.jpg"]]></imageExpression>
 			</image>
 		</band>
 	</title>
@@ -589,7 +589,7 @@ tqdhCBg==| 00001000000413073350||]]></text>
 			</textField>
 			<image>
 				<reportElement x="478" y="2" width="90" height="90" uuid="0c12bded-3587-4e94-b863-78af95a6f076"/>
-				<imageExpression><![CDATA["/home/userd/Downloads/qrcode_sample.jpeg"]]></imageExpression>
+				<imageExpression><![CDATA["/resources/out_qrcode.png"]]></imageExpression>
 			</image>
 		</band>
 	</pageFooter>

@@ -4,7 +4,7 @@ package com.immortalcrab.as400.formats;
 // import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -22,8 +22,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Optional;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 // import com.immortalcrab.as400.request.FacturaRequest;
@@ -89,7 +87,7 @@ public class FacturaXml {
             cfdi.setTipoDeComprobante(CTipoDeComprobante.I);
             cfdi.setTotal(new BigDecimal((String) ds.get("TOTAL")));
             cfdi.setMoneda(CMoneda.fromValue((String) ds.get("MONEDA")));
-            cfdi.setCertificado(Certificado.readFromFile("/resources/TQU740415380.cer"));
+            cfdi.setCertificado(Certificado.readFromFile("/resources/pubkey.cer"));
             cfdi.setSubTotal(new BigDecimal((String) ds.get("SUBTOT")));
             cfdi.setCondicionesDePago((String) ds.get("CONPAG"));
             cfdi.setNoCertificado((String) ds.get("CDIGITAL"));
@@ -114,7 +112,7 @@ public class FacturaXml {
             // Conceptos
             var conceptos = cfdiFactory.createComprobanteConceptos();
 
-            for (var c : (ArrayList<HashMap<String, String>>) ds.get("CONCEPTOS")) {
+            for (var c : (ArrayList<Map<String, String>>) ds.get("CONCEPTOS")) {
 
                 var concepto = cfdiFactory.createComprobanteConceptosConcepto();
                 concepto.setClaveProdServ(c.get("DCVESERV"));
@@ -190,7 +188,7 @@ public class FacturaXml {
             marshaller.marshal(cfdi, sw);
 
             var cadenaOrig = CadenaOriginal.build(sw.toString(), "/resources/cadenaoriginal_3_3.xslt");
-            var sello = Signer.signMessage("/resources/TQU740415380.pem", cadenaOrig);
+            var sello = Signer.signMessage("/resources/privkey.pem", cadenaOrig);
             cfdi.setSello(sello);
             marshaller.marshal(cfdi, sw);
 

@@ -1,7 +1,6 @@
 package com.immortalcrab.as400.formats;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -14,8 +13,8 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.engine.Storage;
-import com.immortalcrab.cfdi.utils.CadenaOriginal;
-import com.immortalcrab.cfdi.utils.Signer;
+import com.immortalcrab.as400.error.FormatError;
+import com.immortalcrab.as400.error.StorageError;
 import com.immortalcrab.numspatrans.Translator;
 import com.immortalcrab.qrcode.QRCode;
 
@@ -39,12 +38,36 @@ public class FacturaPdf {
     //         System.out.println(e);
     //     }
     // }
+    private final CfdiRequest cfdiReq;
+    private final Storage st;
+
+    private FacturaPdf(CfdiRequest cfdiReq, Storage st) {
+        this.cfdiReq = cfdiReq;
+        this.st = st;
+    }
+
+    public static void render(CfdiRequest cfdiReq, Storage st) throws FormatError, StorageError {
+
+        FacturaPdf ic = new FacturaPdf(cfdiReq, st);
+        ic.save(ic.shape());
+    }
+
+    private void save(byte[] in) throws FormatError, StorageError {
+
+        var ds = this.cfdiReq.getDs();
+        final String fileName = (String) ds.get("SERIE") + (String) ds.get("FOLIO") + ".pdf";
+
+        this.st.upload("application/pdf", in.length, fileName, new ByteArrayInputStream(in));
+    }
 
     // public static void render(final CfdiRequest cfdiReq, String pdfTemplate, String output) {
-    public static void render(final CfdiRequest cfdiReq, Storage st) {
+    private byte[] shape() throws FormatError {
+
+        byte[] pdfBytes = null;
 
         try {
             var ds = cfdiReq.getDs();
+
             // Translate the cfdi total into text (in Spanish)
             var s = (String) ds.get("TOTAL");
             String[] a = s.split("\\.");
@@ -60,45 +83,29 @@ public class FacturaPdf {
             ds.put("FECHSTAMP", "2021-09-28T10:00:00"); //TODO: hardcode
             ds.put("CDIGITAL_SAT", "00001000000509541499"); //TODO: hardcode
 
-            // Build cadena original
-            String cfdiXml = CadenaOriginal.readXml(
-                    "/home/userd/dev/lola/DOS/cfdi/service/signer-py/5b52aef2-c0a7-4267-9f79-85aaeaddb651.xml");
-            String cadenaOriginal = CadenaOriginal.build(cfdiXml,
-                    "/home/userd/dev/lola/DOS/cfdi/service/signer-py/cadenaoriginal_3_3.xslt");
-            System.out.println(cadenaOriginal);
-
-            // Sign cadena original
-            String privateKeyPemPath = "/home/userd/dev/uploads/CSD_Ecatepec_MOBO8001149UA_20180623_002721.pem";
-            String sello = Signer.signMessage(privateKeyPemPath, cadenaOriginal);
-            System.out.println(sello);
-            ds.put("SELLO", sello);
-
             // QR Code generation
-            QRCode.generate("34598foijsdof89uj34oij", 1250, 1250, "/home/userd/output.png");
-
-            System.out.println(ds);
+            QRCode.generate("34598foijsdof89uj34oij", 1250, 1250, "/resources/out_qrcode.png");
 
             // PDF generation
-            // InputStream is = FacturaPdf.class.getResourceAsStream(pdfTemplate);
             InputStream is = FacturaPdf.class.getResourceAsStream("/tq_carta_porte.jrxml");
             JasperReport jasperReport = JasperCompileManager.compileReport(is);
-            JRDataSource conceptos = new JRBeanCollectionDataSource(
-                    (ArrayList<Map<String, String>>) ds.get("CONCEPTOS"));
+            JRDataSource conceptos = new JRBeanCollectionDataSource((ArrayList<Map<String, String>>) ds.get("CONCEPTOS"));
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, ds, conceptos);
-            // JasperExportManager.exportReportToPdfFile(jasperPrint, output);
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "tq_carta_porte.pdf");
+            pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
 
         } catch (IOException ex) {
-            Logger.getLogger(FacturaPdf.class.getName()).log(Level.SEVERE, null, ex);
+            throw new FormatError("An error occurred when building factura pdf", ex);
 
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(FacturaPdf.class.getName()).log(Level.SEVERE, null, ex);
+            throw new FormatError("An error occurred when building factura pdf", ex);
 
         } catch (SAXException ex) {
-            Logger.getLogger(FacturaPdf.class.getName()).log(Level.SEVERE, null, ex);
+            throw new FormatError("An error occurred when building factura pdf", ex);
 
         } catch (Exception ex) {
-            Logger.getLogger(FacturaPdf.class.getName()).log(Level.SEVERE, null, ex);
+            throw new FormatError("An error occurred when building factura pdf", ex);
         }
+
+        return pdfBytes;
     }
 }
