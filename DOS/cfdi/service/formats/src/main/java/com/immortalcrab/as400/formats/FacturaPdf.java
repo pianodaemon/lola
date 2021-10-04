@@ -89,8 +89,10 @@ public class FacturaPdf {
             QRCode.generate("34598foijsdof89uj34oij", 1250, 1250, "/resources/out_qrcode.png");
 
             // PDF generation
-            InputStream is = FacturaPdf.class.getResourceAsStream("/resources/tq_carta_porte.jrxml");
-            JasperReport jasperReport = JasperCompileManager.compileReport(is);
+            var template = new File("/resources/tq_carta_porte.jrxml");
+            byte[] bytes = Files.readAllBytes(template.toPath());
+            var bais = new ByteArrayInputStream(bytes);
+            JasperReport jasperReport = JasperCompileManager.compileReport(bais);
             JRDataSource conceptos = new JRBeanCollectionDataSource((ArrayList<Map<String, String>>) ds.get("CONCEPTOS"));
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, ds, conceptos);
             pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
