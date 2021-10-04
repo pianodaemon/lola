@@ -90,9 +90,11 @@ public class FacturaPdf {
             pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
 
         } catch (JRException ex) {
+            ex.printStackTrace();
             throw new FormatError("An error occurred when building factura pdf (jasper report). ", ex);
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new FormatError("An error occurred when building factura pdf. ", ex);
         }
 
