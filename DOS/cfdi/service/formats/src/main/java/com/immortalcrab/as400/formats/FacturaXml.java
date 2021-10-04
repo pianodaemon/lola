@@ -190,6 +190,7 @@ public class FacturaXml {
             var cadenaOrig = CadenaOriginal.build(sw.toString(), "/resources/cadenaoriginal_3_3.xslt");
             var sello = Signer.signMessage("/resources/privkey.pem", cadenaOrig);
             cfdi.setSello(sello);
+            sw.flush();
             marshaller.marshal(cfdi, sw);
 
         } catch (JAXBException | DatatypeConfigurationException ex) {

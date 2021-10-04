@@ -1,6 +1,8 @@
 package com.immortalcrab.numspatrans;
 
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.file.Files;
 import java.util.Properties;
 
 import org.python.core.PyString;
@@ -22,17 +24,15 @@ public class Translator {
         var postProps = new Properties();
         var argv = new String[] { String.valueOf(number) };
         PyString result;
-        final String pyFilename = "/numspatrans.py";
+        var pyScript = new File("/resources/numspatrans.py");
 
-        InputStream is = Translator.class.getResourceAsStream(pyFilename);
-        if (is == null) {
-            throw new Exception("There is a problem with python script");
-        }
+        byte[] bytes = Files.readAllBytes(pyScript.toPath());
+        var bais = new ByteArrayInputStream(bytes);
 
         PythonInterpreter.initialize(preProps, postProps, argv);
 
         try (PythonInterpreter pyInterp = new PythonInterpreter()) {
-            pyInterp.execfile(is);
+            pyInterp.execfile(bais);
             result = (PyString) pyInterp.get("res");
         }
         return result.asString();
