@@ -8,7 +8,6 @@
     <name>workclock</name>
     <modules>
         <module>../parsers</module>
-        <module>../numspatrans</module>
         <module>../engine</module>
         <module>../qrcode</module>
         <module>../cfdi-utils</module>

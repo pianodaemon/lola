@@ -23,7 +23,7 @@ RUN mkdir -p .mvn
 RUN tar -xvf mvnw.tar -C .mvn
 RUN ./mvnw clean package
 
-FROM adoptopenjdk/openjdk11:alpine
+FROM adoptopenjdk:11-jdk-hotspot-focal
 
 ENV APP_DIR=/
 # Copy the jar to the production image from the builder stage.
