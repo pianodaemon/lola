@@ -1,12 +1,9 @@
 package com.immortalcrab.as400.formats;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -60,7 +57,6 @@ public class FacturaPdf {
         this.st.upload("application/pdf", in.length, fileName, new ByteArrayInputStream(in));
     }
 
-    // public static void render(final CfdiRequest cfdiReq, String pdfTemplate, String output) {
     private byte[] shape() throws FormatError {
 
         byte[] pdfBytes = null;
@@ -93,17 +89,11 @@ public class FacturaPdf {
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, ds, conceptos);
             pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
 
-        } catch (IOException ex) {
-            throw new FormatError("An error occurred when building factura pdf", ex);
-
-        } catch (ParserConfigurationException ex) {
-            throw new FormatError("An error occurred when building factura pdf", ex);
-
-        } catch (SAXException ex) {
-            throw new FormatError("An error occurred when building factura pdf", ex);
+        } catch (JRException ex) {
+            throw new FormatError("An error occurred when building factura pdf (jasper report). ", ex);
 
         } catch (Exception ex) {
-            throw new FormatError("An error occurred when building factura pdf", ex);
+            throw new FormatError("An error occurred when building factura pdf. ", ex);
         }
 
         return pdfBytes;
