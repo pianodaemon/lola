@@ -94,6 +94,8 @@ public class FacturaXml {
             cfdi.setFormaPago(((String) ds.get("FORPAG")).split(":")[0]);
             cfdi.setVersion("3.3");
             cfdi.setFecha(DatatypeFactory.newInstance().newXMLGregorianCalendar((String) ds.get("FECHOR")));
+            cfdi.setSerie((String) ds.get("SERIE"));
+            cfdi.setFolio((String) ds.get("FOLIO"));
 
             // Emisor
             var emisor = cfdiFactory.createComprobanteEmisor();
