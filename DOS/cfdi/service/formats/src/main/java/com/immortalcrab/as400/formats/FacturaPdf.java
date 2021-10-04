@@ -1,7 +1,9 @@
 package com.immortalcrab.as400.formats;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -65,6 +67,16 @@ public class FacturaPdf {
             var ds = cfdiReq.getDs();
 
             // Translate the cfdi total into text (in Spanish)
+            try {
+                var file = new File("/resources/numspatrans.py");
+                byte[] bytes = Files.readAllBytes(file.toPath());
+                var t = new String(bytes, "UTF-8");
+                System.out.println("*****resource FOUND!!\n" + t);
+            } catch (Exception e) {
+                System.out.println("!!!!!resource NOT FOUND!!");
+                e.printStackTrace();
+            }
+
             var s = (String) ds.get("TOTAL");
             String[] a = s.split("\\.");
             String num = Translator.translateIntegerToSpanish(Long.valueOf(a[0])).toUpperCase();
