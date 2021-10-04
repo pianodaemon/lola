@@ -453,21 +453,21 @@
 			<textField>
 				<reportElement x="10" y="2" width="40" height="16" uuid="7f929e44-e2c1-40a9-be2e-04f1f91b1a7c"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Liberation Mono" size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
+					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DCANT}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="50" y="2" width="32" height="16" uuid="db6779d4-5724-48a7-804b-196c3c655f5d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Liberation Mono" size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
+					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DCUME}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="82" y="2" width="32" height="16" uuid="c2dcf14e-2be0-4379-b9ef-ca984d4a81a1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Liberation Mono" size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
+					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Unidad"]]></textFieldExpression>
 			</textField>
@@ -476,28 +476,28 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Liberation Mono" size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
+					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DCVESERV}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="156" y="2" width="315" height="16" uuid="8778f6d3-abfa-4baf-8604-c2d5f2b4158c"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Liberation Mono" size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
+					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DDESL}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="472" y="2" width="50" height="16" uuid="c7e3f5bf-5df5-41c8-a3c8-77b8ec708f12"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Liberation Mono" size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
+					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DUNIT}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="522" y="2" width="50" height="16" uuid="19d0e35c-9df5-4bf0-812e-4def257003b8"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Liberation Mono" size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
+					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DIMPO}]]></textFieldExpression>
 			</textField>
