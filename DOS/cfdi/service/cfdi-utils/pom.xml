@@ -8,7 +8,7 @@
   <artifactId>cfdi-utils</artifactId>
   <version>LOLA-TRAILERA</version>
   <packaging>jar</packaging>
-  <name>signer</name>
+  <name>cfdi-utils</name>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

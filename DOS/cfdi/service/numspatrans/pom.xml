@@ -6,7 +6,7 @@
     <artifactId>numspatrans</artifactId>
     <version>LOLA-TRAILERA</version>
     <packaging>jar</packaging>
-    <name>Translate an integer into text (Spanish)</name>
+    <name>numspatrans</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
