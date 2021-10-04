@@ -6,6 +6,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Properties;
+
+import org.python.core.PyString;
+import org.python.util.PythonInterpreter;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -14,7 +18,6 @@ import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.engine.Storage;
 import com.immortalcrab.as400.error.FormatError;
 import com.immortalcrab.as400.error.StorageError;
-import com.immortalcrab.numspatrans.Translator;
 import com.immortalcrab.qrcode.QRCode;
 
 // import java.io.FileInputStream;
@@ -67,19 +70,9 @@ public class FacturaPdf {
             var ds = cfdiReq.getDs();
 
             // Translate the cfdi total into text (in Spanish)
-            try {
-                var file = new File("/resources/numspatrans.py");
-                byte[] bytes = Files.readAllBytes(file.toPath());
-                var t = new String(bytes, "UTF-8");
-                System.out.println("*****resource FOUND!!\n" + t);
-            } catch (Exception e) {
-                System.out.println("!!!!!resource NOT FOUND!!");
-                e.printStackTrace();
-            }
-
             var s = (String) ds.get("TOTAL");
             String[] a = s.split("\\.");
-            String num = Translator.translateIntegerToSpanish(Long.valueOf(a[0])).toUpperCase();
+            String num = translateIntegerToSpanish(Long.valueOf(a[0])).toUpperCase();
 
             if (a.length > 1) {
                 num += String.format(" PESOS %s/100 M.N.", a[1]);
@@ -87,6 +80,7 @@ public class FacturaPdf {
                 num += " PESOS 00/100 M.N.";
             }
             ds.put("TOTAL_LETRA", num);
+
             ds.put("UUID", "5b52aef2-c0a7-4267-9f79-85aaeaddb651"); //TODO: hardcode
             ds.put("FECHSTAMP", "2021-09-28T10:00:00"); //TODO: hardcode
             ds.put("CDIGITAL_SAT", "00001000000509541499"); //TODO: hardcode
@@ -95,7 +89,7 @@ public class FacturaPdf {
             QRCode.generate("34598foijsdof89uj34oij", 1250, 1250, "/resources/out_qrcode.png");
 
             // PDF generation
-            InputStream is = FacturaPdf.class.getResourceAsStream("/tq_carta_porte.jrxml");
+            InputStream is = FacturaPdf.class.getResourceAsStream("/resources/tq_carta_porte.jrxml");
             JasperReport jasperReport = JasperCompileManager.compileReport(is);
             JRDataSource conceptos = new JRBeanCollectionDataSource((ArrayList<Map<String, String>>) ds.get("CONCEPTOS"));
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, ds, conceptos);
@@ -111,5 +105,25 @@ public class FacturaPdf {
         }
 
         return pdfBytes;
+    }
+
+    public static String translateIntegerToSpanish(long number) throws Exception {
+
+        var preProps = System.getProperties();
+        var postProps = new Properties();
+        var argv = new String[] { String.valueOf(number) };
+        PyString result;
+
+        var pyScript = new File("/resources/numspatrans.py");
+        byte[] bytes = Files.readAllBytes(pyScript.toPath());
+        var bais = new ByteArrayInputStream(bytes);
+
+        PythonInterpreter.initialize(preProps, postProps, argv);
+
+        try (PythonInterpreter pyInterp = new PythonInterpreter()) {
+            pyInterp.execfile(bais);
+            result = (PyString) pyInterp.get("res");
+        }
+        return result.asString();
     }
 }
