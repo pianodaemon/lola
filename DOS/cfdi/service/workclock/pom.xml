@@ -10,6 +10,8 @@
         <module>../parsers</module>
         <module>../numspatrans</module>
         <module>../engine</module>
+        <module>../qrcode</module>
+        <module>../cfdi-utils</module>
         <module>../formats</module>
         <module>../server</module>
     </modules>
