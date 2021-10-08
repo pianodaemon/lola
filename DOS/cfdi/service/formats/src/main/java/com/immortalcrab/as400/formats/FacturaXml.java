@@ -5,10 +5,18 @@ package com.immortalcrab.as400.formats;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Map;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.engine.Storage;
@@ -17,15 +25,12 @@ import com.immortalcrab.as400.error.StorageError;
 import com.immortalcrab.cfdi.utils.CadenaOriginal;
 import com.immortalcrab.cfdi.utils.Certificado;
 import com.immortalcrab.cfdi.utils.Signer;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
 // import com.immortalcrab.as400.request.FacturaRequest;
 // import com.immortalcrab.as400.parser.PairExtractor;
+
+import org.datacontract.schemas._2004._07.tes_tfd_v33.RespuestaTFD33;
+import org.tempuri.IWSCFDI33;
+import org.tempuri.WSCFDI33;
 
 import mx.gob.sat.cfd._3.ObjectFactory;
 import mx.gob.sat.sitio_internet.cfd.catalogos.CMetodoPago;
@@ -56,7 +61,8 @@ public class FacturaXml {
     public static void render(CfdiRequest cfdiReq, Storage st) throws FormatError, StorageError {
 
         FacturaXml ic = new FacturaXml(cfdiReq, st);
-        ic.save(ic.shape());
+        StringWriter cfdi = ic.shape();
+        ic.save(ic.timbrarCfdi(cfdi));
     }
 
     private void save(StringWriter sw) throws FormatError, StorageError {
@@ -113,6 +119,7 @@ public class FacturaXml {
 
             // Conceptos
             var conceptos = cfdiFactory.createComprobanteConceptos();
+            boolean tieneRetenciones = false;
 
             for (var c : (ArrayList<Map<String, String>>) ds.get("CONCEPTOS")) {
 
@@ -142,6 +149,7 @@ public class FacturaXml {
                 // Retenciones
                 var diri = c.get("DIRI");
                 if (diri != null) {
+                    tieneRetenciones = true;
                     var retenciones = cfdiFactory.createComprobanteConceptosConceptoImpuestosRetenciones();
                     var retencion = cfdiFactory.createComprobanteConceptosConceptoImpuestosRetencionesRetencion();
                     retencion.setBase(new BigDecimal(c.get("DBASE")));
@@ -172,13 +180,15 @@ public class FacturaXml {
             impuestosTraslado.setImporte(new BigDecimal((String) ds.get("IVA")));
             impuestosTrasladoList.add(impuestosTraslado);
             impuestos.setTraslados(impuestosTraslados);
-            var impuestosRetenciones = cfdiFactory.createComprobanteImpuestosRetenciones();
-            var impuestosRetencionList = impuestosRetenciones.getRetencion();
-            var impuestosRetencion = cfdiFactory.createComprobanteImpuestosRetencionesRetencion();
-            impuestosRetencion.setImpuesto("002");
-            impuestosRetencion.setImporte(new BigDecimal((String) ds.get("IVARET")));
-            impuestosRetencionList.add(impuestosRetencion);
-            impuestos.setRetenciones(impuestosRetenciones);
+            if (tieneRetenciones) {
+                var impuestosRetenciones = cfdiFactory.createComprobanteImpuestosRetenciones();
+                var impuestosRetencionList = impuestosRetenciones.getRetencion();
+                var impuestosRetencion = cfdiFactory.createComprobanteImpuestosRetencionesRetencion();
+                impuestosRetencion.setImpuesto("002");
+                impuestosRetencion.setImporte(new BigDecimal((String) ds.get("IVARET")));
+                impuestosRetencionList.add(impuestosRetencion);
+                impuestos.setRetenciones(impuestosRetenciones);
+            }
             cfdi.setImpuestos(impuestos);
 
             // JAXBContext context = JAXBContext.newInstance("mx.gob.sat.cfd._3:mx.gob.sat.cartaporte");
@@ -204,5 +214,41 @@ public class FacturaXml {
         }
 
         return sw;
+    }
+
+    private StringWriter timbrarCfdi(StringWriter cfdi) throws FormatError {
+
+        var ds = this.cfdiReq.getDs();
+        String[] arrCreds = null;
+
+        try {
+            var file = new File("/resources/fel-credentials.txt");
+            byte[] bytes = Files.readAllBytes(file.toPath());
+            var creds = new String(bytes, "UTF-8");
+            arrCreds = creds.split("\\|\\|");
+        } catch (Exception e) {
+            throw new FormatError("Couldn't get PAC credentials", e);
+        }
+
+        WSCFDI33 ws = new WSCFDI33();
+        IWSCFDI33 iws = ws.getSoapHttpEndpoint();
+        RespuestaTFD33 res = iws.timbrarCFDI(arrCreds[0], arrCreds[1], cfdi.toString(), (String) ds.get("SERIE") + (String) ds.get("FOLIO"));
+
+        var resultStr = String.format("Codigo respuesta: %s\nMensaje: %s\nMensaje (detllado): %s",
+                res.getCodigoRespuesta().getValue(),
+                res.getMensajeError().getValue(),
+                res.getMensajeErrorDetallado().getValue());
+
+        if (res.isOperacionExitosa()) {
+            System.out.println(resultStr);
+            ds.put("UUID", res.getTimbre().getValue().getUUID().getValue());
+
+            var cfdiTimbrado = new StringWriter();
+            cfdiTimbrado.write(res.getXMLResultado().getValue());
+            return cfdiTimbrado;
+
+        } else {
+            throw new FormatError("An error occurred when PAC tried to sign the cfdi.\n" + resultStr);
+        }
     }
 }

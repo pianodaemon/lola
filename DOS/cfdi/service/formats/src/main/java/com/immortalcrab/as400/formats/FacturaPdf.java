@@ -2,7 +2,6 @@ package com.immortalcrab.as400.formats;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Map;
@@ -81,7 +80,6 @@ public class FacturaPdf {
             }
             ds.put("TOTAL_LETRA", num);
 
-            ds.put("UUID", "5b52aef2-c0a7-4267-9f79-85aaeaddb651"); //TODO: hardcode
             ds.put("FECHSTAMP", "2021-09-28T10:00:00"); //TODO: hardcode
             ds.put("CDIGITAL_SAT", "00001000000509541499"); //TODO: hardcode
 
