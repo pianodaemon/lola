@@ -8,7 +8,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
-    - host: lola.tq.uki
+    - host: lola-cfdi-a.tq.com.mx
       http:
         paths:
           - path: /api/auth(/|$)(.*)
