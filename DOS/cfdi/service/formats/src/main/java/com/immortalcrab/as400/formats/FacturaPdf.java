@@ -83,7 +83,8 @@ public class FacturaPdf {
             ds.put("FECHSTAMP", "2021-09-28T10:00:00"); //TODO: hardcode
             ds.put("CDIGITAL_SAT", "00001000000509541499"); //TODO: hardcode
 
-            String resourcesDir = System.getenv("RESOURCES_DIR");
+            String resourcesDirVarName = "RESOURCES_DIR";
+            String resourcesDir = System.getenv(resourcesDirVarName);
             if (resourcesDir == null) {
                 resourcesDir = "/resources";
             }
@@ -91,6 +92,7 @@ public class FacturaPdf {
             QRCode.generate("34598foijsdof89uj34oij", 1250, 1250, resourcesDir + "/out_qrcode.png");
 
             // PDF generation
+            ds.put(resourcesDirVarName, resourcesDir);
             var template = new File(resourcesDir + "/tq_carta_porte.jrxml");
             byte[] bytes = Files.readAllBytes(template.toPath());
             var bais = new ByteArrayInputStream(bytes);

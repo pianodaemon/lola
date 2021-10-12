@@ -18,6 +18,7 @@
 	<parameter name="TOTAL_LETRA" class="java.lang.String"/>
 	<parameter name="SUBTOT" class="java.lang.String"/>
 	<parameter name="TOTAL" class="java.lang.String"/>
+	<parameter name="RESOURCES_DIR" class="java.lang.String"/>
 	<field name="DCANT" class="java.lang.String"/>
 	<field name="DCUME" class="java.lang.String"/>
 	<field name="DCVESERV" class="java.lang.String"/>
@@ -57,8 +58,10 @@
 			<rectangle>
 				<reportElement mode="Transparent" x="373" y="0" width="197" height="57" uuid="e898bb55-bff2-49c7-bce2-682d3c86c0ee"/>
 			</rectangle>
-			<textField>
-				<reportElement x="110" y="0" width="262" height="20" uuid="98ff6ae6-ba7b-4285-840d-2e16ea5a9836"/>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="110" y="0" width="262" height="20" uuid="98ff6ae6-ba7b-4285-840d-2e16ea5a9836">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
@@ -377,7 +380,7 @@
 			</textField>
 			<image hAlign="Center" vAlign="Middle">
 				<reportElement x="10" y="-4" width="99" height="61" uuid="a4fcf80f-62cc-4437-bb06-c0022e0d37d1"/>
-				<imageExpression><![CDATA["/resources/logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA[$P{RESOURCES_DIR}.concat("/logo.jpg")]]></imageExpression>
 			</image>
 		</band>
 	</title>
@@ -589,7 +592,7 @@ tqdhCBg==| 00001000000413073350||]]></text>
 			</textField>
 			<image>
 				<reportElement x="478" y="2" width="90" height="90" uuid="0c12bded-3587-4e94-b863-78af95a6f076"/>
-				<imageExpression><![CDATA["/resources/out_qrcode.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{RESOURCES_DIR}.concat("/out_qrcode.png")]]></imageExpression>
 			</image>
 		</band>
 	</pageFooter>
