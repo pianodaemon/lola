@@ -230,9 +230,10 @@ public class FacturaXml {
 
         var ds = this.cfdiReq.getDs();
         String[] arrCreds = null;
+        String resourcesDir;
 
         try {
-            String resourcesDir = System.getenv("RESOURCES_DIR");
+            resourcesDir = System.getenv("RESOURCES_DIR");
             if (resourcesDir == null) {
                 resourcesDir = "/resources";
             }
@@ -244,10 +245,18 @@ public class FacturaXml {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new FormatError("Couldn't get PAC credentials", e);
+            throw new FormatError("No fue posible obtener las credenciales del PAC", e);
         }
 
-        WSCFDI33 ws = new WSCFDI33();
+        var svcfile = new File(resourcesDir + "/WSCFDI33.svc.xml");
+        WSCFDI33 ws = null;
+        try {
+            ws = new WSCFDI33(svcfile.toURI().toURL());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FormatError("No fue posible obtener el archivo wsdl para timbrado", e);
+        }
         IWSCFDI33 iws = ws.getSoapHttpEndpoint();
         RespuestaTFD33 res = iws.timbrarCFDI(arrCreds[0], arrCreds[1].trim(), cfdi.toString(), (String) ds.get("SERIE") + (String) ds.get("FOLIO"));
 
