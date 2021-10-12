@@ -44,9 +44,15 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     private Claims extractClaims(HttpServletRequest request) {
 
+        String pubKeyPath = System.getenv("PUB_KEY_PATH");
+        if (pubKeyPath == null) {
+            pubKeyPath = PUB_KEY_PATH;
+        }
+
         try {
             String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
-            return Jwts.parser().setSigningKey(loadPublicKey(new FileInputStream(PUB_KEY_PATH))).parseClaimsJws(jwtToken).getBody();
+            return Jwts.parser().setSigningKey(loadPublicKey(new FileInputStream(pubKeyPath))).parseClaimsJws(jwtToken).getBody();
+
         } catch (Exception ex) {
             throw new UnsupportedJwtException(ex.getMessage());
         }

@@ -19,6 +19,15 @@
     <properties>
         <java.version>11</java.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>jasper-3rd-party</id>
+            <name>Jasper3rdParty</name>
+            <url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -64,6 +73,46 @@
             <version>1.2</version>
         </dependency>
         <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.16.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-functions</artifactId>
+            <version>6.16.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.birt.runtime.3_7_1</groupId>
+            <artifactId>org.apache.xerces</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.immortalcrab</groupId>
+            <artifactId>cfdi-utils</artifactId>
+            <version>LOLA-TRAILERA</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>3.4.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>3.4.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.python</groupId>
+            <artifactId>jython-standalone</artifactId>
+            <version>2.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.immortalcrab</groupId>
+            <artifactId>qrcode</artifactId>
+            <version>LOLA-TRAILERA</version>
+        </dependency>
+        <dependency>
             <groupId>javaee-jaxb-ri</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.3.1</version>
@@ -102,6 +151,7 @@
             <version>1.11.931</version>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>

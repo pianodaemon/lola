@@ -83,11 +83,15 @@ public class FacturaPdf {
             ds.put("FECHSTAMP", "2021-09-28T10:00:00"); //TODO: hardcode
             ds.put("CDIGITAL_SAT", "00001000000509541499"); //TODO: hardcode
 
+            String resourcesDir = System.getenv("RESOURCES_DIR");
+            if (resourcesDir == null) {
+                resourcesDir = "/resources";
+            }
             // QR Code generation
-            QRCode.generate("34598foijsdof89uj34oij", 1250, 1250, "/resources/out_qrcode.png");
+            QRCode.generate("34598foijsdof89uj34oij", 1250, 1250, resourcesDir + "/out_qrcode.png");
 
             // PDF generation
-            var template = new File("/resources/tq_carta_porte.jrxml");
+            var template = new File(resourcesDir + "/tq_carta_porte.jrxml");
             byte[] bytes = Files.readAllBytes(template.toPath());
             var bais = new ByteArrayInputStream(bytes);
             JasperReport jasperReport = JasperCompileManager.compileReport(bais);
@@ -109,12 +113,17 @@ public class FacturaPdf {
 
     public static String translateIntegerToSpanish(long number) throws Exception {
 
+        String resourcesDir = System.getenv("RESOURCES_DIR");
+        if (resourcesDir == null) {
+            resourcesDir = "/resources";
+        }
+
         var preProps = System.getProperties();
         var postProps = new Properties();
         var argv = new String[] { String.valueOf(number) };
         PyString result;
 
-        var pyScript = new File("/resources/numspatrans.py");
+        var pyScript = new File(resourcesDir + "/numspatrans.py");
         byte[] bytes = Files.readAllBytes(pyScript.toPath());
         var bais = new ByteArrayInputStream(bytes);
 

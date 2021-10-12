@@ -60,6 +60,7 @@ public class SthreeStorage implements Storage {
         try {
             amazonS3.putObject(System.getenv("BUCKET_TARGET"), fileName, inputStream, objectMetadata);
         } catch (AmazonServiceException ex) {
+            ex.printStackTrace();
             throw new StorageError("Failed to upload the file", ex);
         }
     }

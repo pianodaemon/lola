@@ -83,6 +83,11 @@ public class FacturaXml {
         StringWriter sw = new StringWriter();
 
         try {
+            String resourcesDir = System.getenv("RESOURCES_DIR");
+            if (resourcesDir == null) {
+                resourcesDir = "/resources";
+            }
+
             var ds = this.cfdiReq.getDs();
             var cfdiFactory = new ObjectFactory();
 
@@ -93,7 +98,7 @@ public class FacturaXml {
             cfdi.setTipoDeComprobante(CTipoDeComprobante.I);
             cfdi.setTotal(new BigDecimal((String) ds.get("TOTAL")));
             cfdi.setMoneda(CMoneda.fromValue((String) ds.get("MONEDA")));
-            cfdi.setCertificado(Certificado.readFromFile("/resources/pubkey.cer"));
+            cfdi.setCertificado(Certificado.readFromFile(resourcesDir + "/pubkey.cer"));
             cfdi.setSubTotal(new BigDecimal((String) ds.get("SUBTOT")));
             cfdi.setCondicionesDePago((String) ds.get("CONPAG"));
             cfdi.setNoCertificado((String) ds.get("CDIGITAL"));
@@ -199,17 +204,22 @@ public class FacturaXml {
             marshaller.setProperty("jaxb.formatted.output", true);
             marshaller.marshal(cfdi, sw);
 
-            var cadenaOrig = CadenaOriginal.build(sw.toString(), "/resources/cadenaoriginal_3_3.xslt");
-            var sello = Signer.signMessage("/resources/privkey.pem", cadenaOrig);
+            var cadenaOrig = CadenaOriginal.build(sw.toString(), resourcesDir + "/cadenaoriginal_3_3.xslt");
+            var sello = Signer.signMessage(resourcesDir + "/privkey.pem", cadenaOrig);
             cfdi.setSello(sello);
             sw = new StringWriter();
             marshaller.marshal(cfdi, sw);
 
         } catch (JAXBException | DatatypeConfigurationException ex) {
+            ex.printStackTrace();
             throw new FormatError("An error occurred when forming the factura xml", ex);
+
         } catch (IOException ex) {
+            ex.printStackTrace();
             throw new FormatError("An error occurred when reading Certificado from file", ex);
+
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new FormatError("An error occurred when building Cadena Original", ex);
         }
 
@@ -222,29 +232,42 @@ public class FacturaXml {
         String[] arrCreds = null;
 
         try {
-            var file = new File("/resources/fel-credentials.txt");
+            String resourcesDir = System.getenv("RESOURCES_DIR");
+            if (resourcesDir == null) {
+                resourcesDir = "/resources";
+            }
+
+            var file = new File(resourcesDir + "/fel-credentials.txt");
             byte[] bytes = Files.readAllBytes(file.toPath());
             var creds = new String(bytes, "UTF-8");
             arrCreds = creds.split("\\|\\|");
+
         } catch (Exception e) {
+            e.printStackTrace();
             throw new FormatError("Couldn't get PAC credentials", e);
         }
 
         WSCFDI33 ws = new WSCFDI33();
         IWSCFDI33 iws = ws.getSoapHttpEndpoint();
-        RespuestaTFD33 res = iws.timbrarCFDI(arrCreds[0], arrCreds[1], cfdi.toString(), (String) ds.get("SERIE") + (String) ds.get("FOLIO"));
+        RespuestaTFD33 res = iws.timbrarCFDI(arrCreds[0], arrCreds[1].trim(), cfdi.toString(), (String) ds.get("SERIE") + (String) ds.get("FOLIO"));
 
-        var resultStr = String.format("Codigo respuesta: %s\nMensaje: %s\nMensaje (detllado): %s",
+        var resultStr = String.format("Codigo respuesta: %s\nMensaje: %s\nMensaje (detallado): %s",
                 res.getCodigoRespuesta().getValue(),
                 res.getMensajeError().getValue(),
                 res.getMensajeErrorDetallado().getValue());
 
         if (res.isOperacionExitosa()) {
             System.out.println(resultStr);
-            ds.put("UUID", res.getTimbre().getValue().getUUID().getValue());
+
+            String uuid = res.getTimbre().getValue().getUUID().getValue();
+            ds.put("UUID", uuid);
+            System.out.println("UUID: " + uuid);
+
+            String xmlTimbrado = res.getXMLResultado().getValue();
+            System.out.println(xmlTimbrado);
 
             var cfdiTimbrado = new StringWriter();
-            cfdiTimbrado.write(res.getXMLResultado().getValue());
+            cfdiTimbrado.write(xmlTimbrado);
             return cfdiTimbrado;
 
         } else {
