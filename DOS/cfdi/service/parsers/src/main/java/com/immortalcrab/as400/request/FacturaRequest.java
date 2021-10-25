@@ -38,6 +38,7 @@ public class FacturaRequest extends CfdiRequest {
         {
             captureSymbolImpt("CONCEPTOS", new ArrayList<Map<String, String>>());
             captureSymbolImpt("COMENTARIOS", new ArrayList<String>());
+            captureSymbolImpt("CARTAPORTE", new HashMap<String, Object>());
         }
 
         {
@@ -66,10 +67,6 @@ public class FacturaRequest extends CfdiRequest {
             captureSymbol("CONTEN");
 
             captureSymbol("CAJAS");
-
-            captureSymbol("TRACTOR");
-
-            captureSymbol("DOCUMENTA");
         }
 
         // Oficinas
@@ -152,6 +149,7 @@ public class FacturaRequest extends CfdiRequest {
 
         this.pickUpDsecBlocks();
         this.pickUpComments();
+        this.pickUpCartaPorte();
 
         return ds;
     }
@@ -181,7 +179,7 @@ public class FacturaRequest extends CfdiRequest {
             "DDESL",     // Descripcion
             "DUNIT",     // ValorUnitario
             "DIMPO",     // Importe
-            "DIDESCTO",  // Descuento
+            "DESCTO",    // Descuento
             "DBASE",     // Base
             "DITIMP",    // Traslado Importe
             "DITI",      // Traslado Impuesto
@@ -214,6 +212,166 @@ public class FacturaRequest extends CfdiRequest {
                     break;
                 }
                 c.put(p.getValue0(), p.getValue1());
+            }
+        }
+    }
+
+    private void pickUpCartaPorte() {
+
+        var m = (HashMap<String, Object>) this.ds.get("CARTAPORTE");
+
+        var ubicacionesMap = new HashMap<String, Object>();
+        var origen = new HashMap<String, String>();
+        ubicacionesMap.put("ORIGEN", origen);
+        var destino = new HashMap<String, String>();
+        ubicacionesMap.put("DESTINO", destino);
+        m.put("UBICACIONES", ubicacionesMap);
+
+        var mercanciasMap = new HashMap<String, Object>();
+        var mercanciaList = new ArrayList<HashMap<String, String>>();
+        mercanciasMap.put("LISTA", mercanciaList);
+        var autoTranspFederal = new HashMap<String, String>();
+        mercanciasMap.put("AUTOTRANSPORTEFEDERAL", autoTranspFederal);
+        m.put("MERCANCIAS",  mercanciasMap);
+
+        var figuraTransporteMap = new HashMap<String, Object>();
+        var operadorList = new ArrayList<HashMap<String, String>>();
+        figuraTransporteMap.put("OPERADORES", operadorList);
+        m.put("FIGURATRANSPORTE", figuraTransporteMap);
+
+        HashMap<String, String> mercancia = null;
+        HashMap<String, String> operador = null;
+
+        for (Iterator<Pair<String, String>> it = this.kvs.iterator(); it.hasNext();) {
+
+            Pair<String, String> p = it.next();
+
+            switch(p.getValue0()) {
+
+                // Carta Porte - Generales
+                case "CPTRANSPINTERNAC": {
+                    m.put("TRANSPINTERNAC", p.getValue1());
+                    break;
+                }
+                case "CPTOTALDISTREC": {
+                    m.put("TOTALDISTREC", p.getValue1());
+                    break;
+                }
+                // Ubicaciones - Valor aplicado a Origen y Destino
+                case "CPDISTANCIARECORRIDA": {
+                    var distRec = "DISTANCIARECORRIDA";
+                    origen.put(distRec, p.getValue1());
+                    destino.put(distRec, p.getValue1());
+                    break;
+                }
+                // Ubicaciones - Origen
+                case "CPREMDIR": {
+                    origen.put("CALLE", p.getValue1());
+                    break;
+                }
+                case "CPREMNUM": {
+                    origen.put("NUMEROEXTERIOR", p.getValue1());
+                    break;
+                }
+                case "CPREMCOLC": {
+                    origen.put("COLONIA", p.getValue1());
+                    break;
+                }
+                case "CPREMMUNC": {
+                    origen.put("MUNICIPIO", p.getValue1());
+                    break;
+                }
+                case "CPREMEDOC": {
+                    origen.put("ESTADO", p.getValue1());
+                    break;
+                }
+                case "CPREMPAI": {
+                    origen.put("PAIS", p.getValue1());
+                    break;
+                }
+                case "CPREMZIP": {
+                    origen.put("CODIGOPOSTAL", p.getValue1());
+                    break;
+                }
+                // Ubicaciones - Destino
+                case "CPDESDIR": {
+                    destino.put("CALLE", p.getValue1());
+                    break;
+                }
+                case "CPDESNUM": {
+                    destino.put("NUMEROEXTERIOR", p.getValue1());
+                    break;
+                }
+                case "CPDESCOLC": {
+                    destino.put("COLONIA", p.getValue1());
+                    break;
+                }
+                case "CPDESMUNC": {
+                    destino.put("MUNICIPIO", p.getValue1());
+                    break;
+                }
+                case "CPDESEDOC": {
+                    destino.put("ESTADO", p.getValue1());
+                    break;
+                }
+                case "CPDESPAI": {
+                    destino.put("PAIS", p.getValue1());
+                    break;
+                }
+                case "CPDESZIP": {
+                    destino.put("CODIGOPOSTAL", p.getValue1());
+                    break;
+                }
+                // Mercancias
+                case "CPBIENES": {
+                    mercancia = new HashMap<String, String>();
+                    mercancia.put("BIENESTRANSP", p.getValue1());
+                    break;
+                }
+                case "CPCANT": {
+                    mercancia.put("CANTIDAD", p.getValue1());
+                    break;
+                }
+                case "CPCUNI": {
+                    mercancia.put("CLAVEUNIDAD", p.getValue1());
+                    break;
+                }
+                case "CPPESOKG": {
+                    mercancia.put("PESOENKG", p.getValue1());
+                    mercanciaList.add(mercancia);
+                    break;
+                }
+                // Mercancias - Autotransporte Federal
+                case "CPCNFGCAR": {
+                    autoTranspFederal.put("CONFIGVEHICULAR", p.getValue1());
+                    break;
+                }
+                case "CPPLACAVM": {
+                    autoTranspFederal.put("PLACAVM", p.getValue1());
+                    break;
+                }
+                case "CPMODELOVM": {
+                    autoTranspFederal.put("ANIOMODELOVM", p.getValue1());
+                    break;
+                }
+                // Figura Transporte - Operadores
+                case "CPRFCOPE": {
+                    operador = new HashMap<String, String>();
+                    operador.put("RFCOPERADOR", p.getValue1());
+                    break;
+                }
+                case "CPLICENCIA": {
+                    operador.put("NUMLICENCIA", p.getValue1());
+                    break;
+                }
+                case "CPNOMOPE": {
+                    operador.put("NOMBREOPERADOR", p.getValue1());
+                    operadorList.add(operador);
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
         }
     }

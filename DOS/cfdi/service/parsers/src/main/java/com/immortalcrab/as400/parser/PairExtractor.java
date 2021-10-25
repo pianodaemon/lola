@@ -2,10 +2,13 @@ package com.immortalcrab.as400.parser;
 
 import com.immortalcrab.as400.error.PairExtractorError;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -36,8 +39,9 @@ public class PairExtractor {
 
     public static List<Pair<String, String>> go4it(InputStreamReader inReader) throws PairExtractorError {
 
+        var isr = preprocess(inReader);
         PairExtractor ic = new PairExtractor();
-        return ic.traverseBuffer(inReader);
+        return ic.traverseBuffer(isr);
     }
 
     private List<Pair<String, String>> traverseBuffer(InputStreamReader inReader) throws PairExtractorError {
@@ -112,5 +116,52 @@ public class PairExtractor {
         }
 
         return rpair;
+    }
+
+    public static InputStreamReader preprocess(InputStreamReader isr) {
+
+        InputStreamReader isr2 = null;
+
+        try {
+            var writer = new StringWriter();
+            isr.transferTo(writer);
+            var str = writer.toString();
+
+            // Reemplazar algunas cadenas
+            str = str.replaceAll("\r\n", "");
+            str = str.replaceAll("> <", "><");
+            str = str.replaceAll("<>", "< >");
+            str = str.replaceAll("=====CARTA PORTE===================", "");
+
+            var firstSign = false;
+            var sw = new StringWriter();
+
+            // Dejar un solo par <KEY><VALUE> por linea
+            for (int i = 0; i < str.length(); i++) {
+
+                char c = str.charAt(i);
+
+                if (c == '>') {
+                    if (firstSign) {
+                        sw.append(c);
+                        sw.append('\n');
+                        firstSign = false;
+                    } else {
+                        sw.append(c);
+                        firstSign = true;
+                    }
+                } else {
+                    sw.append(c);
+                }
+            }
+
+            var bais = new ByteArrayInputStream(sw.toString().getBytes(StandardCharsets.UTF_8));
+            isr2 = new InputStreamReader(bais);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return isr2;
     }
 }

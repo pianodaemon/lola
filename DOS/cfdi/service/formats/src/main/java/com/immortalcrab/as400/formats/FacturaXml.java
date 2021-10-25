@@ -1,9 +1,10 @@
 package com.immortalcrab.as400.formats;
 
-// import java.io.FileInputStream;
-// import java.io.InputStreamReader;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -25,8 +27,8 @@ import com.immortalcrab.as400.error.StorageError;
 import com.immortalcrab.cfdi.utils.CadenaOriginal;
 import com.immortalcrab.cfdi.utils.Certificado;
 import com.immortalcrab.cfdi.utils.Signer;
-// import com.immortalcrab.as400.request.FacturaRequest;
-// import com.immortalcrab.as400.parser.PairExtractor;
+import com.immortalcrab.as400.request.FacturaRequest;
+import com.immortalcrab.as400.parser.PairExtractor;
 
 import org.datacontract.schemas._2004._07.tes_tfd_v33.RespuestaTFD33;
 import org.tempuri.IWSCFDI33;
@@ -35,21 +37,99 @@ import org.tempuri.WSCFDI33;
 import mx.gob.sat.cfd._3.ObjectFactory;
 import mx.gob.sat.sitio_internet.cfd.catalogos.CMetodoPago;
 import mx.gob.sat.sitio_internet.cfd.catalogos.CMoneda;
+import mx.gob.sat.sitio_internet.cfd.catalogos.CPais;
 import mx.gob.sat.sitio_internet.cfd.catalogos.CTipoDeComprobante;
 import mx.gob.sat.sitio_internet.cfd.catalogos.CTipoFactor;
 import mx.gob.sat.sitio_internet.cfd.catalogos.CUsoCFDI;
+import mx.gob.sat.sitio_internet.cfd.catalogos.cartaporte.CConfigAutotransporte;
+import mx.gob.sat.sitio_internet.cfd.catalogos.cartaporte.CTipoPermiso;
 
 public class FacturaXml {
 
-    // public static void main(String[] args) {
-    //     try {
-    //         var isr = new InputStreamReader(new FileInputStream("/home/userd/Downloads/NV139360-changed2.txt"), StandardCharsets.UTF_8);
-    //         var facReq = FacturaRequest.render(PairExtractor.go4it(isr));
-    //         render(facReq, null);
-    //     } catch (Exception e) {
-    //         System.out.println(e);
-    //     }
-    // }
+    public static void main(String[] args) {
+        try {
+            // var isr = new InputStreamReader(new FileInputStream("/home/userd/Downloads/NV139360-changed.txt"), StandardCharsets.UTF_8);
+            // var isr = new InputStreamReader(new FileInputStream("/home/userd/Downloads/facmock.txt"), StandardCharsets.UTF_8);
+            // var l = PairExtractor.go4it("/home/userd/Downloads/NV139360-cartaporte.txt");
+            // var l = PairExtractor.go4it(isr);
+            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV139360-cartaporte.txt")), StandardCharsets.UTF_8);
+            System.out.println(fileContent);
+            System.out.println("***********------------------------------------------***********");
+            // fileContent = fileContent.replaceAll("\r\n", "");
+            // fileContent = fileContent.replaceAll("> <", "><");
+            // fileContent = fileContent.replaceAll("<>", "< >");
+            // fileContent = fileContent.replaceAll("=====CARTA PORTE===================", "");
+
+            // var firstSign = false;
+            // var sw = new StringWriter();
+            // for (int i = 0; i < fileContent.length(); i++) {
+
+            //     char c = fileContent.charAt(i);
+
+            //     if (c == '>') {
+            //         if (firstSign) {
+            //             sw.append(c);
+            //             sw.append('\n');
+            //             firstSign = false;
+            //         } else {
+            //             sw.append(c);
+            //             firstSign = true;
+            //         }
+            //     } else {
+            //         sw.append(c);
+            //     }
+            // }
+
+            // System.out.println(sw.toString());
+            // var bais = new ByteArrayInputStream(sw.toString().getBytes(StandardCharsets.UTF_8));
+            // var isr = new InputStreamReader(bais);
+            // var l = PairExtractor.go4it(isr);
+            // var facReq = FacturaRequest.render(l);
+            // render(facReq, null);
+
+            var bais = new ByteArrayInputStream(fileContent.getBytes(StandardCharsets.UTF_8));
+            var isr = new InputStreamReader(bais);
+            var w = new StringWriter();
+            isr.transferTo(w);
+            var str = w.toString();
+            System.out.println("------------------isr.toString()------------------------------------");
+            System.out.println(str);
+            str = str.replaceAll("\r\n", "");
+            str = str.replaceAll("> <", "><");
+            str = str.replaceAll("<>", "< >");
+            str = str.replaceAll("=====CARTA PORTE===================", "");
+
+            var firstSign = false;
+            var sw = new StringWriter();
+            for (int i = 0; i < str.length(); i++) {
+
+                char c = str.charAt(i);
+
+                if (c == '>') {
+                    if (firstSign) {
+                        sw.append(c);
+                        sw.append('\n');
+                        firstSign = false;
+                    } else {
+                        sw.append(c);
+                        firstSign = true;
+                    }
+                } else {
+                    sw.append(c);
+                }
+            }
+            System.out.println("----------------------sw.toString()--------------------------------");
+            System.out.println(sw.toString());
+            var bais2 = new ByteArrayInputStream(sw.toString().getBytes(StandardCharsets.UTF_8));
+            var isr2 = new InputStreamReader(bais2);
+            var l = PairExtractor.go4it(isr2);
+            var facReq = FacturaRequest.render(l);
+            render(facReq, null);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private final CfdiRequest cfdiReq;
     private final Storage st;
 
@@ -196,19 +276,141 @@ public class FacturaXml {
             }
             cfdi.setImpuestos(impuestos);
 
-            // JAXBContext context = JAXBContext.newInstance("mx.gob.sat.cfd._3:mx.gob.sat.cartaporte");
-            JAXBContext context = JAXBContext.newInstance("mx.gob.sat.cfd._3");
+            // Complementos
+            var complementoList = cfdi.getComplemento();
+            var complemento = cfdiFactory.createComprobanteComplemento();
+            List<Object> l = complemento.getAny();
+
+            // Complemento - Carta Porte
+            var cp = (HashMap<String, Object>) ds.get("CARTAPORTE");
+            var cartaPorteFactory = new mx.gob.sat.cartaporte.ObjectFactory();
+            var cartaPorte = cartaPorteFactory.createCartaPorte();
+            cartaPorte.setVersion("1.0");
+            cartaPorte.setTranspInternac((String) cp.get("TRANSPINTERNAC"));
+            cartaPorte.setTotalDistRec(new BigDecimal("1242"));
+            // cartaPorte.setEntradaSalidaMerc("Entrada");
+            // cartaPorte.setViaEntradaSalida("01");
+
+            // Complemento - Carta Porte - Ubicaciones
+            var cpUbicaciones = (HashMap<String, Object>) cp.get("UBICACIONES");
+            var ubicaciones = cartaPorteFactory.createCartaPorteUbicaciones();
+            var ubicacionList = ubicaciones.getUbicacion();
+
+            // Complemento - Carta Porte - Ubicaciones - Ubicación - Origen
+            var cpOrigen = (HashMap<String, String>) cpUbicaciones.get("ORIGEN");
+            var ubicacion = cartaPorteFactory.createCartaPorteUbicacionesUbicacion();
+            ubicacion.setTipoEstacion("01");
+            ubicacion.setDistanciaRecorrida(new BigDecimal("1000"));
+            var origen = cartaPorteFactory.createCartaPorteUbicacionesUbicacionOrigen();
+            origen.setFechaHoraSalida(DatatypeFactory.newInstance().newXMLGregorianCalendar("2021-10-23T00:00:00"));
+            ubicacion.setOrigen(origen);
+            var domicilio = cartaPorteFactory.createCartaPorteUbicacionesUbicacionDomicilio();
+            domicilio.setCalle(cpOrigen.get("CALLE"));
+            domicilio.setNumeroExterior(cpOrigen.get("NUMEROEXTERIOR"));
+            domicilio.setColonia(cpOrigen.get("COLONIA"));
+            domicilio.setMunicipio(cpOrigen.get("MUNICIPIO"));
+            domicilio.setEstado(cpOrigen.get("ESTADO"));
+            domicilio.setPais(CPais.fromValue(cpOrigen.get("PAIS")));
+            domicilio.setCodigoPostal(cpOrigen.get("CODIGOPOSTAL"));
+            ubicacion.setDomicilio(domicilio);
+            ubicacionList.add(ubicacion);
+
+            // Complemento - Carta Porte - Ubicaciones - Ubicación - Destino
+            var cpDestino = (HashMap<String, String>) cpUbicaciones.get("DESTINO");
+            ubicacion = cartaPorteFactory.createCartaPorteUbicacionesUbicacion();
+            ubicacion.setTipoEstacion("03");
+            ubicacion.setDistanciaRecorrida(new BigDecimal("242"));
+            var destino = cartaPorteFactory.createCartaPorteUbicacionesUbicacionDestino();
+            destino.setFechaHoraProgLlegada(DatatypeFactory.newInstance().newXMLGregorianCalendar("2021-10-24T00:00:00"));
+            ubicacion.setDestino(destino);
+            domicilio = cartaPorteFactory.createCartaPorteUbicacionesUbicacionDomicilio();
+            domicilio.setCalle(cpDestino.get("CALLE"));
+            domicilio.setNumeroExterior(cpDestino.get("NUMEROEXTERIOR"));
+            domicilio.setColonia(cpDestino.get("COLONIA"));
+            domicilio.setMunicipio(cpDestino.get("MUNICIPIO"));
+            domicilio.setEstado(cpDestino.get("ESTADO"));
+            domicilio.setPais(CPais.fromValue(cpDestino.get("PAIS")));
+            domicilio.setCodigoPostal(cpDestino.get("CODIGOPOSTAL"));
+            ubicacion.setDomicilio(domicilio);
+            ubicacionList.add(ubicacion);
+            cartaPorte.setUbicaciones(ubicaciones);
+
+            // Complemento - Carta Porte - Mercancías
+            var cpMercancias = (HashMap<String, Object>) cp.get("MERCANCIAS");
+            var cpMercanciaList = (ArrayList<HashMap<String, String>>) cpMercancias.get("LISTA");
+            var mercancias = cartaPorteFactory.createCartaPorteMercancias();
+            mercancias.setNumTotalMercancias(cpMercanciaList.size());
+            var mercanciaList = mercancias.getMercancia();
+
+            for (HashMap<String, String> item : cpMercanciaList) {
+                var mercancia = cartaPorteFactory.createCartaPorteMercanciasMercancia();
+                mercancia.setBienesTransp(item.get("BIENESTRANSP"));
+                mercancia.setCantidad(new BigDecimal(item.get("CANTIDAD")));
+                mercancia.setClaveUnidad(item.get("CLAVEUNIDAD"));
+                mercancia.setPesoEnKg(new BigDecimal(item.get("PESOENKG")));
+                mercanciaList.add(mercancia);
+            }
+
+            var cpAutotransporteFederal = (HashMap<String, String>) cpMercancias.get("AUTOTRANSPORTEFEDERAL");
+            var autotransporteFederal = cartaPorteFactory.createCartaPorteMercanciasAutotransporteFederal();
+            autotransporteFederal.setPermSCT(CTipoPermiso.TPAF_01);
+            autotransporteFederal.setNumPermisoSCT("45245555");
+            autotransporteFederal.setNombreAseg("asaa");
+            autotransporteFederal.setNumPolizaSeguro("1245");
+            var identificacionVehicular = cartaPorteFactory.createCartaPorteMercanciasAutotransporteFederalIdentificacionVehicular();
+            identificacionVehicular.setConfigVehicular(CConfigAutotransporte.fromValue(cpAutotransporteFederal.get("CONFIGVEHICULAR")));
+            identificacionVehicular.setPlacaVM(cpAutotransporteFederal.get("PLACAVM"));
+            identificacionVehicular.setAnioModeloVM(Integer.parseInt(cpAutotransporteFederal.get("ANIOMODELOVM")));
+            autotransporteFederal.setIdentificacionVehicular(identificacionVehicular);
+            mercancias.setAutotransporteFederal(autotransporteFederal);
+            cartaPorte.setMercancias(mercancias);
+
+            // Complemento - Carta Porte - Figura Transporte
+            var cpFiguraTransporte = (HashMap<String, Object>) cp.get("FIGURATRANSPORTE");
+            var cpOperadorList = (ArrayList<HashMap<String, String>>) cpFiguraTransporte.get("OPERADORES");
+            var figuraTransporte = cartaPorteFactory.createCartaPorteFiguraTransporte();
+            figuraTransporte.setCveTransporte("01");
+            var operadoresList = figuraTransporte.getOperadores();
+            var operadores = cartaPorteFactory.createCartaPorteFiguraTransporteOperadores();
+            operadoresList.add(operadores);
+            var operadorList = operadores.getOperador();
+
+            for (HashMap<String, String> item : cpOperadorList) {
+                var operador = cartaPorteFactory.createCartaPorteFiguraTransporteOperadoresOperador();
+                operador.setNumLicencia(item.get("NUMLICENCIA"));
+                operador.setNombreOperador(item.get("NOMBREOPERADOR"));
+                operador.setRFCOperador(item.get("RFCOPERADOR"));
+                operadorList.add(operador);
+            }
+
+            cartaPorte.setFiguraTransporte(figuraTransporte);
+
+            l.add(cartaPorte);
+            complementoList.add(complemento);
+
+            // Hacer el marshalling del cfdi object
+            JAXBContext context = JAXBContext.newInstance("mx.gob.sat.cfd._3:mx.gob.sat.cartaporte");
             Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty("jaxb.schemaLocation", "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd");
+            marshaller.setProperty("jaxb.schemaLocation", "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd http://www.sat.gob.mx/CartaPorte http://www.sat.gob.mx/sitio_internet/cfd/CartaPorte/CartaPorte.xsd");
             marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new CfdiNamespaceMapper());
             marshaller.setProperty("jaxb.formatted.output", true);
             marshaller.marshal(cfdi, sw);
 
-            var cadenaOrig = CadenaOriginal.build(sw.toString(), resourcesDir + "/cadenaoriginal_3_3.xslt");
-            var sello = Signer.signMessage(resourcesDir + "/privkey.pem", cadenaOrig);
+            // Armar la cadena original del comprobante + complemento de carta porte
+            var cfdiXml = sw.toString();
+            var cadenaOrig = CadenaOriginal.build(cfdiXml, resourcesDir + "/cadenaoriginal_3_3.xslt");
+            var str1 = cadenaOrig.replaceAll(" \\|\\|", " ").trim();
+            var cadenaOrigCartaPorte = CadenaOriginal.build(cfdiXml, resourcesDir + "/CartaPorte.xslt");
+            var str2 = cadenaOrigCartaPorte.replaceAll("<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>", " ").trim() + "||";
+            var nuevaCadenaOrig = str1 + str2;
+
+            // Sellar cadena original
+            var sello = Signer.signMessage(resourcesDir + "/privkey.pem", nuevaCadenaOrig);
             cfdi.setSello(sello);
+            
             sw = new StringWriter();
             marshaller.marshal(cfdi, sw);
+            System.out.println(sw.toString());
 
         } catch (JAXBException | DatatypeConfigurationException ex) {
             ex.printStackTrace();
