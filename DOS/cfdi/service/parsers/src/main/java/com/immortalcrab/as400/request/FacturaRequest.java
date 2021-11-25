@@ -66,6 +66,8 @@ public class FacturaRequest extends CfdiRequest {
             // Contenidos
             captureSymbol("CONTEN");
 
+            captureSymbol("MONEDAS");
+
             captureSymbol("CAJAS");
         }
 
@@ -250,122 +252,159 @@ public class FacturaRequest extends CfdiRequest {
 
                 // Carta Porte - Generales
                 case "CPTRANSPINTERNAC": {
-                    m.put("TRANSPINTERNAC", p.getValue1());
+                    m.put("TranspInternac", p.getValue1());
                     break;
                 }
                 case "CPTOTALDISTREC": {
-                    m.put("TOTALDISTREC", p.getValue1());
+                    m.put("TotalDistRec", p.getValue1());
                     break;
                 }
-                // Ubicaciones - Valor aplicado a Origen y Destino
-                case "CPDISTANCIARECORRIDA": {
-                    var distRec = "DISTANCIARECORRIDA";
-                    origen.put(distRec, p.getValue1());
-                    destino.put(distRec, p.getValue1());
+                case "CPENTRADASALIDAMERC": {
+                    m.put("EntradaSalidaMerc", p.getValue1());
+                    break;
+                }
+                case "CPVIAENTRADASALIDA": {
+                    m.put("ViaEntradaSalida", p.getValue1());
                     break;
                 }
                 // Ubicaciones - Origen
+                case "CPREMNOMBRE": {
+                    origen.put("NombreRemitente", p.getValue1());
+                    break;
+                }
+                case "CPREMRESIDENCIAFISCAL": {
+                    origen.put("ResidenciaFiscal", p.getValue1());
+                    break;
+                }
+                case "CPFECHAHORASALIDA": {
+                    origen.put("FechaHoraSalida", p.getValue1());
+                    break;
+                }
+                case "CPREMDISTANCIARECORRIDA": {
+                    origen.put("DistanciaRecorrida", p.getValue1());
+                    break;
+                }
                 case "CPREMDIR": {
-                    origen.put("CALLE", p.getValue1());
+                    origen.put("Calle", p.getValue1());
                     break;
                 }
                 case "CPREMNUM": {
-                    origen.put("NUMEROEXTERIOR", p.getValue1());
+                    origen.put("NumeroExterior", p.getValue1());
                     break;
                 }
-                case "CPREMCOLC": {
-                    origen.put("COLONIA", p.getValue1());
+                case "CPREMCOL": {
+                    origen.put("Colonia", p.getValue1());
                     break;
                 }
-                case "CPREMMUNC": {
-                    origen.put("MUNICIPIO", p.getValue1());
+                case "CPREMLOC": {
+                    origen.put("Localidad", p.getValue1());
                     break;
                 }
-                case "CPREMEDOC": {
-                    origen.put("ESTADO", p.getValue1());
+                case "CPREMMUN": {
+                    origen.put("Municipio", p.getValue1());
+                    break;
+                }
+                case "CPREMEDO": {
+                    origen.put("Estado", p.getValue1());
                     break;
                 }
                 case "CPREMPAI": {
-                    origen.put("PAIS", p.getValue1());
+                    origen.put("Pais", p.getValue1());
                     break;
                 }
                 case "CPREMZIP": {
-                    origen.put("CODIGOPOSTAL", p.getValue1());
+                    origen.put("CodigoPostal", p.getValue1());
                     break;
                 }
                 // Ubicaciones - Destino
+                case "CPFECHAHORALLEGADA": {
+                    destino.put("FechaHoraProgLlegada", p.getValue1());
+                    break;
+                }
+                case "CPDESDISTANCIARECORRIDA": {
+                    destino.put("DistanciaRecorrida", p.getValue1());
+                    break;
+                }
                 case "CPDESDIR": {
-                    destino.put("CALLE", p.getValue1());
+                    destino.put("Calle", p.getValue1());
                     break;
                 }
                 case "CPDESNUM": {
-                    destino.put("NUMEROEXTERIOR", p.getValue1());
+                    destino.put("NumeroExterior", p.getValue1());
                     break;
                 }
                 case "CPDESCOLC": {
-                    destino.put("COLONIA", p.getValue1());
+                    destino.put("Colonia", p.getValue1());
                     break;
                 }
                 case "CPDESMUNC": {
-                    destino.put("MUNICIPIO", p.getValue1());
+                    destino.put("Municipio", p.getValue1());
                     break;
                 }
                 case "CPDESEDOC": {
-                    destino.put("ESTADO", p.getValue1());
+                    destino.put("Estado", p.getValue1());
                     break;
                 }
                 case "CPDESPAI": {
-                    destino.put("PAIS", p.getValue1());
+                    destino.put("Pais", p.getValue1());
                     break;
                 }
                 case "CPDESZIP": {
-                    destino.put("CODIGOPOSTAL", p.getValue1());
+                    destino.put("CodigoPostal", p.getValue1());
                     break;
                 }
                 // Mercancias
                 case "CPBIENES": {
                     mercancia = new HashMap<String, String>();
-                    mercancia.put("BIENESTRANSP", p.getValue1());
+                    mercancia.put("BienesTransp", p.getValue1());
                     break;
                 }
                 case "CPCANT": {
-                    mercancia.put("CANTIDAD", p.getValue1());
+                    mercancia.put("Cantidad", p.getValue1());
                     break;
                 }
                 case "CPCUNI": {
-                    mercancia.put("CLAVEUNIDAD", p.getValue1());
+                    mercancia.put("ClaveUnidad", p.getValue1());
+                    break;
+                }
+                case "CPUNID": {
+                    mercancia.put("Unidad", p.getValue1());
                     break;
                 }
                 case "CPPESOKG": {
-                    mercancia.put("PESOENKG", p.getValue1());
+                    mercancia.put("PesoEnKg", p.getValue1());
+                    break;
+                }
+                case "CPPEDIMENTO": {
+                    mercancia.put("Pedimento", p.getValue1());
                     mercanciaList.add(mercancia);
                     break;
                 }
                 // Mercancias - Autotransporte Federal
                 case "CPCNFGCAR": {
-                    autoTranspFederal.put("CONFIGVEHICULAR", p.getValue1());
+                    autoTranspFederal.put("ConfigVehicular", p.getValue1());
                     break;
                 }
                 case "CPPLACAVM": {
-                    autoTranspFederal.put("PLACAVM", p.getValue1());
+                    autoTranspFederal.put("PlacaVM", p.getValue1());
                     break;
                 }
                 case "CPMODELOVM": {
-                    autoTranspFederal.put("ANIOMODELOVM", p.getValue1());
+                    autoTranspFederal.put("AnioModeloVM", p.getValue1());
                     break;
                 }
                 // Figura Transporte - Operadores
                 case "CPRFCOPE": {
                     operador = new HashMap<String, String>();
-                    operador.put("RFCOPERADOR", p.getValue1());
+                    operador.put("RFCOperador", p.getValue1());
                     break;
                 }
                 case "CPLICENCIA": {
-                    operador.put("NUMLICENCIA", p.getValue1());
+                    operador.put("NumLicencia", p.getValue1());
                     break;
                 }
                 case "CPNOMOPE": {
-                    operador.put("NOMBREOPERADOR", p.getValue1());
+                    operador.put("NombreOperador", p.getValue1());
                     operadorList.add(operador);
                     break;
                 }

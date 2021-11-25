@@ -132,6 +132,10 @@ public class PairExtractor {
             str = str.replaceAll("> <", "><");
             str = str.replaceAll("<>", "< >");
             str = str.replaceAll("=====CARTA PORTE===================", "");
+            str = str.replaceAll("<SERVICIOS>", "");
+            str = str.replaceAll("<COMENTARIOS>", "");
+            str = str.replaceAll("<RELACIONADOS>", "");
+            str = str.replaceAll("<MERCANCIAS>", "");
 
             var firstSign = false;
             var sw = new StringWriter();

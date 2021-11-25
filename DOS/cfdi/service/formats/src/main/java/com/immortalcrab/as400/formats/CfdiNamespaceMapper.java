@@ -6,8 +6,8 @@ public class CfdiNamespaceMapper extends NamespacePrefixMapper {
 
     private static final String CFDI_PREFIX       = "cfdi";
     private static final String CFDI_URI          = "http://www.sat.gob.mx/cfd/3";
-    private static final String CARTAPORTE_PREFIX = "cartaporte";
-    private static final String CARTAPORTE_URI    = "http://www.sat.gob.mx/CartaPorte";
+    // private static final String CARTAPORTE_PREFIX = "cartaporte";
+    // private static final String CARTAPORTE_URI    = "http://www.sat.gob.mx/CartaPorte";
 
     @Override
     public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
@@ -15,8 +15,8 @@ public class CfdiNamespaceMapper extends NamespacePrefixMapper {
         if (CFDI_URI.equals(namespaceUri)) {
             return CFDI_PREFIX;
 
-        } else if (CARTAPORTE_URI.equals(namespaceUri)) {
-            return CARTAPORTE_PREFIX;
+        // } else if (CARTAPORTE_URI.equals(namespaceUri)) {
+        //     return CARTAPORTE_PREFIX;
         }
 
         return suggestion;
@@ -24,6 +24,7 @@ public class CfdiNamespaceMapper extends NamespacePrefixMapper {
 
     @Override
     public String[] getPreDeclaredNamespaceUris() {
-        return new String[] { CFDI_URI, CARTAPORTE_URI };
+        // return new String[] { CFDI_URI, CARTAPORTE_URI };
+        return new String[] { CFDI_URI };
     }
 }
