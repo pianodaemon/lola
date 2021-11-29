@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -42,7 +43,7 @@ public class FacturaPdf {
             // var output   = "tq_carta_porte.pdf";
             // render(facReq, template, output);
 
-            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140573 v2 211112.txt")), StandardCharsets.UTF_8);
+            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140573_v2_211123.txt")), StandardCharsets.UTF_8);
             System.out.println(fileContent);
             System.out.println("***********------------------------------------------***********");
 
@@ -94,6 +95,7 @@ public class FacturaPdf {
             ds.put("FECHSTAMP", "2021-11-22T10:04:05"); //TODO: comment hardcode
             ds.put("SELLO_CFD", "jhkhkhuyguygasdjhIHuhishduiha"); //TODO: comment hardcode
             ds.put("SELLO_SAT", "aYhdfuhIUund78kjnfi"); //TODO: comment hardcode
+            ds.put("CADENA_ORIGINAL_TFD", "sdfiooiosdiufoiiusdfouiodsf"); //TODO: comment hardcode
             render(facReq, null);
 
         } catch (Exception e) {
@@ -114,20 +116,24 @@ public class FacturaPdf {
         ic.save(ic.shape());
     }
 
-    private void save(byte[] in) throws FormatError, StorageError {
+    private void save(ArrayList<byte[]> in) throws FormatError, StorageError {
 
         var ds = this.cfdiReq.getDs();
-        final String fileName = (String) ds.get("SERIE") + (String) ds.get("FOLIO") + ".pdf";
+        var serie = (String) ds.get("SERIE");
+        var folio = (String) ds.get("FOLIO");
+        final String fileName = serie + folio + ".pdf";
+        final String fileNameCp = serie + folio + "_CP.pdf";
 
-        this.st.upload("application/pdf", in.length, fileName, new ByteArrayInputStream(in));
+        this.st.upload("application/pdf", in.get(0).length, fileName, new ByteArrayInputStream(in.get(0)));
+        this.st.upload("application/pdf", in.get(1).length, fileNameCp, new ByteArrayInputStream(in.get(1)));
     }
 
-    private byte[] shape() throws FormatError {
+    private ArrayList<byte[]> shape() throws FormatError {
 
-        byte[] pdfBytes = null;
+        var pdfBytesList = new ArrayList<byte[]>();
 
         try {
-            var ds = cfdiReq.getDs();
+            var ds = this.cfdiReq.getDs();
 
             // Translate the cfdi total into text (in Spanish)
             var total = (String) ds.get("TOTAL");
@@ -165,7 +171,8 @@ public class FacturaPdf {
                 // total,
                 // ds.get("SELLO_CFD")
             );
-            ds.put("QRCODE", QRCode.generateByteStream(verificaCfdiUrl, 400, 400));
+            var qrCodeBais = QRCode.generateByteStream(verificaCfdiUrl, 400, 400);
+            ds.put("QRCODE", qrCodeBais);
 
             // Get resources dir
             String resourcesDirVarName = "RESOURCES_DIR";
@@ -174,16 +181,64 @@ public class FacturaPdf {
                 resourcesDir = "/resources";
             }
 
-            // PDF generation
+            // PDF generation (CFDI)
             ds.put(resourcesDirVarName, resourcesDir);
             var template = new File(resourcesDir + "/tq_carta_porte.jrxml");
             byte[] bytes = Files.readAllBytes(template.toPath());
             var bais = new ByteArrayInputStream(bytes);
             JasperReport jasperReport = JasperCompileManager.compileReport(bais);
-            JRDataSource conceptos = new JRBeanCollectionDataSource((ArrayList<Map<String, String>>) ds.get("CONCEPTOS"));
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, ds, conceptos);
-            pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
-            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV140573 v2 211112.pdf");
+            JRDataSource conceptosJR = new JRBeanCollectionDataSource((ArrayList<Map<String, String>>) ds.get("CONCEPTOS"));
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, ds, conceptosJR);
+            pdfBytesList.add(JasperExportManager.exportReportToPdf(jasperPrint));
+            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV140573_v2_211123.pdf");
+
+            // PDF generation (Carta Porte)
+            qrCodeBais.reset();
+            // Se extraen algunos datos de las estructuras anidadas y se colocan a nivel del ds HashMap (para pasarlos como jrxml parameters)
+            var cp = (HashMap<String, Object>) ds.get("CARTAPORTE");
+            var ubicaciones = (HashMap<String, Object>) cp.get("UBICACIONES");
+            var origen = (HashMap<String, Object>) ubicaciones.get("ORIGEN");
+            var destino = (HashMap<String, Object>) ubicaciones.get("DESTINO");
+            var mercancias = (HashMap<String, Object>) cp.get("MERCANCIAS");
+            var mercanciaList = (ArrayList<HashMap<String, Object>>) mercancias.get("LISTA");
+            var autotransporteFederal = (HashMap<String, String>) mercancias.get("AUTOTRANSPORTEFEDERAL");
+            var figuraTransporte = (HashMap<String, Object>) cp.get("FIGURATRANSPORTE");
+            var operadorList = (ArrayList<HashMap<String, String>>) figuraTransporte.get("OPERADORES");
+            var operador = operadorList.get(0);
+            ds.put("CPFECHAHORASALIDA", (String) origen.get("FechaHoraSalida"));
+            ds.put("CPFECHAHORALLEGADA", (String) destino.get("FechaHoraProgLlegada"));
+            ds.put("CPTIPOVIAJE", cp.get("CPTIPOVIAJE"));
+            ds.put("TranspInternac", cp.get("TranspInternac"));
+            ds.put("EntradaSalidaMerc", cp.get("EntradaSalidaMerc"));
+            ds.put("ViaEntradaSalida", cp.get("ViaEntradaSalida"));
+            ds.put("TotalDistRec", cp.get("TotalDistRec"));
+            ds.put("PESOBRUTOTOTAL", mercancias.get("PESOBRUTOTOTAL"));
+            ds.put("PESONETOTOTAL", mercancias.get("PESONETOTOTAL"));
+            ds.put("NumTotalMercancias", String.valueOf(mercanciaList.size()));
+            ds.put("ConfigVehicular", autotransporteFederal.get("ConfigVehicular"));
+            ds.put("CNUMPERMSCT", autotransporteFederal.get("CNUMPERMSCT"));
+            ds.put("PlacaVM", autotransporteFederal.get("PlacaVM"));
+            ds.put("AnioModeloVM", autotransporteFederal.get("AnioModeloVM"));
+            ds.put("CPQSEGRESCIV", autotransporteFederal.get("CPQSEGRESCIV"));
+            ds.put("CPQSEGRESCIVN", autotransporteFederal.get("CPQSEGRESCIVN"));
+            ds.put("CPSTPOREM", autotransporteFederal.get("CPSTPOREM"));
+            ds.put("CPPLACAREM", autotransporteFederal.get("CPPLACAREM"));
+            ds.put("RFCOperador", operador.get("RFCOperador"));
+            ds.put("NumLicencia", operador.get("NumLicencia"));
+            ds.put("NombreOperador", operador.get("NombreOperador"));
+
+            for (var m : mercanciaList) {
+                m.put("ValorMercancia", df.format(Double.parseDouble((String) m.get("ValorMercancia"))));
+            }
+
+            template = new File(resourcesDir + "/tq_carta_porte_comp.jrxml");
+            bytes = Files.readAllBytes(template.toPath());
+            bais = new ByteArrayInputStream(bytes);
+            jasperReport = JasperCompileManager.compileReport(bais);
+            var mercanciasJR = new JRBeanCollectionDataSource(mercanciaList);
+            jasperPrint = JasperFillManager.fillReport(jasperReport, ds, mercanciasJR);
+            pdfBytesList.add(JasperExportManager.exportReportToPdf(jasperPrint));
+            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV140573_v2_211123_cp.pdf");
 
         } catch (JRException ex) {
             ex.printStackTrace();
@@ -194,7 +249,7 @@ public class FacturaPdf {
             throw new FormatError("An error occurred when building factura pdf. ", ex);
         }
 
-        return pdfBytes;
+        return pdfBytesList;
     }
 
     public static String translateIntegerToSpanish(long number) throws Exception {

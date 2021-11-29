@@ -133,6 +133,10 @@ public class FacturaRequest extends CfdiRequest {
             captureSymbol("REMNOM");
 
             captureSymbol("REMDIR");
+
+            captureSymbol("REMRFC");
+
+            captureSymbol("REMTAX");
         }
 
         // Destinatario
@@ -140,6 +144,10 @@ public class FacturaRequest extends CfdiRequest {
             captureSymbol("DESNOM");
 
             captureSymbol("DESDIR");
+
+            captureSymbol("DESRFC");
+
+            captureSymbol("DESTAX");
         }
 
         // Agente Aduanal data
@@ -267,6 +275,10 @@ public class FacturaRequest extends CfdiRequest {
                     m.put("ViaEntradaSalida", p.getValue1());
                     break;
                 }
+                case "CPTIPOVIAJE": {
+                    m.put("CPTIPOVIAJE", p.getValue1());
+                    break;
+                }
                 // Ubicaciones - Origen
                 case "CPREMNOMBRE": {
                     origen.put("NombreRemitente", p.getValue1());
@@ -354,9 +366,21 @@ public class FacturaRequest extends CfdiRequest {
                     break;
                 }
                 // Mercancias
+                case "PESOBRUTOTOTAL": {
+                    mercanciasMap.put("PESOBRUTOTOTAL", p.getValue1());
+                    break;
+                }
+                case "PESONETOTOTAL": {
+                    mercanciasMap.put("PESONETOTOTAL", p.getValue1());
+                    break;
+                }
                 case "CPBIENES": {
                     mercancia = new HashMap<String, String>();
                     mercancia.put("BienesTransp", p.getValue1());
+                    break;
+                }
+                case "CPDESCRIP": {
+                    mercancia.put("CPDESCRIP", p.getValue1());
                     break;
                 }
                 case "CPCANT": {
@@ -371,8 +395,48 @@ public class FacturaRequest extends CfdiRequest {
                     mercancia.put("Unidad", p.getValue1());
                     break;
                 }
+                case "CPHAZMAT": {
+                    mercancia.put("CPHAZMAT", p.getValue1());
+                    break;
+                }
+                case "CPHAZMATC": {
+                    mercancia.put("CPHAZMATC", p.getValue1());
+                    break;
+                }
+                case "CPHAZMATE": {
+                    mercancia.put("CPHAZMATE", p.getValue1());
+                    break;
+                }
+                case "CPMERPESOBRUTO": {
+                    mercancia.put("CPMERPESOBRUTO", p.getValue1());
+                    break;
+                }
+                case "CPMERPESONETO": {
+                    mercancia.put("CPMERPESONETO", p.getValue1());
+                    break;
+                }
+                case "CPMERUNIPESO": {
+                    mercancia.put("CPMERUNIPESO", p.getValue1());
+                    break;
+                }
                 case "CPPESOKG": {
                     mercancia.put("PesoEnKg", p.getValue1());
+                    break;
+                }
+                case "CPVALOR": {
+                    mercancia.put("ValorMercancia", p.getValue1());
+                    break;
+                }
+                case "CPMONEDA": {
+                    mercancia.put("CPMONEDA", p.getValue1());
+                    break;
+                }
+                case "CPARANCEL": {
+                    mercancia.put("FraccionArancelaria", p.getValue1());
+                    break;
+                }
+                case "CPUUIDCE": {
+                    mercancia.put("CPUUIDCE", p.getValue1());
                     break;
                 }
                 case "CPPEDIMENTO": {
@@ -381,8 +445,12 @@ public class FacturaRequest extends CfdiRequest {
                     break;
                 }
                 // Mercancias - Autotransporte Federal
-                case "CPCNFGCAR": {
+                case "CPCNFGV": {
                     autoTranspFederal.put("ConfigVehicular", p.getValue1());
+                    break;
+                }
+                case "CNUMPERMSCT": {
+                    autoTranspFederal.put("CNUMPERMSCT", p.getValue1());
                     break;
                 }
                 case "CPPLACAVM": {
@@ -393,17 +461,33 @@ public class FacturaRequest extends CfdiRequest {
                     autoTranspFederal.put("AnioModeloVM", p.getValue1());
                     break;
                 }
+                case "CPQSEGRESCIV": {
+                    autoTranspFederal.put("CPQSEGRESCIV", p.getValue1());
+                    break;
+                }
+                case "CPQSEGRESCIVN": {
+                    autoTranspFederal.put("CPQSEGRESCIVN", p.getValue1());
+                    break;
+                }
+                case "CPSTPOREM": {
+                    autoTranspFederal.put("CPSTPOREM", p.getValue1());
+                    break;
+                }
+                case "CPPLACAREM": {
+                    autoTranspFederal.put("CPPLACAREM", p.getValue1());
+                    break;
+                }
                 // Figura Transporte - Operadores
-                case "CPRFCOPE": {
+                case "CPRFCFIG": {
                     operador = new HashMap<String, String>();
                     operador.put("RFCOperador", p.getValue1());
                     break;
                 }
-                case "CPLICENCIA": {
+                case "CPLICFIG": {
                     operador.put("NumLicencia", p.getValue1());
                     break;
                 }
-                case "CPNOMOPE": {
+                case "CPNOMFIG": {
                     operador.put("NombreOperador", p.getValue1());
                     operadorList.add(operador);
                     break;
