@@ -134,6 +134,22 @@ public class FacturaRequest extends CfdiRequest {
 
             captureSymbol("REMDIR");
 
+            captureSymbol("REMNUM");
+
+            captureSymbol("REMCOL");
+
+            captureSymbol("REMLOC");
+
+            captureSymbol("REMMUN");
+
+            captureSymbol("REMEDO");
+
+            captureSymbol("REMPAI");
+
+            captureSymbol("REMZIP");
+
+            captureSymbol("REMTEL");
+
             captureSymbol("REMRFC");
 
             captureSymbol("REMTAX");
@@ -145,6 +161,22 @@ public class FacturaRequest extends CfdiRequest {
 
             captureSymbol("DESDIR");
 
+            captureSymbol("DESNUM");
+
+            captureSymbol("DESCOL");
+
+            captureSymbol("DESLOC");
+
+            captureSymbol("DESMUN");
+
+            captureSymbol("DESEDO");
+
+            captureSymbol("DESPAI");
+
+            captureSymbol("DESZIP");
+
+            captureSymbol("DESTEL");
+
             captureSymbol("DESRFC");
 
             captureSymbol("DESTAX");
@@ -153,8 +185,6 @@ public class FacturaRequest extends CfdiRequest {
         // Agente Aduanal data
         {
             captureSymbol("AGENOM");
-
-            captureSymbol("AGEDIR");
         }
 
         this.pickUpDsecBlocks();

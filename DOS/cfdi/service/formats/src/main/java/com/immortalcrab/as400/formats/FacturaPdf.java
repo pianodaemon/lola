@@ -43,7 +43,7 @@ public class FacturaPdf {
             // var output   = "tq_carta_porte.pdf";
             // render(facReq, template, output);
 
-            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140573_v2_211123.txt")), StandardCharsets.UTF_8);
+            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV999999.txt")), StandardCharsets.UTF_8);
             System.out.println(fileContent);
             System.out.println("***********------------------------------------------***********");
 
@@ -57,6 +57,8 @@ public class FacturaPdf {
             str = str.replaceAll("\r\n", "");
             str = str.replaceAll("> <", "><");
             str = str.replaceAll("<>", "< >");
+            str = str.replaceAll("<.>", "< >");
+            str = str.replaceAll("<->", "< >");
             str = str.replaceAll("=====CARTA PORTE===================", "");
             str = str.replaceAll("<SERVICIOS>", "");
             str = str.replaceAll("<COMENTARIOS>", "");
@@ -182,6 +184,44 @@ public class FacturaPdf {
             }
 
             // PDF generation (CFDI)
+            var cteDir = String.format("%s No. %s, %s, %s, %s, %s, %s, C.P. %s",
+                ds.get("CTEDIR"),
+                ds.get("CTENUM"),
+                ds.get("CTECOL"),
+                ds.get("CTELOC"),
+                ds.get("CTEMUN"),
+                ds.get("CTEEDO"),
+                ds.get("CTEPAI"),
+                ds.get("CTEZIP")
+            );
+            var remDir = String.format("%s %s%s%s, %s, %s, %s, C.P. %s %s",
+                ds.get("REMDIR"),
+                ds.get("REMNUM").equals(" ") ? "" : "No. " + ds.get("REMNUM") + ", ",
+                ds.get("REMCOL").equals(" ") ? "" : ds.get("REMCOL") + ", ",
+                ds.get("REMLOC"),
+                ds.get("REMMUN"),
+                ds.get("REMEDO"),
+                ds.get("REMPAI"),
+                ds.get("REMZIP"),
+                ds.get("REMTEL").equals(" ") ? "" : "Tel. " + ds.get("REMTEL")
+            );
+            var desDir = String.format("%s %s%s%s, %s, %s, %s, C.P. %s %s",
+                ds.get("DESDIR"),
+                ds.get("DESNUM").equals(" ") ? "" : "No. " + ds.get("DESNUM") + ", ",
+                ds.get("DESCOL").equals(" ") ? "" : ds.get("DESCOL") + ", ",
+                ds.get("DESLOC"),
+                ds.get("DESMUN"),
+                ds.get("DESEDO"),
+                ds.get("DESPAI"),
+                ds.get("DESZIP"),
+                ds.get("DESTEL").equals(" ") ? "" : "Tel. " + ds.get("DESTEL")
+            );
+            ds.put("CTEDIR", cteDir);
+            ds.put("REMDIR", remDir);
+            ds.put("DESDIR", desDir);
+            ds.put("REMTAX", ds.get("REMPAI").equals("MEX") ? "RFC: " + ds.get("REMRFC") : "Reg. IdTrib: " + ds.get("REMTAX"));
+            ds.put("DESTAX", ds.get("DESPAI").equals("MEX") ? "RFC: " + ds.get("DESRFC") : "Reg. IdTrib: " + ds.get("DESTAX"));
+
             ds.put(resourcesDirVarName, resourcesDir);
             var template = new File(resourcesDir + "/tq_carta_porte.jrxml");
             byte[] bytes = Files.readAllBytes(template.toPath());
@@ -190,11 +230,11 @@ public class FacturaPdf {
             JRDataSource conceptosJR = new JRBeanCollectionDataSource((ArrayList<Map<String, String>>) ds.get("CONCEPTOS"));
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, ds, conceptosJR);
             pdfBytesList.add(JasperExportManager.exportReportToPdf(jasperPrint));
-            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV140573_v2_211123.pdf");
+            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV999999.pdf");
 
             // PDF generation (Carta Porte)
             qrCodeBais.reset();
-            // Se extraen algunos datos de las estructuras anidadas y se colocan a nivel del ds HashMap (para pasarlos como jrxml parameters)
+            // Se extraen algunos datos de las estructuras anidadas de la CP y se colocan a nivel del ds HashMap (para pasarlos como jrxml parameters)
             var cp = (HashMap<String, Object>) ds.get("CARTAPORTE");
             var ubicaciones = (HashMap<String, Object>) cp.get("UBICACIONES");
             var origen = (HashMap<String, Object>) ubicaciones.get("ORIGEN");
@@ -238,7 +278,7 @@ public class FacturaPdf {
             var mercanciasJR = new JRBeanCollectionDataSource(mercanciaList);
             jasperPrint = JasperFillManager.fillReport(jasperReport, ds, mercanciasJR);
             pdfBytesList.add(JasperExportManager.exportReportToPdf(jasperPrint));
-            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV140573_v2_211123_cp.pdf");
+            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV999999_CP.pdf");
 
         } catch (JRException ex) {
             ex.printStackTrace();

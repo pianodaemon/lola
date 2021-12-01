@@ -85,9 +85,19 @@ public abstract class CfdiRequest {
         captureSymbol("CTENOM");
 
         // "RECEPTOR_RFC"
-        captureSymbol("CTERFC");
+        captureSymbol("CTENUM");
 
-        captureSymbol("CTEMAIL");
+        captureSymbol("CTECOL");
+
+        captureSymbol("CTELOC");
+
+        captureSymbol("CTEMUN");
+
+        captureSymbol("CTEEDO");
+
+        captureSymbol("CTEPAI");
+
+        captureSymbol("CTERFC");
 
         captureSymbol("CTEDIR");
 
