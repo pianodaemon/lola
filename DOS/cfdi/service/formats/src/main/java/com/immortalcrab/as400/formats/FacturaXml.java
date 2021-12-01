@@ -102,7 +102,7 @@ public class FacturaXml {
             str = str.replaceAll("\r\n", "");
             str = str.replaceAll("> <", "><");
             str = str.replaceAll("<>", "< >");
-            str = str.replaceAll("<.>", "< >");
+            str = str.replaceAll("<\\.>", "< >");
             str = str.replaceAll("<->", "< >");
             str = str.replaceAll("=====CARTA PORTE===================", "");
             str = str.replaceAll("<SERVICIOS>", "");
