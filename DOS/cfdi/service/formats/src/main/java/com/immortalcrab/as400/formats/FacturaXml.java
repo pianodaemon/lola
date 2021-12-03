@@ -266,7 +266,7 @@ public class FacturaXml {
             var cartaPorteFactory = new mx.gob.sat.cartaporte20.ObjectFactory();
             var cartaPorte = cartaPorteFactory.createCartaPorte();
             cartaPorte.setVersion("2.0");
-            cartaPorte.setTranspInternac((String) cp.get("TranspInternac"));
+            cartaPorte.setTranspInternac(((String) cp.get("TranspInternac")).equals("Si") ? "Sí" : "No");
             cartaPorte.setTotalDistRec(new BigDecimal((String) cp.get("TotalDistRec")));
             cartaPorte.setEntradaSalidaMerc((String) cp.get("EntradaSalidaMerc"));
             cartaPorte.setViaEntradaSalida((String) cp.get("ViaEntradaSalida"));
@@ -279,12 +279,11 @@ public class FacturaXml {
             // Complemento - Carta Porte - Ubicaciones - Ubicación - Origen
             var cpOrigen = (HashMap<String, String>) cpUbicaciones.get("ORIGEN");
             var ubicacion = cartaPorteFactory.createCartaPorteUbicacionesUbicacion();
-            ubicacion.setTipoUbicacion("Origen");
-            ubicacion.setRFCRemitenteDestinatario("XEXX010101000");
-            ubicacion.setDistanciaRecorrida(new BigDecimal("1000"));
+            ubicacion.setTipoUbicacion(cpOrigen.get("TipoUbicacion"));
+            ubicacion.setRFCRemitenteDestinatario(cpOrigen.get("RFCRemitenteDestinatario"));
             ubicacion.setFechaHoraSalidaLlegada(DatatypeFactory.newInstance().newXMLGregorianCalendar(cpOrigen.get("FechaHoraSalida")));
             ubicacion.setNombreRemitenteDestinatario(cpOrigen.get("NombreRemitente"));
-            ubicacion.setNumRegIdTrib("202452070");
+            ubicacion.setNumRegIdTrib(cpOrigen.get("NumRegIdTrib"));
             ubicacion.setResidenciaFiscal(CPais.fromValue(cpOrigen.get("ResidenciaFiscal")));
             var domicilio = cartaPorteFactory.createCartaPorteUbicacionesUbicacionDomicilio();
             domicilio.setCalle(cpOrigen.get("Calle"));
@@ -301,9 +300,8 @@ public class FacturaXml {
             // Complemento - Carta Porte - Ubicaciones - Ubicación - Destino
             var cpDestino = (HashMap<String, String>) cpUbicaciones.get("DESTINO");
             ubicacion = cartaPorteFactory.createCartaPorteUbicacionesUbicacion();
-            ubicacion.setTipoUbicacion("Destino");
-            ubicacion.setRFCRemitenteDestinatario("DVC910102VDA");
-            ubicacion.setDistanciaRecorrida(new BigDecimal("242"));
+            ubicacion.setTipoUbicacion(cpDestino.get("TipoUbicacion"));
+            ubicacion.setRFCRemitenteDestinatario(cpDestino.get("RFCRemitenteDestinatario"));
             ubicacion.setFechaHoraSalidaLlegada(DatatypeFactory.newInstance().newXMLGregorianCalendar(cpDestino.get("FechaHoraProgLlegada")));
             domicilio = cartaPorteFactory.createCartaPorteUbicacionesUbicacionDomicilio();
             domicilio.setCalle(cpDestino.get("Calle"));
@@ -321,37 +319,38 @@ public class FacturaXml {
             var cpMercancias = (HashMap<String, Object>) cp.get("MERCANCIAS");
             var cpMercanciaList = (ArrayList<HashMap<String, String>>) cpMercancias.get("LISTA");
             var mercancias = cartaPorteFactory.createCartaPorteMercancias();
-            mercancias.setNumTotalMercancias(cpMercanciaList.size());
-            mercancias.setUnidadPeso("KGM");
-            mercancias.setPesoBrutoTotal(new BigDecimal("1200"));
+            // mercancias.setNumTotalMercancias(cpMercanciaList.size());
+            mercancias.setNumTotalMercancias(Integer.parseInt((String) cpMercancias.get("NumTotalMercancias")));
+            mercancias.setUnidadPeso((String) cpMercancias.get("UnidadPeso"));
+            mercancias.setPesoBrutoTotal(new BigDecimal((String) cpMercancias.get("PESOBRUTOTOTAL")));
             var mercanciaList = mercancias.getMercancia();
 
             for (HashMap<String, String> item : cpMercanciaList) {
                 var mercancia = cartaPorteFactory.createCartaPorteMercanciasMercancia();
                 mercancia.setBienesTransp(item.get("BienesTransp"));
-                mercancia.setDescripcion("cualquier descripc");
+                mercancia.setDescripcion(item.get("CPDESCRIP"));
                 mercancia.setCantidad(new BigDecimal(item.get("Cantidad")));
                 mercancia.setClaveUnidad(item.get("ClaveUnidad"));
                 mercancia.setUnidad(item.get("Unidad"));
                 mercancia.setPesoEnKg(new BigDecimal(item.get("PesoEnKg")));
-                mercancia.setFraccionArancelaria("8544429901");
+                mercancia.setFraccionArancelaria(item.get("FraccionArancelaria"));
                 mercanciaList.add(mercancia);
             }
 
-            var cpAutotransporteFederal = (HashMap<String, String>) cpMercancias.get("AUTOTRANSPORTEFEDERAL");
-            var autotransporteFederal = cartaPorteFactory.createCartaPorteMercanciasAutotransporte();
-            autotransporteFederal.setPermSCT(CTipoPermiso.TPAF_01);
-            autotransporteFederal.setNumPermisoSCT("45245555");
+            var cpAutotransporte = (HashMap<String, String>) cpMercancias.get("AUTOTRANSPORTEFEDERAL");
+            var autotransporte = cartaPorteFactory.createCartaPorteMercanciasAutotransporte();
+            autotransporte.setPermSCT(CTipoPermiso.fromValue(cpAutotransporte.get("PermSCT")));
+            autotransporte.setNumPermisoSCT(cpAutotransporte.get("CNUMPERMSCT"));
             var seguros = cartaPorteFactory.createCartaPorteMercanciasAutotransporteSeguros();
-            seguros.setAseguraRespCivil("asaa");
-            seguros.setPolizaRespCivil("1245");
-            autotransporteFederal.setSeguros(seguros);
+            seguros.setAseguraRespCivil(cpAutotransporte.get("CPQSEGRESCIV"));
+            seguros.setPolizaRespCivil(cpAutotransporte.get("CPQSEGRESCIVN"));
+            autotransporte.setSeguros(seguros);
             var identificacionVehicular = cartaPorteFactory.createCartaPorteMercanciasAutotransporteIdentificacionVehicular();
-            identificacionVehicular.setConfigVehicular(CConfigAutotransporte.fromValue(cpAutotransporteFederal.get("ConfigVehicular")));
-            identificacionVehicular.setPlacaVM(cpAutotransporteFederal.get("PlacaVM"));
-            identificacionVehicular.setAnioModeloVM(Integer.parseInt(cpAutotransporteFederal.get("AnioModeloVM")));
-            autotransporteFederal.setIdentificacionVehicular(identificacionVehicular);
-            mercancias.setAutotransporte(autotransporteFederal);
+            identificacionVehicular.setConfigVehicular(CConfigAutotransporte.fromValue(cpAutotransporte.get("ConfigVehicular")));
+            identificacionVehicular.setPlacaVM(cpAutotransporte.get("PlacaVM"));
+            identificacionVehicular.setAnioModeloVM(Integer.parseInt(cpAutotransporte.get("AnioModeloVM")));
+            autotransporte.setIdentificacionVehicular(identificacionVehicular);
+            mercancias.setAutotransporte(autotransporte);
             cartaPorte.setMercancias(mercancias);
 
             // Complemento - Carta Porte - Figura Transporte
@@ -362,7 +361,7 @@ public class FacturaXml {
 
             for (HashMap<String, String> item : cpOperadorList) {
                 var tiposFigura = cartaPorteFactory.createCartaPorteFiguraTransporteTiposFigura();
-                tiposFigura.setTipoFigura("01");
+                tiposFigura.setTipoFigura(item.get("TipoFigura"));
                 tiposFigura.setNumLicencia(item.get("NumLicencia"));
                 tiposFigura.setNombreFigura(item.get("NombreOperador"));
                 tiposFigura.setRFCFigura(item.get("RFCOperador"));
