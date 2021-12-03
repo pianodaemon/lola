@@ -6,7 +6,7 @@
 //
 
 
-package mx.gob.sat.sitio_internet.cfd.catalogos;
+package mx.gob.sat.sitio_internet.cfd.catalogos.cartaporte;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
@@ -14,35 +14,38 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for c_TipoFactor.
+ * <p>Java class for c_TipoDeTrafico.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
- * &lt;simpleType name="c_TipoFactor">
+ * &lt;simpleType name="c_TipoDeTrafico">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
  *     &lt;whiteSpace value="collapse"/>
- *     &lt;enumeration value="Tasa"/>
- *     &lt;enumeration value="Cuota"/>
- *     &lt;enumeration value="Exento"/>
+ *     &lt;enumeration value="TT01"/>
+ *     &lt;enumeration value="TT02"/>
+ *     &lt;enumeration value="TT03"/>
+ *     &lt;enumeration value="TT04"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
  * 
  */
-@XmlType(name = "c_TipoFactor", namespace = "http://www.sat.gob.mx/sitio_internet/cfd/catalogos")
+@XmlType(name = "c_TipoDeTrafico", namespace = "http://www.sat.gob.mx/sitio_internet/cfd/catalogos/CartaPorte")
 @XmlEnum
-public enum CTipoFactor {
+public enum CTipoDeTrafico {
 
-    @XmlEnumValue("Tasa")
-    TASA("Tasa"),
-    @XmlEnumValue("Cuota")
-    CUOTA("Cuota"),
-    @XmlEnumValue("Exento")
-    EXENTO("Exento");
+    @XmlEnumValue("TT01")
+    TT_01("TT01"),
+    @XmlEnumValue("TT02")
+    TT_02("TT02"),
+    @XmlEnumValue("TT03")
+    TT_03("TT03"),
+    @XmlEnumValue("TT04")
+    TT_04("TT04");
     private final String value;
 
-    CTipoFactor(String v) {
+    CTipoDeTrafico(String v) {
         value = v;
     }
 
@@ -50,8 +53,8 @@ public enum CTipoFactor {
         return value;
     }
 
-    public static CTipoFactor fromValue(String v) {
-        for (CTipoFactor c: CTipoFactor.values()) {
+    public static CTipoDeTrafico fromValue(String v) {
+        for (CTipoDeTrafico c: CTipoDeTrafico.values()) {
             if (c.value.equals(v)) {
                 return c;
             }
