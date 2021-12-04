@@ -804,7 +804,7 @@
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="282" splitType="Stretch">
+		<band height="282" splitType="Immediate">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<rectangle>
 				<reportElement mode="Transparent" x="10" y="60" width="562" height="119" uuid="f6536aa2-c597-476f-be9d-642d07562255"/>
@@ -895,7 +895,7 @@
 				</textElement>
 				<text><![CDATA[SELLO DIGITAL DEL SAT]]></text>
 			</staticText>
-			<image>
+			<image hAlign="Center" vAlign="Middle">
 				<reportElement x="478" y="189" width="90" height="90" uuid="0c12bded-3587-4e94-b863-78af95a6f076"/>
 				<imageExpression><![CDATA[$P{QRCODE}]]></imageExpression>
 			</image>
