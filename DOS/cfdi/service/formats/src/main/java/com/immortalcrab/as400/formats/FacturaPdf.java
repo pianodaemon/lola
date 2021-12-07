@@ -44,6 +44,7 @@ public class FacturaPdf {
             // render(facReq, template, output);
 
             var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV999999.txt")), StandardCharsets.UTF_8);
+            // var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140573_v2_211123.txt")), StandardCharsets.UTF_8);
             System.out.println(fileContent);
             System.out.println("***********------------------------------------------***********");
 
@@ -124,10 +125,8 @@ public class FacturaPdf {
         var serie = (String) ds.get("SERIE");
         var folio = (String) ds.get("FOLIO");
         final String fileName = serie + folio + ".pdf";
-        final String fileNameCp = serie + folio + "_CP.pdf";
 
         this.st.upload("application/pdf", in.get(0).length, fileName, new ByteArrayInputStream(in.get(0)));
-        this.st.upload("application/pdf", in.get(1).length, fileNameCp, new ByteArrayInputStream(in.get(1)));
     }
 
     private ArrayList<byte[]> shape() throws FormatError {
@@ -223,17 +222,13 @@ public class FacturaPdf {
             ds.put("DESTAX", ds.get("DESPAI").equals("MEX") ? "RFC: " + ds.get("DESRFC") : "Reg. IdTrib: " + ds.get("DESTAX"));
 
             ds.put(resourcesDirVarName, resourcesDir);
-            var template = new File(resourcesDir + "/tq_carta_porte.jrxml");
+            var template = new File(resourcesDir + "/tq_carta_porte_master.jrxml");
             byte[] bytes = Files.readAllBytes(template.toPath());
             var bais = new ByteArrayInputStream(bytes);
-            JasperReport jasperReport = JasperCompileManager.compileReport(bais);
-            JRDataSource conceptosJR = new JRBeanCollectionDataSource((ArrayList<Map<String, String>>) ds.get("CONCEPTOS"));
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, ds, conceptosJR);
-            pdfBytesList.add(JasperExportManager.exportReportToPdf(jasperPrint));
-            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV999999.pdf");
+            JasperReport masterJR = JasperCompileManager.compileReport(bais);
+            JRDataSource conceptosDS = new JRBeanCollectionDataSource((ArrayList<Map<String, String>>) ds.get("CONCEPTOS"));
 
             // PDF generation (Carta Porte)
-            qrCodeBais.reset();
             // Se extraen algunos datos de las estructuras anidadas de la CP y se colocan a nivel del ds HashMap (para pasarlos como jrxml parameters)
             var cp = (HashMap<String, Object>) ds.get("CARTAPORTE");
             var ubicaciones = (HashMap<String, Object>) cp.get("UBICACIONES");
@@ -271,14 +266,17 @@ public class FacturaPdf {
                 m.put("ValorMercancia", df.format(Double.parseDouble((String) m.get("ValorMercancia"))));
             }
 
-            template = new File(resourcesDir + "/tq_carta_porte_comp.jrxml");
+            template = new File(resourcesDir + "/tq_carta_porte_comp_subrep.jrxml");
             bytes = Files.readAllBytes(template.toPath());
             bais = new ByteArrayInputStream(bytes);
-            jasperReport = JasperCompileManager.compileReport(bais);
-            var mercanciasJR = new JRBeanCollectionDataSource(mercanciaList);
-            jasperPrint = JasperFillManager.fillReport(jasperReport, ds, mercanciasJR);
+            JasperReport subreportJR = JasperCompileManager.compileReport(bais);
+            JRDataSource mercanciasDS = new JRBeanCollectionDataSource(mercanciaList);
+            ds.put("CompiledSubreport", subreportJR);
+            ds.put("SubreportDataSource", mercanciasDS);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(masterJR, ds, conceptosDS);
             pdfBytesList.add(JasperExportManager.exportReportToPdf(jasperPrint));
-            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV999999_CP.pdf");
+            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV999999.pdf");
+            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV140573_v2_211123.pdf");
 
         } catch (JRException ex) {
             ex.printStackTrace();

@@ -214,6 +214,7 @@ public class FacturaXml {
 
                 // Retenciones
                 var diri = c.get("DIRI");
+
                 if (diri != null) {
                     tieneRetenciones = true;
                     var retenciones = cfdiFactory.createComprobanteConceptosConceptoImpuestosRetenciones();
@@ -246,6 +247,7 @@ public class FacturaXml {
             impuestosTraslado.setImporte(new BigDecimal((String) ds.get("IVA")));
             impuestosTrasladoList.add(impuestosTraslado);
             impuestos.setTraslados(impuestosTraslados);
+
             if (tieneRetenciones) {
                 var impuestosRetenciones = cfdiFactory.createComprobanteImpuestosRetenciones();
                 var impuestosRetencionList = impuestosRetenciones.getRetencion();
@@ -257,126 +259,136 @@ public class FacturaXml {
             }
             cfdi.setImpuestos(impuestos);
 
+            String contextPath    = "mx.gob.sat.cfd._3";
+            String schemaLocation = "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd";
+            boolean cpCartaPorte = ((String) ds.get("CPCARTAPORTE")).equals("Si");
+
             // Complementos
-            var complementoList = cfdi.getComplemento();
-            var complemento = cfdiFactory.createComprobanteComplemento();
+            if (cpCartaPorte) {
 
-            // Complemento - Carta Porte
-            var cp = (HashMap<String, Object>) ds.get("CARTAPORTE");
-            var cartaPorteFactory = new mx.gob.sat.cartaporte20.ObjectFactory();
-            var cartaPorte = cartaPorteFactory.createCartaPorte();
-            cartaPorte.setVersion("2.0");
-            cartaPorte.setTranspInternac(((String) cp.get("TranspInternac")).equals("Si") ? "Sí" : "No");
-            cartaPorte.setTotalDistRec(new BigDecimal((String) cp.get("TotalDistRec")));
-            cartaPorte.setEntradaSalidaMerc((String) cp.get("EntradaSalidaMerc"));
-            cartaPorte.setViaEntradaSalida((String) cp.get("ViaEntradaSalida"));
+                var complementoList = cfdi.getComplemento();
+                var complemento = cfdiFactory.createComprobanteComplemento();
 
-            // Complemento - Carta Porte - Ubicaciones
-            var cpUbicaciones = (HashMap<String, Object>) cp.get("UBICACIONES");
-            var ubicaciones = cartaPorteFactory.createCartaPorteUbicaciones();
-            var ubicacionList = ubicaciones.getUbicacion();
+                // Complemento - Carta Porte
+                var cp = (HashMap<String, Object>) ds.get("CARTAPORTE");
+                var cartaPorteFactory = new mx.gob.sat.cartaporte20.ObjectFactory();
+                var cartaPorte = cartaPorteFactory.createCartaPorte();
+                cartaPorte.setVersion("2.0");
+                cartaPorte.setTranspInternac(((String) cp.get("TranspInternac")).equals("Si") ? "Sí" : "No");
+                cartaPorte.setTotalDistRec(new BigDecimal((String) cp.get("TotalDistRec")));
+                cartaPorte.setEntradaSalidaMerc((String) cp.get("EntradaSalidaMerc"));
+                cartaPorte.setViaEntradaSalida((String) cp.get("ViaEntradaSalida"));
 
-            // Complemento - Carta Porte - Ubicaciones - Ubicación - Origen
-            var cpOrigen = (HashMap<String, String>) cpUbicaciones.get("ORIGEN");
-            var ubicacion = cartaPorteFactory.createCartaPorteUbicacionesUbicacion();
-            ubicacion.setTipoUbicacion(cpOrigen.get("TipoUbicacion"));
-            ubicacion.setRFCRemitenteDestinatario(cpOrigen.get("RFCRemitenteDestinatario"));
-            ubicacion.setFechaHoraSalidaLlegada(DatatypeFactory.newInstance().newXMLGregorianCalendar(cpOrigen.get("FechaHoraSalida")));
-            ubicacion.setNombreRemitenteDestinatario(cpOrigen.get("NombreRemitente"));
-            ubicacion.setNumRegIdTrib(cpOrigen.get("NumRegIdTrib"));
-            ubicacion.setResidenciaFiscal(CPais.fromValue(cpOrigen.get("ResidenciaFiscal")));
-            var domicilio = cartaPorteFactory.createCartaPorteUbicacionesUbicacionDomicilio();
-            domicilio.setCalle(cpOrigen.get("Calle"));
-            domicilio.setNumeroExterior(cpOrigen.get("NumeroExterior"));
-            domicilio.setColonia(cpOrigen.get("Colonia"));
-            domicilio.setLocalidad(cpOrigen.get("Localidad"));
-            domicilio.setMunicipio(cpOrigen.get("Municipio"));
-            domicilio.setEstado(cpOrigen.get("Estado"));
-            domicilio.setPais(CPais.fromValue(cpOrigen.get("Pais")));
-            domicilio.setCodigoPostal(cpOrigen.get("CodigoPostal"));
-            ubicacion.setDomicilio(domicilio);
-            ubicacionList.add(ubicacion);
+                // Complemento - Carta Porte - Ubicaciones
+                var cpUbicaciones = (HashMap<String, Object>) cp.get("UBICACIONES");
+                var ubicaciones = cartaPorteFactory.createCartaPorteUbicaciones();
+                var ubicacionList = ubicaciones.getUbicacion();
 
-            // Complemento - Carta Porte - Ubicaciones - Ubicación - Destino
-            var cpDestino = (HashMap<String, String>) cpUbicaciones.get("DESTINO");
-            ubicacion = cartaPorteFactory.createCartaPorteUbicacionesUbicacion();
-            ubicacion.setTipoUbicacion(cpDestino.get("TipoUbicacion"));
-            ubicacion.setRFCRemitenteDestinatario(cpDestino.get("RFCRemitenteDestinatario"));
-            ubicacion.setFechaHoraSalidaLlegada(DatatypeFactory.newInstance().newXMLGregorianCalendar(cpDestino.get("FechaHoraProgLlegada")));
-            domicilio = cartaPorteFactory.createCartaPorteUbicacionesUbicacionDomicilio();
-            domicilio.setCalle(cpDestino.get("Calle"));
-            domicilio.setNumeroExterior(cpDestino.get("NumeroExterior"));
-            domicilio.setColonia(cpDestino.get("Colonia"));
-            domicilio.setMunicipio(cpDestino.get("Municipio"));
-            domicilio.setEstado(cpDestino.get("Estado"));
-            domicilio.setPais(CPais.fromValue(cpDestino.get("Pais")));
-            domicilio.setCodigoPostal(cpDestino.get("CodigoPostal"));
-            ubicacion.setDomicilio(domicilio);
-            ubicacionList.add(ubicacion);
-            cartaPorte.setUbicaciones(ubicaciones);
+                // Complemento - Carta Porte - Ubicaciones - Ubicación - Origen
+                var cpOrigen = (HashMap<String, String>) cpUbicaciones.get("ORIGEN");
+                var ubicacion = cartaPorteFactory.createCartaPorteUbicacionesUbicacion();
+                ubicacion.setTipoUbicacion(cpOrigen.get("TipoUbicacion"));
+                ubicacion.setRFCRemitenteDestinatario(cpOrigen.get("RFCRemitenteDestinatario"));
+                ubicacion.setFechaHoraSalidaLlegada(DatatypeFactory.newInstance().newXMLGregorianCalendar(cpOrigen.get("FechaHoraSalida")));
+                ubicacion.setNombreRemitenteDestinatario(cpOrigen.get("NombreRemitente"));
+                ubicacion.setNumRegIdTrib(cpOrigen.get("NumRegIdTrib"));
+                ubicacion.setResidenciaFiscal(CPais.fromValue(cpOrigen.get("ResidenciaFiscal")));
+                var domicilio = cartaPorteFactory.createCartaPorteUbicacionesUbicacionDomicilio();
+                domicilio.setCalle(cpOrigen.get("Calle"));
+                domicilio.setNumeroExterior(cpOrigen.get("NumeroExterior"));
+                domicilio.setColonia(cpOrigen.get("Colonia"));
+                domicilio.setLocalidad(cpOrigen.get("Localidad"));
+                domicilio.setMunicipio(cpOrigen.get("Municipio"));
+                domicilio.setEstado(cpOrigen.get("Estado"));
+                domicilio.setPais(CPais.fromValue(cpOrigen.get("Pais")));
+                domicilio.setCodigoPostal(cpOrigen.get("CodigoPostal"));
+                ubicacion.setDomicilio(domicilio);
+                ubicacionList.add(ubicacion);
 
-            // Complemento - Carta Porte - Mercancías
-            var cpMercancias = (HashMap<String, Object>) cp.get("MERCANCIAS");
-            var cpMercanciaList = (ArrayList<HashMap<String, String>>) cpMercancias.get("LISTA");
-            var mercancias = cartaPorteFactory.createCartaPorteMercancias();
-            // mercancias.setNumTotalMercancias(cpMercanciaList.size());
-            mercancias.setNumTotalMercancias(Integer.parseInt((String) cpMercancias.get("NumTotalMercancias")));
-            mercancias.setUnidadPeso((String) cpMercancias.get("UnidadPeso"));
-            mercancias.setPesoBrutoTotal(new BigDecimal((String) cpMercancias.get("PESOBRUTOTOTAL")));
-            var mercanciaList = mercancias.getMercancia();
+                // Complemento - Carta Porte - Ubicaciones - Ubicación - Destino
+                var cpDestino = (HashMap<String, String>) cpUbicaciones.get("DESTINO");
+                ubicacion = cartaPorteFactory.createCartaPorteUbicacionesUbicacion();
+                ubicacion.setTipoUbicacion(cpDestino.get("TipoUbicacion"));
+                ubicacion.setRFCRemitenteDestinatario(cpDestino.get("RFCRemitenteDestinatario"));
+                ubicacion.setFechaHoraSalidaLlegada(DatatypeFactory.newInstance().newXMLGregorianCalendar(cpDestino.get("FechaHoraProgLlegada")));
+                domicilio = cartaPorteFactory.createCartaPorteUbicacionesUbicacionDomicilio();
+                domicilio.setCalle(cpDestino.get("Calle"));
+                domicilio.setNumeroExterior(cpDestino.get("NumeroExterior"));
+                domicilio.setColonia(cpDestino.get("Colonia"));
+                domicilio.setMunicipio(cpDestino.get("Municipio"));
+                domicilio.setEstado(cpDestino.get("Estado"));
+                domicilio.setPais(CPais.fromValue(cpDestino.get("Pais")));
+                domicilio.setCodigoPostal(cpDestino.get("CodigoPostal"));
+                ubicacion.setDomicilio(domicilio);
+                ubicacionList.add(ubicacion);
+                cartaPorte.setUbicaciones(ubicaciones);
 
-            for (HashMap<String, String> item : cpMercanciaList) {
-                var mercancia = cartaPorteFactory.createCartaPorteMercanciasMercancia();
-                mercancia.setBienesTransp(item.get("BienesTransp"));
-                mercancia.setDescripcion(item.get("CPDESCRIP"));
-                mercancia.setCantidad(new BigDecimal(item.get("Cantidad")));
-                mercancia.setClaveUnidad(item.get("ClaveUnidad"));
-                mercancia.setUnidad(item.get("Unidad"));
-                mercancia.setPesoEnKg(new BigDecimal(item.get("PesoEnKg")));
-                mercancia.setFraccionArancelaria(item.get("FraccionArancelaria"));
-                mercanciaList.add(mercancia);
+                // Complemento - Carta Porte - Mercancías
+                var cpMercancias = (HashMap<String, Object>) cp.get("MERCANCIAS");
+                var cpMercanciaList = (ArrayList<HashMap<String, String>>) cpMercancias.get("LISTA");
+                var mercancias = cartaPorteFactory.createCartaPorteMercancias();
+                // mercancias.setNumTotalMercancias(cpMercanciaList.size());
+                mercancias.setNumTotalMercancias(Integer.parseInt((String) cpMercancias.get("NumTotalMercancias")));
+                mercancias.setUnidadPeso((String) cpMercancias.get("UnidadPeso"));
+                mercancias.setPesoBrutoTotal(new BigDecimal((String) cpMercancias.get("PESOBRUTOTOTAL")));
+                var mercanciaList = mercancias.getMercancia();
+
+                for (HashMap<String, String> item : cpMercanciaList) {
+                    var mercancia = cartaPorteFactory.createCartaPorteMercanciasMercancia();
+                    mercancia.setBienesTransp(item.get("BienesTransp"));
+                    mercancia.setDescripcion(item.get("CPDESCRIP"));
+                    mercancia.setCantidad(new BigDecimal(item.get("Cantidad")));
+                    mercancia.setClaveUnidad(item.get("ClaveUnidad"));
+                    mercancia.setUnidad(item.get("Unidad"));
+                    mercancia.setPesoEnKg(new BigDecimal(item.get("PesoEnKg")));
+                    mercancia.setFraccionArancelaria(item.get("FraccionArancelaria"));
+                    mercanciaList.add(mercancia);
+                }
+
+                var cpAutotransporte = (HashMap<String, String>) cpMercancias.get("AUTOTRANSPORTEFEDERAL");
+                var autotransporte = cartaPorteFactory.createCartaPorteMercanciasAutotransporte();
+                autotransporte.setPermSCT(CTipoPermiso.fromValue(cpAutotransporte.get("PermSCT")));
+                autotransporte.setNumPermisoSCT(cpAutotransporte.get("CNUMPERMSCT"));
+                var seguros = cartaPorteFactory.createCartaPorteMercanciasAutotransporteSeguros();
+                seguros.setAseguraRespCivil(cpAutotransporte.get("CPQSEGRESCIV"));
+                seguros.setPolizaRespCivil(cpAutotransporte.get("CPQSEGRESCIVN"));
+                autotransporte.setSeguros(seguros);
+                var identificacionVehicular = cartaPorteFactory.createCartaPorteMercanciasAutotransporteIdentificacionVehicular();
+                identificacionVehicular.setConfigVehicular(CConfigAutotransporte.fromValue(cpAutotransporte.get("ConfigVehicular")));
+                identificacionVehicular.setPlacaVM(cpAutotransporte.get("PlacaVM"));
+                identificacionVehicular.setAnioModeloVM(Integer.parseInt(cpAutotransporte.get("AnioModeloVM")));
+                autotransporte.setIdentificacionVehicular(identificacionVehicular);
+                mercancias.setAutotransporte(autotransporte);
+                cartaPorte.setMercancias(mercancias);
+
+                // Complemento - Carta Porte - Figura Transporte
+                var cpFiguraTransporte = (HashMap<String, Object>) cp.get("FIGURATRANSPORTE");
+                var cpOperadorList = (ArrayList<HashMap<String, String>>) cpFiguraTransporte.get("OPERADORES");
+                var figuraTransporte = cartaPorteFactory.createCartaPorteFiguraTransporte();
+                var tiposFiguraList = figuraTransporte.getTiposFigura();
+
+                for (HashMap<String, String> item : cpOperadorList) {
+                    var tiposFigura = cartaPorteFactory.createCartaPorteFiguraTransporteTiposFigura();
+                    tiposFigura.setTipoFigura(item.get("TipoFigura"));
+                    tiposFigura.setNumLicencia(item.get("NumLicencia"));
+                    tiposFigura.setNombreFigura(item.get("NombreOperador"));
+                    tiposFigura.setRFCFigura(item.get("RFCOperador"));
+                    tiposFiguraList.add(tiposFigura);
+                }
+
+                cartaPorte.setFiguraTransporte(figuraTransporte);
+
+                complemento.getAny().add(cartaPorte);
+                complementoList.add(complemento);
+
+                contextPath    += ":mx.gob.sat.cartaporte20";
+                schemaLocation += " http://www.sat.gob.mx/CartaPorte20 http://www.sat.gob.mx/sitio_internet/cfd/CartaPorte/CartaPorte20.xsd";
             }
-
-            var cpAutotransporte = (HashMap<String, String>) cpMercancias.get("AUTOTRANSPORTEFEDERAL");
-            var autotransporte = cartaPorteFactory.createCartaPorteMercanciasAutotransporte();
-            autotransporte.setPermSCT(CTipoPermiso.fromValue(cpAutotransporte.get("PermSCT")));
-            autotransporte.setNumPermisoSCT(cpAutotransporte.get("CNUMPERMSCT"));
-            var seguros = cartaPorteFactory.createCartaPorteMercanciasAutotransporteSeguros();
-            seguros.setAseguraRespCivil(cpAutotransporte.get("CPQSEGRESCIV"));
-            seguros.setPolizaRespCivil(cpAutotransporte.get("CPQSEGRESCIVN"));
-            autotransporte.setSeguros(seguros);
-            var identificacionVehicular = cartaPorteFactory.createCartaPorteMercanciasAutotransporteIdentificacionVehicular();
-            identificacionVehicular.setConfigVehicular(CConfigAutotransporte.fromValue(cpAutotransporte.get("ConfigVehicular")));
-            identificacionVehicular.setPlacaVM(cpAutotransporte.get("PlacaVM"));
-            identificacionVehicular.setAnioModeloVM(Integer.parseInt(cpAutotransporte.get("AnioModeloVM")));
-            autotransporte.setIdentificacionVehicular(identificacionVehicular);
-            mercancias.setAutotransporte(autotransporte);
-            cartaPorte.setMercancias(mercancias);
-
-            // Complemento - Carta Porte - Figura Transporte
-            var cpFiguraTransporte = (HashMap<String, Object>) cp.get("FIGURATRANSPORTE");
-            var cpOperadorList = (ArrayList<HashMap<String, String>>) cpFiguraTransporte.get("OPERADORES");
-            var figuraTransporte = cartaPorteFactory.createCartaPorteFiguraTransporte();
-            var tiposFiguraList = figuraTransporte.getTiposFigura();
-
-            for (HashMap<String, String> item : cpOperadorList) {
-                var tiposFigura = cartaPorteFactory.createCartaPorteFiguraTransporteTiposFigura();
-                tiposFigura.setTipoFigura(item.get("TipoFigura"));
-                tiposFigura.setNumLicencia(item.get("NumLicencia"));
-                tiposFigura.setNombreFigura(item.get("NombreOperador"));
-                tiposFigura.setRFCFigura(item.get("RFCOperador"));
-                tiposFiguraList.add(tiposFigura);
-            }
-
-            cartaPorte.setFiguraTransporte(figuraTransporte);
-
-            complemento.getAny().add(cartaPorte);
-            complementoList.add(complemento);
 
             // Hacer el marshalling del cfdi object
-            JAXBContext context = JAXBContext.newInstance("mx.gob.sat.cfd._3:mx.gob.sat.cartaporte20");
+            JAXBContext context = JAXBContext.newInstance(contextPath);
             Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty("jaxb.schemaLocation", "http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd http://www.sat.gob.mx/CartaPorte20 http://www.sat.gob.mx/sitio_internet/cfd/CartaPorte/CartaPorte20.xsd");
+            marshaller.setProperty("jaxb.schemaLocation", schemaLocation);
             marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new CfdiNamespaceMapper());
             marshaller.setProperty("jaxb.formatted.output", true);
             marshaller.marshal(cfdi, sw);
@@ -384,15 +396,16 @@ public class FacturaXml {
             // Armar la cadena original del comprobante + complemento de carta porte
             var cfdiXml = sw.toString();
             var cadenaOrig = CadenaOriginal.build(cfdiXml, resourcesDir + "/cadenaoriginal_3_3.xslt");
-            var str1 = cadenaOrig.replaceAll(" \\|\\|", " ").trim();
-            var cadenaOrigCartaPorte = CadenaOriginal.build(cfdiXml, resourcesDir + "/CartaPorte20.xslt");
-            var str2 = cadenaOrigCartaPorte.replaceAll("<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>", " ").trim() + "||";
-            var nuevaCadenaOrig = str1 + str2;
+            if (cpCartaPorte) {
+                var cadenaOrigCartaPorte = CadenaOriginal.build(cfdiXml, resourcesDir + "/CartaPorte20.xslt");
+                cadenaOrig = cadenaOrig.replaceAll(" \\|\\|", " ").trim()
+                           + cadenaOrigCartaPorte.replaceAll("<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>", " ").trim() + "||";
+            }
 
             // Sellar cadena original
-            var sello = Signer.signMessage(resourcesDir + "/privkey.pem", nuevaCadenaOrig);
+            var sello = Signer.signMessage(resourcesDir + "/privkey.pem", cadenaOrig);
             cfdi.setSello(sello);
-            
+
             sw = new StringWriter();
             marshaller.marshal(cfdi, sw);
             System.out.println(sw.toString());

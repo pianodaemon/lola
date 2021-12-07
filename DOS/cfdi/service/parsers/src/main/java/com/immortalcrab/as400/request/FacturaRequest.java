@@ -187,6 +187,8 @@ public class FacturaRequest extends CfdiRequest {
             captureSymbol("AGENOM");
         }
 
+        captureSymbol("CPCARTAPORTE");
+
         this.pickUpDsecBlocks();
         this.pickUpComments();
         this.pickUpCartaPorte();
