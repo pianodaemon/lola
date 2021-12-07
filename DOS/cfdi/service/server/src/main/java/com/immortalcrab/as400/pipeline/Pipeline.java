@@ -67,7 +67,7 @@ public class Pipeline {
         throw new PipelineError("cfdi " + kind + " is unsupported");
     }
 
-    public static void issue(final String kind, InputStreamReader reader)
+    public static String issue(final String kind, InputStreamReader reader)
             throws PairExtractorError, CfdiRequestError, PipelineError, StorageError, FormatError {
 
         Triplet<StepDecode, StepXml, StepPdf> stages = Pipeline.getInstance().incept(kind);
@@ -83,12 +83,14 @@ public class Pipeline {
         /* Second stage of the pipeline
            It stands for hand craft a valid xml at sat */
         StepXml sxml = stages.getValue1();
-        sxml.render(cfdiReq, Pipeline.getInstance().getStorage());
+        String uuid = sxml.render(cfdiReq, Pipeline.getInstance().getStorage());
 
         /* Third stage of the pipeline
            It stands for hand craft a arbitrary
            representation of a cfdi in pdf format  */
         StepPdf spdf = stages.getValue2();
         spdf.render(cfdiReq, Pipeline.getInstance().getStorage());
+
+        return uuid;
     }
 }

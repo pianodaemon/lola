@@ -5,5 +5,5 @@ import com.immortalcrab.as400.error.StorageError;
 
 public interface StepXml {
 
-    public void render(CfdiRequest cfdiReq, Storage st) throws FormatError, StorageError;
+    public String render(CfdiRequest cfdiReq, Storage st) throws FormatError, StorageError;
 }

@@ -44,7 +44,9 @@ public class IssueController {
         InputStream is = tokensDoc.getInputStream();
 
         try {
-            Pipeline.issue(kind, new InputStreamReader(is));
+            String uuid = Pipeline.issue(kind, new InputStreamReader(is));
+            rhm.put("desc", uuid);
+
         } catch (FormatError | PairExtractorError | CfdiRequestError | PipelineError | StorageError ex) {
 
             LOGGER.error(ex.getMessage());

@@ -119,11 +119,14 @@ public class FacturaXml {
         this.st = st;
     }
 
-    public static void render(CfdiRequest cfdiReq, Storage st) throws FormatError, StorageError {
+    public static String render(CfdiRequest cfdiReq, Storage st) throws FormatError, StorageError {
 
         FacturaXml ic = new FacturaXml(cfdiReq, st);
         StringWriter cfdi = ic.shape();
-        ic.save(ic.timbrarCfdi(cfdi));
+        var results = ic.timbrarCfdi(cfdi);
+        ic.save((StringWriter) results.get("cfdiTimbrado"));
+
+        return (String) results.get("uuid");
     }
 
     private void save(StringWriter sw) throws FormatError, StorageError {
@@ -426,7 +429,7 @@ public class FacturaXml {
         return sw;
     }
 
-    private StringWriter timbrarCfdi(StringWriter cfdiSw) throws FormatError {
+    private HashMap<String, Object> timbrarCfdi(StringWriter cfdiSw) throws FormatError {
 
         var ds = this.cfdiReq.getDs();
         String[] arrCreds = null;
@@ -504,7 +507,12 @@ public class FacturaXml {
 
             var cfdiTimbrado = new StringWriter();
             cfdiTimbrado.write(xmlTimbrado);
-            return cfdiTimbrado;
+
+            var results = new HashMap<String, Object>();
+            results.put("uuid", uuid);
+            results.put("cfdiTimbrado", cfdiTimbrado);
+
+            return results;
 
         } else {
             throw new FormatError("An error occurred when PAC tried to sign the cfdi.\n" + resultStr);
