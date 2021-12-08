@@ -26,7 +26,7 @@ import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
+// import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.function.Function;
 
@@ -82,7 +82,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
         return loadKey(in, bytes -> {
-            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(bytes);
+            // PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(bytes);
             try {
                 X509EncodedKeySpec spec
                         = new X509EncodedKeySpec(bytes);
@@ -97,7 +97,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
         /* HACK to heal the evident absent of authorities of the current SSO
            Due to java is not the center of the world and there is not everywhere */
-        List<String> authorities = new ArrayList() {
+        List<String> authorities = new ArrayList<>() {
             {
                 add("ROLE_USER");
             }

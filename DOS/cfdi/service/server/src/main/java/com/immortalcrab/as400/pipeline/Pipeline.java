@@ -7,7 +7,6 @@ import com.immortalcrab.as400.engine.StepPdf;
 import com.immortalcrab.as400.engine.Storage;
 import com.immortalcrab.as400.formats.FacturaPdf;
 import com.immortalcrab.as400.formats.FacturaXml;
-import com.immortalcrab.as400.parser.PairExtractor;
 import com.immortalcrab.as400.error.DecodeError;
 import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.error.CfdiRequestError;
