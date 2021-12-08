@@ -8,7 +8,7 @@ import com.immortalcrab.as400.engine.Storage;
 import com.immortalcrab.as400.formats.FacturaPdf;
 import com.immortalcrab.as400.formats.FacturaXml;
 import com.immortalcrab.as400.parser.PairExtractor;
-import com.immortalcrab.as400.error.PairExtractorError;
+import com.immortalcrab.as400.error.DecodeError;
 import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.error.CfdiRequestError;
 import com.immortalcrab.as400.error.FormatError;
@@ -68,7 +68,7 @@ public class Pipeline {
     }
 
     public static String issue(final String kind, InputStreamReader reader)
-            throws PairExtractorError, CfdiRequestError, PipelineError, StorageError, FormatError {
+            throws DecodeError, CfdiRequestError, PipelineError, StorageError, FormatError {
 
         Triplet<StepDecode, StepXml, StepPdf> stages = Pipeline.getInstance().incept(kind);
 
@@ -76,7 +76,7 @@ public class Pipeline {
            It stands for decoding what has been read
            from the data origin (in this case the infamous as400) */
         StepDecode sdec = stages.getValue0();
-        CfdiRequest cfdiReq = sdec.render(PairExtractor.go4it(reader));
+        CfdiRequest cfdiReq = sdec.render(reader);
 
         Pipeline.getInstance().getLOGGER().info(cfdiReq.getDs().toString());
 

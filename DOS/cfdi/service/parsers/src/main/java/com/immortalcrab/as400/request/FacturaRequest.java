@@ -2,6 +2,9 @@ package com.immortalcrab.as400.request;
 
 import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.error.CfdiRequestError;
+import com.immortalcrab.as400.error.DecodeError;
+import com.immortalcrab.as400.parser.PairExtractor;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,8 +16,9 @@ import org.javatuples.Pair;
 
 public class FacturaRequest extends CfdiRequest {
 
-    public static FacturaRequest render(final List<Pair<String, String>> kvs) throws CfdiRequestError {
+    public static FacturaRequest render(InputStreamReader reader) throws CfdiRequestError, DecodeError {
 
+        final List<Pair<String, String>> kvs = PairExtractor.go4it(reader);
         FacturaRequest ic = new FacturaRequest(kvs);
         ic.craft();
 

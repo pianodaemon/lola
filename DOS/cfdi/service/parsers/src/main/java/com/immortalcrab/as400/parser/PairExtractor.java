@@ -1,6 +1,6 @@
 package com.immortalcrab.as400.parser;
 
-import com.immortalcrab.as400.error.PairExtractorError;
+import com.immortalcrab.as400.error.DecodeError;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
@@ -20,31 +20,31 @@ public class PairExtractor {
         WRAP_UP, SEEKOUT_KEY, SEEKOUT_VALUE, ERR_MISSING_TOKEN, ERR_TOO_MANY_TOKENS
     }
 
-    public static List<Pair<String, String>> go4it(final String filePath) throws PairExtractorError {
+    public static List<Pair<String, String>> go4it(final String filePath) throws DecodeError {
 
         FileReader fr = null;
         try {
             fr = new FileReader(filePath);
             return go4it(fr);
         } catch (FileNotFoundException ex) {
-            throw new PairExtractorError("Not found input file of tokens", ex);
+            throw new DecodeError("Not found input file of tokens", ex);
         } finally {
             try {
                 fr.close();
             } catch (IOException ex) {
-                throw new PairExtractorError("Issues were detected when closing a file reader", ex);
+                throw new DecodeError("Issues were detected when closing a file reader", ex);
             }
         }
     }
 
-    public static List<Pair<String, String>> go4it(InputStreamReader inReader) throws PairExtractorError {
+    public static List<Pair<String, String>> go4it(InputStreamReader inReader) throws DecodeError {
 
         var isr = preprocess(inReader);
         PairExtractor ic = new PairExtractor();
         return ic.traverseBuffer(isr);
     }
 
-    private List<Pair<String, String>> traverseBuffer(InputStreamReader inReader) throws PairExtractorError {
+    private List<Pair<String, String>> traverseBuffer(InputStreamReader inReader) throws DecodeError {
         BufferedReader br = new BufferedReader(inReader);
 
         LinkedList<Pair<String, String>> rset = new LinkedList<>();
@@ -59,13 +59,13 @@ public class PairExtractor {
                 rset.add(this.parseLine(idx, st.trim()));
             }
         } catch (IOException ex) {
-            throw new PairExtractorError("Issue found when traversing buffer of input tokens", ex);
+            throw new DecodeError("Issue found when traversing buffer of input tokens", ex);
         }
 
         return rset;
     }
 
-    private Pair<String, String> parseLine(final int idx, final String line) throws PairExtractorError {
+    private Pair<String, String> parseLine(final int idx, final String line) throws DecodeError {
 
         final String delimiters = "<>";
         StringTokenizer st = new StringTokenizer(line, delimiters);
@@ -110,7 +110,7 @@ public class PairExtractor {
 
                     case ERR_TOO_MANY_TOKENS:
                     case ERR_MISSING_TOKEN:
-                        throw new PairExtractorError("Line " + idx + " is malformed (" + stage.toString() + ")");
+                        throw new DecodeError("Line " + idx + " is malformed (" + stage.toString() + ")");
                 }
             } while (!done);
         }

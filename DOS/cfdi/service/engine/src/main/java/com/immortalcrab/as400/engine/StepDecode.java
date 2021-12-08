@@ -1,10 +1,9 @@
 package com.immortalcrab.as400.engine;
 
 import com.immortalcrab.as400.error.CfdiRequestError;
-import java.util.List;
-import org.javatuples.Pair;
+import java.io.InputStreamReader;
 
 public interface StepDecode {
 
-    public CfdiRequest render(List<Pair<String, String>> kvs) throws CfdiRequestError;
+    public CfdiRequest render(InputStreamReader inReader) throws CfdiRequestError;
 }

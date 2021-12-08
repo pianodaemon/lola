@@ -2,7 +2,7 @@ package com.immortalcrab.as400.webserver;
 
 import com.immortalcrab.as400.pipeline.Pipeline;
 import com.immortalcrab.as400.error.PipelineError;
-import com.immortalcrab.as400.error.PairExtractorError;
+import com.immortalcrab.as400.error.DecodeError;
 import com.immortalcrab.as400.error.CfdiRequestError;
 import com.immortalcrab.as400.error.FormatError;
 import com.immortalcrab.as400.error.StorageError;
@@ -47,7 +47,7 @@ public class IssueController {
             String uuid = Pipeline.issue(kind, new InputStreamReader(is));
             rhm.put("desc", uuid);
 
-        } catch (FormatError | PairExtractorError | CfdiRequestError | PipelineError | StorageError ex) {
+        } catch (FormatError | DecodeError | CfdiRequestError | PipelineError | StorageError ex) {
 
             LOGGER.error(ex.getMessage());
 
