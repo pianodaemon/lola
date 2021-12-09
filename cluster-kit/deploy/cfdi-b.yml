@@ -14,7 +14,7 @@ spec:
     targetPort: 8080
     nodePort: 30090
   selector:
-    app: cfdi
+    app: cfdi-b
 
 ---
 
@@ -30,11 +30,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cfdi
+      app: cfdi-b
   template:
     metadata:
       labels:
-        app: cfdi
+        app: cfdi-b
         project: as400-extension
     spec:
       volumes:
@@ -48,7 +48,7 @@ spec:
           type: Directory
       containers:
       - image: localhost:5000/lola/cfdi:latest
-        name: cfdi
+        name: cfdi-b
         imagePullPolicy: Always
         ports:
         - containerPort: 8090
