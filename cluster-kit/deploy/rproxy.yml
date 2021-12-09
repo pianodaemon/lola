@@ -25,3 +25,20 @@ spec:
                 name: cfdi-srv
                 port:
                   number: 8080
+    - host: lola-cfdi-b.tq.com.mx
+      http:
+        paths:
+          - path: /api/auth(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: sso-srv
+                port:
+                  number: 10100
+          - path: /api/issue(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: cfdi-b-srv
+                port:
+                  number: 8090
