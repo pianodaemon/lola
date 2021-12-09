@@ -11,3 +11,4 @@ kubectl apply -f $IMPT_ROOT/cluster-kit/deploy/cfdi-sec.yaml
 kubectl apply -f $IMPT_ROOT/cluster-kit/deploy/redis.yml
 kubectl apply -f $IMPT_ROOT/cluster-kit/deploy/sso.yml
 kubectl apply -f $IMPT_ROOT/cluster-kit/deploy/cfdi.yml
+kubectl apply -f $IMPT_ROOT/cluster-kit/deploy/cfdi-b.yml
