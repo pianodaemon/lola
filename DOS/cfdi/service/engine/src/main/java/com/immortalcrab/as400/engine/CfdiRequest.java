@@ -66,6 +66,9 @@ public abstract class CfdiRequest {
 
     protected void captureEmisorSymbols() throws CfdiRequestError {
 
+        // "EMPRESA"
+        captureSymbol("EMPRESA");
+
         // "EMISOR_NOMBRE"
         captureSymbol("EMINOM");
 

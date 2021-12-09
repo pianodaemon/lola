@@ -23,7 +23,6 @@ import com.immortalcrab.as400.engine.CfdiRequest;
 import com.immortalcrab.as400.engine.Storage;
 import com.immortalcrab.as400.error.FormatError;
 import com.immortalcrab.as400.error.StorageError;
-import com.immortalcrab.as400.parser.PairExtractor;
 import com.immortalcrab.as400.request.FacturaRequest;
 import com.immortalcrab.qrcode.QRCode;
 
@@ -43,8 +42,8 @@ public class FacturaPdf {
             // var output   = "tq_carta_porte.pdf";
             // render(facReq, template, output);
 
-            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV999999.txt")), StandardCharsets.UTF_8);
-            // var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140573_v2_211123.txt")), StandardCharsets.UTF_8);
+            // var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140574_v2_211123_tir.txt")), StandardCharsets.UTF_8);
+            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140573_v2_211123.txt")), StandardCharsets.UTF_8);
             System.out.println(fileContent);
             System.out.println("***********------------------------------------------***********");
 
@@ -89,16 +88,15 @@ public class FacturaPdf {
             System.out.println(sw.toString());
             var bais2 = new ByteArrayInputStream(sw.toString().getBytes(StandardCharsets.UTF_8));
             var isr2 = new InputStreamReader(bais2);
-            var l = PairExtractor.go4it(isr2);
-            var facReq = FacturaRequest.render(l);
+            var facReq = FacturaRequest.render(isr2);
             var ds = facReq.getDs();
             // hardcode for local testing (sin timbrado)
-            ds.put("UUID", "EC8A65FB-ADE0-4497-9990-15FEB46BCCD5"); //TODO: comment hardcode
-            ds.put("CDIGITAL_SAT", "00001000000413073350"); //TODO: comment hardcode
-            ds.put("FECHSTAMP", "2021-11-22T10:04:05"); //TODO: comment hardcode
-            ds.put("SELLO_CFD", "jhkhkhuyguygasdjhIHuhishduiha"); //TODO: comment hardcode
-            ds.put("SELLO_SAT", "aYhdfuhIUund78kjnfi"); //TODO: comment hardcode
-            ds.put("CADENA_ORIGINAL_TFD", "sdfiooiosdiufoiiusdfouiodsf"); //TODO: comment hardcode
+            ds.put("UUID", "EC8A65FB-ADE0-4497-9990-15FEB46BCCD5");
+            ds.put("CDIGITAL_SAT", "00001000000413073350");
+            ds.put("FECHSTAMP", "2021-11-22T10:04:05");
+            ds.put("SELLO_CFD", "jhkhkhuyguygasdjhIHuhishduiha");
+            ds.put("SELLO_SAT", "aYhdfuhIUund78kjnfi");
+            ds.put("CADENA_ORIGINAL_TFD", "sdfiooiosdiufoiiusdfouiodsf");
             render(facReq, null);
 
         } catch (Exception e) {
@@ -174,6 +172,19 @@ public class FacturaPdf {
             );
             var qrCodeBais = QRCode.generateByteStream(verificaCfdiUrl, 400, 400);
             ds.put("QRCODE", qrCodeBais);
+
+            // logo selection
+            var empresa = (String) ds.get("EMPRESA");
+
+            if (empresa.equals("TQ")) {
+                ds.put("LOGO_FILENAME", "/logo.jpg");
+
+            } else if (empresa.equals("TIR")) {
+                ds.put("LOGO_FILENAME", "/tir_logo.jpg");
+
+            } else {
+                throw new FormatError("EMPRESA desconocida: " + empresa);
+            }
 
             // Get resources dir
             String resourcesDirVarName = "RESOURCES_DIR";
@@ -275,8 +286,7 @@ public class FacturaPdf {
             ds.put("SubreportDataSource", mercanciasDS);
             JasperPrint jasperPrint = JasperFillManager.fillReport(masterJR, ds, conceptosDS);
             pdfBytesList.add(JasperExportManager.exportReportToPdf(jasperPrint));
-            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV999999.pdf");
-            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV140573_v2_211123.pdf");
+            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV140574_v2_211123_tir.pdf");
 
         } catch (JRException ex) {
             ex.printStackTrace();

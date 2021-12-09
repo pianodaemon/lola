@@ -4,13 +4,11 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,7 +17,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -31,7 +28,6 @@ import com.immortalcrab.cfdi.utils.CadenaOriginal;
 import com.immortalcrab.cfdi.utils.Certificado;
 import com.immortalcrab.cfdi.utils.Signer;
 import com.immortalcrab.as400.request.FacturaRequest;
-import com.immortalcrab.as400.parser.PairExtractor;
 
 import org.datacontract.schemas._2004._07.tes_tfd_v33.RespuestaTFD33;
 import org.datacontract.schemas._2004._07.tes_tfd_v33.Timbre33;
@@ -58,7 +54,7 @@ public class FacturaXml {
             // var isr = new InputStreamReader(new FileInputStream("/home/userd/Downloads/facmock.txt"), StandardCharsets.UTF_8);
             // var l = PairExtractor.go4it("/home/userd/Downloads/NV139360-cartaporte.txt");
             // var l = PairExtractor.go4it(isr);
-            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140573_v2_211123.txt")), StandardCharsets.UTF_8);
+            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140574_v2_211123_tir.txt")), StandardCharsets.UTF_8);
             System.out.println(fileContent);
             System.out.println("***********------------------------------------------***********");
 
@@ -103,8 +99,7 @@ public class FacturaXml {
             System.out.println(sw.toString());
             var bais2 = new ByteArrayInputStream(sw.toString().getBytes(StandardCharsets.UTF_8));
             var isr2 = new InputStreamReader(bais2);
-            var l = PairExtractor.go4it(isr2);
-            var facReq = FacturaRequest.render(l);
+            var facReq = FacturaRequest.render(isr2);
             render(facReq, null);
 
         } catch (Exception e) {
@@ -153,16 +148,32 @@ public class FacturaXml {
             }
 
             var ds = this.cfdiReq.getDs();
-            var cfdiFactory = new ObjectFactory();
+
+            var empresa = (String) ds.get("EMPRESA");
+            String certificadoFname = "";
+            String privkeyFname     = "";
+
+            if (empresa.equals("TQ")) {
+                certificadoFname = "/pubkey.cer";
+                privkeyFname     = "/privkey.pem";
+
+            } else if (empresa.equals("TIR")) {
+                certificadoFname = "/TIR_00001000000413586324.cer";
+                privkeyFname     = "/CSD_NUEVO_LAREDO_TIR981223AX3_20190220_094457.pem";
+
+            } else {
+                throw new FormatError("EMPRESA desconocida: " + empresa);
+            }
 
             // Comprobante
+            var cfdiFactory = new ObjectFactory();
             var cfdi = cfdiFactory.createComprobante();
             cfdi.setLugarExpedicion((String) ds.get("EMIZIP"));
             cfdi.setMetodoPago(CMetodoPago.fromValue(((String) ds.get("METPAG")).split(":")[0]));
             cfdi.setTipoDeComprobante(CTipoDeComprobante.I);
             cfdi.setTotal(new BigDecimal((String) ds.get("TOTAL")));
             cfdi.setMoneda(CMoneda.fromValue((String) ds.get("MONEDA")));
-            cfdi.setCertificado(Certificado.readFromFile(resourcesDir + "/pubkey.cer"));
+            cfdi.setCertificado(Certificado.readFromFile(resourcesDir + certificadoFname));
             cfdi.setSubTotal(new BigDecimal((String) ds.get("SUBTOT")));
             cfdi.setCondicionesDePago((String) ds.get("CONPAG"));
             cfdi.setNoCertificado((String) ds.get("CDIGITAL"));
@@ -406,7 +417,7 @@ public class FacturaXml {
             }
 
             // Sellar cadena original
-            var sello = Signer.signMessage(resourcesDir + "/privkey.pem", cadenaOrig);
+            var sello = Signer.signMessage(resourcesDir + privkeyFname, cadenaOrig);
             cfdi.setSello(sello);
 
             sw = new StringWriter();
@@ -442,7 +453,20 @@ public class FacturaXml {
                 resourcesDir = "/resources";
             }
 
-            var file = new File(resourcesDir + "/fel-credentials.txt");
+            var empresa = (String) ds.get("EMPRESA");
+            String credFname = "";
+
+            if (empresa.equals("TQ")) {
+                credFname = "/fel-credentials.txt";
+
+            } else if (empresa.equals("TIR")) {
+                credFname = "/fel-credentials-tir.txt";
+
+            } else {
+                throw new FormatError("EMPRESA desconocida: " + empresa);
+            }
+
+            var file = new File(resourcesDir + credFname);
             byte[] bytes = Files.readAllBytes(file.toPath());
             var creds = new String(bytes, StandardCharsets.UTF_8);
             arrCreds = creds.split("\\|\\|");

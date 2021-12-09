@@ -58,6 +58,7 @@
 	<parameter name="SELLO_CFD" class="java.lang.String"/>
 	<parameter name="SELLO_SAT" class="java.lang.String"/>
 	<parameter name="RESOURCES_DIR" class="java.lang.String"/>
+	<parameter name="LOGO_FILENAME" class="java.lang.String"/>
 	<parameter name="CADENA_ORIGINAL_TFD" class="java.lang.String"/>
 	<parameter name="QRCODE" class="java.io.InputStream"/>
 	<parameter name="NUM_PAGINA" class="java.lang.Integer"/>
@@ -439,7 +440,7 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<imageExpression><![CDATA[$P{RESOURCES_DIR}.concat("/logo.jpg")]]></imageExpression>
+				<imageExpression><![CDATA[$P{RESOURCES_DIR}.concat($P{LOGO_FILENAME})]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="538" y="52" width="35" height="12" uuid="69d91178-6a18-424a-b255-ec1c2a11bc6a">

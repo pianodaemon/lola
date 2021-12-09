@@ -65,6 +65,7 @@
 	<parameter name="SELLO_CFD" class="java.lang.String"/>
 	<parameter name="SELLO_SAT" class="java.lang.String"/>
 	<parameter name="RESOURCES_DIR" class="java.lang.String"/>
+	<parameter name="LOGO_FILENAME" class="java.lang.String"/>
 	<parameter name="CADENA_ORIGINAL_TFD" class="java.lang.String"/>
 	<parameter name="QRCODE" class="java.io.InputStream"/>
 	<parameter name="CPCARTAPORTE" class="java.lang.String"/>
@@ -439,7 +440,7 @@
 			</textField>
 			<image hAlign="Center" vAlign="Middle">
 				<reportElement x="10" y="-4" width="99" height="61" uuid="a4fcf80f-62cc-4437-bb06-c0022e0d37d1"/>
-				<imageExpression><![CDATA[$P{RESOURCES_DIR}.concat("/logo.jpg")]]></imageExpression>
+				<imageExpression><![CDATA[$P{RESOURCES_DIR}.concat($P{LOGO_FILENAME})]]></imageExpression>
 			</image>
 		</band>
 	</title>
@@ -948,6 +949,9 @@
 				</subreportParameter>
 				<subreportParameter name="RESOURCES_DIR">
 					<subreportParameterExpression><![CDATA[$P{RESOURCES_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="LOGO_FILENAME">
+					<subreportParameterExpression><![CDATA[$P{LOGO_FILENAME}]]></subreportParameterExpression>
 				</subreportParameter>
 				<subreportParameter name="CADENA_ORIGINAL_TFD">
 					<subreportParameterExpression><![CDATA[$P{CADENA_ORIGINAL_TFD}]]></subreportParameterExpression>
