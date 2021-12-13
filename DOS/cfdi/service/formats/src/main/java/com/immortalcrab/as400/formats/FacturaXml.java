@@ -426,15 +426,17 @@ public class FacturaXml {
 
         } catch (JAXBException | DatatypeConfigurationException ex) {
             ex.printStackTrace();
-            throw new FormatError("An error occurred when forming the factura xml", ex);
+            throw new FormatError("Error al formar el xml (jaxb).", ex);
 
         } catch (IOException ex) {
             ex.printStackTrace();
-            throw new FormatError("An error occurred when reading Certificado from file", ex);
+            throw new FormatError("Error al leer el certificado digital.", ex);
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new FormatError("An error occurred when building Cadena Original", ex);
+            var stackTraceElem = ex.getStackTrace()[0];
+            String err = ex.toString() + " at " + stackTraceElem.toString();
+            throw new FormatError("Error al generar el xml (posible omisión de un dato requerido en el input). " + err, ex);
         }
 
         return sw;
