@@ -50,14 +50,17 @@ public class SthreeStorage implements Storage {
             final long len,
             final String fileName,
             InputStream inputStream) throws StorageError {
+
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(cType);
         objectMetadata.setContentLength(len);
+
         try {
             amazonS3.putObject(System.getenv("BUCKET_TARGET"), fileName, inputStream, objectMetadata);
+
         } catch (AmazonServiceException ex) {
             ex.printStackTrace();
-            throw new StorageError("Failed to upload the file", ex);
+            throw new StorageError(String.format("Error al subir el archivo %s. ", fileName), ex);
         }
     }
 }
