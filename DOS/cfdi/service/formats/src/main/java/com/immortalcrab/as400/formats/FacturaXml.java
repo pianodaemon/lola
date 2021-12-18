@@ -382,6 +382,7 @@ public class FacturaXml {
                     mercancia.setUnidad(item.get("Unidad"));
                     mercancia.setPesoEnKg(new BigDecimal(item.get("PesoEnKg")));
                     mercancia.setFraccionArancelaria(item.get("FraccionArancelaria"));
+                    mercancia.setMaterialPeligroso(String.format("%s %s %s", item.get("CPHAZMAT"), item.get("CPHAZMATC"), item.get("CPHAZMATE")));
                     mercanciaList.add(mercancia);
                 }
 
