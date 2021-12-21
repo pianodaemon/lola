@@ -44,6 +44,7 @@ import mx.gob.sat.sitio_internet.cfd.catalogos.CTipoDeComprobante;
 import mx.gob.sat.sitio_internet.cfd.catalogos.CTipoFactor;
 import mx.gob.sat.sitio_internet.cfd.catalogos.CUsoCFDI;
 import mx.gob.sat.sitio_internet.cfd.catalogos.cartaporte.CConfigAutotransporte;
+import mx.gob.sat.sitio_internet.cfd.catalogos.cartaporte.CSubTipoRem;
 import mx.gob.sat.sitio_internet.cfd.catalogos.cartaporte.CTipoPermiso;
 
 public class FacturaXml {
@@ -399,6 +400,13 @@ public class FacturaXml {
                 identificacionVehicular.setPlacaVM(cpAutotransporte.get("PlacaVM"));
                 identificacionVehicular.setAnioModeloVM(Integer.parseInt(cpAutotransporte.get("AnioModeloVM")));
                 autotransporte.setIdentificacionVehicular(identificacionVehicular);
+                var remolques = cartaPorteFactory.createCartaPorteMercanciasAutotransporteRemolques();
+                var remolqueList = remolques.getRemolque();
+                var remolque = cartaPorteFactory.createCartaPorteMercanciasAutotransporteRemolquesRemolque();
+                remolque.setSubTipoRem(CSubTipoRem.fromValue(cpAutotransporte.get("CPSTPOREM")));
+                remolque.setPlaca(cpAutotransporte.get("CPPLACAREM"));
+                remolqueList.add(remolque);
+                autotransporte.setRemolques(remolques);
                 mercancias.setAutotransporte(autotransporte);
                 cartaPorte.setMercancias(mercancias);
 

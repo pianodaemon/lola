@@ -147,7 +147,7 @@ public class FacturaPdf {
             ds.put("TOTAL_LETRA", num);
 
             // Formatear importes
-            var df = new DecimalFormat("###,###.00");
+            var df = new DecimalFormat("###,##0.00");
             for (var c : (ArrayList<Map<String, String>>) ds.get("CONCEPTOS")) {
                 c.put("DUNIT", df.format(Double.parseDouble(c.get("DUNIT"))));
                 c.put("DIMPO", df.format(Double.parseDouble(c.get("DIMPO"))));
