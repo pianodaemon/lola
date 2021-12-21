@@ -72,6 +72,9 @@ public abstract class CfdiRequest {
         // "EMISOR_NOMBRE"
         captureSymbol("EMINOM");
 
+        // "EMISOR_DIRECCION"
+        captureSymbol("EMIDIR");
+
         // "EMISOR_RFC"
         captureSymbol("EMIRFC");
 

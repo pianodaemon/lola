@@ -2,6 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="tquintanilla" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7d592af6-9225-460a-8600-703aca322f9b">
 	<parameter name="EMINOM" class="java.lang.String"/>
+	<parameter name="EMIDIR" class="java.lang.String"/>
 	<parameter name="SERIE" class="java.lang.String"/>
 	<parameter name="FOLIO" class="java.lang.String"/>
 	<parameter name="UUID" class="java.lang.String"/>
@@ -200,7 +201,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Arco Vial Saltillo KM 34.7 504, Col. El Milagro, Apodaca, Nuevo León, C.P. 66634"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{EMIDIR}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="76" y="52" width="413" height="12" uuid="136b2d82-4aa9-4455-b424-d80b20e7318d"/>
