@@ -56,8 +56,10 @@
 	<parameter name="TOTAL_LETRA" class="java.lang.String"/>
 	<parameter name="SUBTOT" class="java.lang.String"/>
 	<parameter name="IVA" class="java.lang.String"/>
+	<parameter name="CIVA" class="java.lang.String"/>
 	<parameter name="SUBTOT2" class="java.lang.String"/>
 	<parameter name="IVARET" class="java.lang.String"/>
+	<parameter name="CIVARET" class="java.lang.String"/>
 	<parameter name="TOTAL" class="java.lang.String"/>
 	<parameter name="CAJAS" class="java.lang.String"/>
 	<parameter name="MONEDAS" class="java.lang.String"/>
@@ -512,83 +514,78 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="17" splitType="Stretch">
+		<band height="28" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement x="10" y="0" width="40" height="10" uuid="7f929e44-e2c1-40a9-be2e-04f1f91b1a7c">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<reportElement x="10" y="0" width="40" height="20" uuid="7f929e44-e2c1-40a9-be2e-04f1f91b1a7c">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DCANT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="50" y="0" width="32" height="10" uuid="db6779d4-5724-48a7-804b-196c3c655f5d">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<reportElement x="50" y="0" width="32" height="20" uuid="db6779d4-5724-48a7-804b-196c3c655f5d">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DCUME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="82" y="0" width="32" height="10" uuid="c2dcf14e-2be0-4379-b9ef-ca984d4a81a1">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<reportElement x="82" y="0" width="32" height="20" uuid="c2dcf14e-2be0-4379-b9ef-ca984d4a81a1">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DUME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="114" y="0" width="42" height="10" uuid="537031b5-8c85-4b47-aebb-f8ed4f0df3ae">
+				<reportElement x="114" y="0" width="42" height="20" uuid="537031b5-8c85-4b47-aebb-f8ed4f0df3ae">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DCVESERV}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="158" y="0" width="294" height="10" uuid="8778f6d3-abfa-4baf-8604-c2d5f2b4158c">
+			<textField textAdjust="StretchHeight">
+				<reportElement x="158" y="0" width="294" height="20" uuid="8778f6d3-abfa-4baf-8604-c2d5f2b4158c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Bottom">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DDESL}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="452" y="0" width="60" height="10" uuid="c7e3f5bf-5df5-41c8-a3c8-77b8ec708f12">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<reportElement x="452" y="0" width="60" height="20" uuid="c7e3f5bf-5df5-41c8-a3c8-77b8ec708f12">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Right" verticalAlignment="Bottom">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DUNIT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="512" y="0" width="60" height="10" uuid="19d0e35c-9df5-4bf0-812e-4def257003b8">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<reportElement x="512" y="0" width="60" height="20" uuid="19d0e35c-9df5-4bf0-812e-4def257003b8">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Right" verticalAlignment="Bottom">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8" pdfFontName="Courier" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DIMPO}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="10" y="10" width="562" height="7" uuid="132fb3d2-def4-49a6-9ed6-6e9d00fec513">
+				<reportElement x="10" y="20" width="562" height="7" uuid="132fb3d2-def4-49a6-9ed6-6e9d00fec513">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -685,13 +682,13 @@
 				</textElement>
 				<text><![CDATA[SUBTOTAL:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="415" y="16" width="86" height="12" uuid="78047c20-da8e-4e1b-a006-9566285cee7a"/>
+			<textField>
+				<reportElement x="415" y="16" width="86" height="12" uuid="3b6c5341-c156-4a96-86d8-0042dab46a4b"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[IVA 16.00%:]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["IVA " + $P{CIVA} + "%:"]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement x="415" y="28" width="86" height="12" uuid="ef2d3cd3-9068-43ae-849b-d35dab2c2c13"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -699,13 +696,13 @@
 				</textElement>
 				<text><![CDATA[SUBTOTAL:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="415" y="40" width="86" height="12" uuid="920b17e4-b66e-4f5b-811e-ca1a5cd9163f"/>
+			<textField>
+				<reportElement x="415" y="40" width="86" height="12" uuid="2a5d9da2-65ee-4b3a-af19-c0abfd083b73"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[RETENCION 4.00%:]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["RETENCION " + $P{CIVARET} + "%:"]]></textFieldExpression>
+			</textField>
 			<staticText>
 				<reportElement x="415" y="52" width="86" height="12" uuid="86f3c179-4fbd-4054-b1b8-2c3134c04601"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
