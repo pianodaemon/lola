@@ -134,17 +134,8 @@ public class FacturaPdf {
         try {
             var ds = this.cfdiReq.getDs();
 
-            // Translate the cfdi total into text (in Spanish)
             var total = (String) ds.get("TOTAL");
-            String[] a = total.split("\\.");
-            String num = translateIntegerToSpanish(Long.valueOf(a[0])).toUpperCase();
-
-            if (a.length > 1) {
-                num += String.format(" PESOS %s/100 M.N.", a[1]);
-            } else {
-                num += " PESOS 00/100 M.N.";
-            }
-            ds.put("TOTAL_LETRA", num);
+            ds.put("TOTAL_LETRA", (String) ds.get("CANTLETRA"));
 
             // Formatear importes
             var df = new DecimalFormat("###,##0.00");

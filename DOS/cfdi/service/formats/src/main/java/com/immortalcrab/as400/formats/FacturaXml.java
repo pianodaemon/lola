@@ -454,8 +454,8 @@ public class FacturaXml {
                 var cadenaOrigCartaPorte = CadenaOriginal.build(cfdiXml, resourcesDir + "/CartaPorte20.xslt");
                 cadenaOrig = cadenaOrig.replaceAll(" \\|\\|", " ").trim()
                            + cadenaOrigCartaPorte.replaceAll("<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>", " ").trim() + "||";
-                cadenaOrig = cadenaOrig.replaceAll("&amp;", "&");
             }
+            cadenaOrig = cadenaOrig.replaceAll("&amp;", "&");
 
             // Sellar cadena original
             var sello = Signer.signMessage(resourcesDir + privkeyFname, cadenaOrig);

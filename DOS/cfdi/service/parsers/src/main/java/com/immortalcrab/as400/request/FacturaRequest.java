@@ -103,6 +103,8 @@ public class FacturaRequest extends CfdiRequest {
 
             captureSymbol("SUBTOT2");
 
+            captureSymbol("CANTLETRA");
+
             // "CFDI_DES"
             captureSymbol("DESCTO");
 
