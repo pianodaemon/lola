@@ -313,6 +313,10 @@ public class FacturaRequest extends CfdiRequest {
                     m.put("ViaEntradaSalida", p.getValue1());
                     break;
                 }
+                case "CPPAISORIGENDESTINO": {
+                    m.put("PaisOrigenDestino", p.getValue1());
+                    break;
+                }
                 case "CPTIPOVIAJE": {
                     m.put("CPTIPOVIAJE", p.getValue1());
                     break;
@@ -354,19 +358,19 @@ public class FacturaRequest extends CfdiRequest {
                     origen.put("NumeroExterior", p.getValue1());
                     break;
                 }
-                case "CPREMCOL": {
+                case "CPREMCOLC": {
                     origen.put("Colonia", p.getValue1());
                     break;
                 }
-                case "CPREMLOC": {
+                case "CPREMLOCC": {
                     origen.put("Localidad", p.getValue1());
                     break;
                 }
-                case "CPREMMUN": {
+                case "CPREMMUNC": {
                     origen.put("Municipio", p.getValue1());
                     break;
                 }
-                case "CPREMEDO": {
+                case "CPREMEDOC": {
                     origen.put("Estado", p.getValue1());
                     break;
                 }
@@ -387,6 +391,18 @@ public class FacturaRequest extends CfdiRequest {
                     destino.put("RFCRemitenteDestinatario", p.getValue1());
                     break;
                 }
+                case "CPDESNOMBRE": {
+                    destino.put("NombreDestinatario", p.getValue1());
+                    break;
+                }
+                case "CPDESNUMREGIDTRIB": {
+                    destino.put("NumRegIdTrib", p.getValue1());
+                    break;
+                }
+                case "CPDESRESIDENCIAFISCAL": {
+                    destino.put("ResidenciaFiscal", p.getValue1());
+                    break;
+                }
                 case "CPFECHAHORALLEGADA": {
                     destino.put("FechaHoraProgLlegada", p.getValue1());
                     break;
@@ -405,6 +421,10 @@ public class FacturaRequest extends CfdiRequest {
                 }
                 case "CPDESCOLC": {
                     destino.put("Colonia", p.getValue1());
+                    break;
+                }
+                case "CPDESLOCC": {
+                    destino.put("Localidad", p.getValue1());
                     break;
                 }
                 case "CPDESMUNC": {
