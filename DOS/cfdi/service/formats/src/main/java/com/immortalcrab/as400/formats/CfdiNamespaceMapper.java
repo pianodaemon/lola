@@ -6,7 +6,7 @@ public class CfdiNamespaceMapper extends NamespacePrefixMapper {
 
     private static final String CFDI_PREFIX       = "cfdi";
     private static final String CFDI_URI          = "http://www.sat.gob.mx/cfd/3";
-    private static final String CARTAPORTE_PREFIX = "cartaporte20";
+    private static final String CARTAPORTE_PREFIX = "cartaporte";
     private static final String CARTAPORTE_URI    = "http://www.sat.gob.mx/CartaPorte20";
 
     @Override
