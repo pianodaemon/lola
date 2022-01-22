@@ -316,7 +316,10 @@
 				<textFieldExpression><![CDATA[$P{CTENOM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="23" y="100" width="549" height="18" uuid="cf9ecf79-6734-4218-b447-489e3378c3ee"/>
+				<reportElement x="23" y="99" width="424" height="21" uuid="cf9ecf79-6734-4218-b447-489e3378c3ee">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
 					<font size="7"/>
 				</textElement>
@@ -330,7 +333,10 @@
 				<textFieldExpression><![CDATA[$P{REMNOM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="23" y="134" width="549" height="18" uuid="e678395b-4efb-4137-ba97-da716cf96256"/>
+				<reportElement x="23" y="133" width="424" height="20" uuid="e678395b-4efb-4137-ba97-da716cf96256">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
 					<font size="7"/>
 				</textElement>
@@ -344,7 +350,10 @@
 				<textFieldExpression><![CDATA[$P{DESNOM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="23" y="167" width="549" height="18" uuid="92a13aa4-1654-4d3f-b7aa-010b930d9a30"/>
+				<reportElement x="23" y="166" width="424" height="20" uuid="92a13aa4-1654-4d3f-b7aa-010b930d9a30">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
 					<font size="7"/>
 				</textElement>
@@ -445,6 +454,76 @@
 				<reportElement x="10" y="-4" width="99" height="61" uuid="a4fcf80f-62cc-4437-bb06-c0022e0d37d1"/>
 				<imageExpression><![CDATA[$P{RESOURCES_DIR}.concat($P{LOGO_FILENAME})]]></imageExpression>
 			</image>
+			<staticText>
+				<reportElement x="453" y="100" width="18" height="12" uuid="d7147203-f4be-44e5-be63-6c4b8cc19d50">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[RFC:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="471" y="100" width="101" height="12" uuid="23418949-b3ff-4bca-8595-536223e61f7f">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CTERFC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="453" y="134" width="119" height="12" uuid="736d9047-340f-47b6-b5d3-cafeb0a652b9">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REMTAX}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="453" y="167" width="119" height="12" uuid="ccd99068-8d1b-4a64-b7db-24502c66d84d">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{DESTAX}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="513" y="146" width="59" height="7" uuid="2acc042b-adc4-47c8-a91a-5d1c1ad9fb3e"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CPFECHAHORASALIDA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="453" y="146" width="60" height="7" uuid="18ecdbc2-68b6-4650-9f7e-cb8207b17770">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<text><![CDATA[Fecha-Hora Salida:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="453" y="179" width="60" height="7" uuid="c59f38e1-4a56-4d81-b1ba-377e19093cbe">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<text><![CDATA[Fecha-Hora Llegada:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="513" y="179" width="59" height="7" uuid="1fb7a55f-8d9c-4c27-98fe-a546159703d9"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CPFECHAHORALLEGADA}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -617,14 +696,14 @@
 			<textField>
 				<reportElement x="507" y="4" width="46" height="11" uuid="13e5884c-b842-446f-add5-399f094d2742"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="6"/>
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Hoja " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="553" y="4" width="25" height="11" uuid="d37718c5-8e04-4daf-83cf-bcb2df4b9e88"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="6"/>
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
