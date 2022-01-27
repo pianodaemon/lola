@@ -43,7 +43,7 @@ public class FacturaPdf {
             // render(facReq, template, output);
 
             // var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140574_v2_211123_tir.txt")), StandardCharsets.UTF_8);
-            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/PB018285.Txt")), StandardCharsets.UTF_8);
+            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV141590_scp.txt")), StandardCharsets.UTF_8);
             System.out.println(fileContent);
             System.out.println("***********------------------------------------------***********");
 
@@ -136,6 +136,15 @@ public class FacturaPdf {
 
             var total = (String) ds.get("TOTAL");
             ds.put("TOTAL_LETRA", (String) ds.get("CANTLETRA"));
+
+            // UUID Relacionados
+            var tipoRel = (String) ds.get("TIPOREL");
+            String relacionados = "";
+            if (!tipoRel.isBlank()) {
+                var relacionadosList = (ArrayList<String>) ds.get("RELACIONADOS");
+                relacionados = String.format("Tipo-Relación: %s   Documentos-Relacionados: %s.", tipoRel, String.join(", ", relacionadosList));
+            }
+            ds.put("RELACIONADOS_STR", relacionados);
 
             // Formatear importes
             var df = new DecimalFormat("###,##0.00");
@@ -232,40 +241,48 @@ public class FacturaPdf {
 
             // PDF generation (Carta Porte)
             // Se extraen algunos datos de las estructuras anidadas de la CP y se colocan a nivel del ds HashMap (para pasarlos como jrxml parameters)
-            var cp = (HashMap<String, Object>) ds.get("CARTAPORTE");
-            var ubicaciones = (HashMap<String, Object>) cp.get("UBICACIONES");
-            var origen = (HashMap<String, Object>) ubicaciones.get("ORIGEN");
-            var destino = (HashMap<String, Object>) ubicaciones.get("DESTINO");
-            var mercancias = (HashMap<String, Object>) cp.get("MERCANCIAS");
-            var mercanciaList = (ArrayList<HashMap<String, Object>>) mercancias.get("LISTA");
-            var autotransporteFederal = (HashMap<String, String>) mercancias.get("AUTOTRANSPORTEFEDERAL");
-            var figuraTransporte = (HashMap<String, Object>) cp.get("FIGURATRANSPORTE");
-            var operadorList = (ArrayList<HashMap<String, String>>) figuraTransporte.get("OPERADORES");
-            var operador = operadorList.get(0);
-            ds.put("CPFECHAHORASALIDA", (String) origen.get("FechaHoraSalida"));
-            ds.put("CPFECHAHORALLEGADA", (String) destino.get("FechaHoraProgLlegada"));
-            ds.put("CPTIPOVIAJE", cp.get("CPTIPOVIAJE"));
-            ds.put("TranspInternac", cp.get("TranspInternac"));
-            ds.put("EntradaSalidaMerc", cp.get("EntradaSalidaMerc"));
-            ds.put("ViaEntradaSalida", cp.get("ViaEntradaSalida"));
-            ds.put("TotalDistRec", cp.get("TotalDistRec"));
-            ds.put("PESOBRUTOTOTAL", mercancias.get("PESOBRUTOTOTAL"));
-            ds.put("PESONETOTOTAL", mercancias.get("PESONETOTOTAL"));
-            ds.put("NumTotalMercancias", String.valueOf(mercanciaList.size()));
-            ds.put("ConfigVehicular", autotransporteFederal.get("ConfigVehicular"));
-            ds.put("CNUMPERMSCT", autotransporteFederal.get("CNUMPERMSCT"));
-            ds.put("PlacaVM", autotransporteFederal.get("PlacaVM"));
-            ds.put("AnioModeloVM", autotransporteFederal.get("AnioModeloVM"));
-            ds.put("CPQSEGRESCIV", autotransporteFederal.get("CPQSEGRESCIV"));
-            ds.put("CPQSEGRESCIVN", autotransporteFederal.get("CPQSEGRESCIVN"));
-            ds.put("CPSTPOREM", autotransporteFederal.get("CPSTPOREM"));
-            ds.put("CPPLACAREM", autotransporteFederal.get("CPPLACAREM"));
-            ds.put("RFCOperador", operador.get("RFCOperador"));
-            ds.put("NumLicencia", operador.get("NumLicencia"));
-            ds.put("NombreOperador", operador.get("NombreOperador"));
+            boolean cpCartaPorte = ((String) ds.get("CPCARTAPORTE")).equals("Si");
+            ArrayList<HashMap<String, Object>> mercanciaList = null;
 
-            for (var m : mercanciaList) {
-                m.put("ValorMercancia", df.format(Double.parseDouble((String) m.get("ValorMercancia"))));
+            if (cpCartaPorte) {
+                var cp = (HashMap<String, Object>) ds.get("CARTAPORTE");
+                var ubicaciones = (HashMap<String, Object>) cp.get("UBICACIONES");
+                var origen = (HashMap<String, Object>) ubicaciones.get("ORIGEN");
+                var destino = (HashMap<String, Object>) ubicaciones.get("DESTINO");
+                var mercancias = (HashMap<String, Object>) cp.get("MERCANCIAS");
+                mercanciaList = (ArrayList<HashMap<String, Object>>) mercancias.get("LISTA");
+                var autotransporteFederal = (HashMap<String, String>) mercancias.get("AUTOTRANSPORTEFEDERAL");
+                var figuraTransporte = (HashMap<String, Object>) cp.get("FIGURATRANSPORTE");
+                var operadorList = (ArrayList<HashMap<String, String>>) figuraTransporte.get("OPERADORES");
+                var operador = operadorList.get(0);
+                ds.put("CPFECHAHORASALIDA", (String) origen.get("FechaHoraSalida"));
+                ds.put("CPFECHAHORALLEGADA", (String) destino.get("FechaHoraProgLlegada"));
+                ds.put("CPTIPOVIAJE", cp.get("CPTIPOVIAJE"));
+                ds.put("TranspInternac", cp.get("TranspInternac"));
+                ds.put("EntradaSalidaMerc", cp.get("EntradaSalidaMerc"));
+                ds.put("ViaEntradaSalida", cp.get("ViaEntradaSalida"));
+                ds.put("TotalDistRec", cp.get("TotalDistRec"));
+                ds.put("PESOBRUTOTOTAL", mercancias.get("PESOBRUTOTOTAL"));
+                ds.put("PESONETOTOTAL", mercancias.get("PESONETOTOTAL"));
+                ds.put("NumTotalMercancias", String.valueOf(mercanciaList.size()));
+                ds.put("ConfigVehicular", autotransporteFederal.get("ConfigVehicular"));
+                ds.put("CNUMPERMSCT", autotransporteFederal.get("CNUMPERMSCT"));
+                ds.put("PlacaVM", autotransporteFederal.get("PlacaVM"));
+                ds.put("AnioModeloVM", autotransporteFederal.get("AnioModeloVM"));
+                ds.put("CPQSEGRESCIV", autotransporteFederal.get("CPQSEGRESCIV"));
+                ds.put("CPQSEGRESCIVN", autotransporteFederal.get("CPQSEGRESCIVN"));
+                ds.put("CPSTPOREM", autotransporteFederal.get("CPSTPOREM"));
+                ds.put("CPPLACAREM", autotransporteFederal.get("CPPLACAREM"));
+                ds.put("RFCOperador", operador.get("RFCOperador"));
+                ds.put("NumLicencia", operador.get("NumLicencia"));
+                ds.put("NombreOperador", operador.get("NombreOperador"));
+
+                for (var m : mercanciaList) {
+                    m.put("ValorMercancia", df.format(Double.parseDouble((String) m.get("ValorMercancia"))));
+                }
+
+            } else {
+                mercanciaList = new ArrayList<HashMap<String, Object>>();
             }
 
             template = new File(resourcesDir + "/tq_carta_porte_comp_subrep.jrxml");
@@ -277,7 +294,7 @@ public class FacturaPdf {
             ds.put("SubreportDataSource", mercanciasDS);
             JasperPrint jasperPrint = JasperFillManager.fillReport(masterJR, ds, conceptosDS);
             pdfBytesList.add(JasperExportManager.exportReportToPdf(jasperPrint));
-            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/PB018285.pdf");
+            // JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/userd/Downloads/NV141590_scp.pdf");
 
         } catch (JRException ex) {
             ex.printStackTrace();

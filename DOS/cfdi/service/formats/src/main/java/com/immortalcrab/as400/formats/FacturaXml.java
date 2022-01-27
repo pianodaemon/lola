@@ -56,7 +56,7 @@ public class FacturaXml {
             // var l = PairExtractor.go4it("/home/userd/Downloads/NV139360-cartaporte.txt");
             // var l = PairExtractor.go4it(isr);
             // var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140574_v2_211123_tir.txt")), StandardCharsets.UTF_8);
-            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV141408.txt")), StandardCharsets.UTF_8);
+            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV141590_scp.txt")), StandardCharsets.UTF_8);
             System.out.println(fileContent);
             System.out.println("***********------------------------------------------***********");
 
@@ -188,6 +188,22 @@ public class FacturaXml {
             cfdi.setFecha(DatatypeFactory.newInstance().newXMLGregorianCalendar((String) ds.get("FECHOR")));
             cfdi.setSerie((String) ds.get("SERIE"));
             cfdi.setFolio((String) ds.get("FOLIO"));
+
+            // UUID Relacionados
+            var tipoRel = (String) ds.get("TIPOREL");
+            if (!tipoRel.isBlank()) {
+                var cfdiRelacionados = cfdiFactory.createComprobanteCfdiRelacionados();
+                cfdiRelacionados.setTipoRelacion(tipoRel);
+                var relacionados = (ArrayList<String>) ds.get("RELACIONADOS");
+                var cfdiRelacionadoList = cfdiRelacionados.getCfdiRelacionado();
+
+                for (String uuid : relacionados) {
+                    var cfdiRelacionado = cfdiFactory.createComprobanteCfdiRelacionadosCfdiRelacionado();
+                    cfdiRelacionado.setUUID(uuid);
+                    cfdiRelacionadoList.add(cfdiRelacionado);
+                }
+                cfdi.setCfdiRelacionados(cfdiRelacionados);
+            }
 
             // Emisor
             var emisor = cfdiFactory.createComprobanteEmisor();

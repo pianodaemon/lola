@@ -42,6 +42,7 @@ public class FacturaRequest extends CfdiRequest {
         {
             captureSymbolImpt("CONCEPTOS", new ArrayList<Map<String, String>>());
             captureSymbolImpt("COMENTARIOS", new ArrayList<String>());
+            captureSymbolImpt("RELACIONADOS", new ArrayList<String>());
             captureSymbolImpt("CARTAPORTE", new HashMap<String, Object>());
         }
 
@@ -69,6 +70,8 @@ public class FacturaRequest extends CfdiRequest {
 
             // Contenidos
             captureSymbol("CONTEN");
+
+            captureSymbol("TIPOREL");
 
             captureSymbol("MONEDAS");
 
@@ -197,6 +200,7 @@ public class FacturaRequest extends CfdiRequest {
 
         this.pickUpDsecBlocks();
         this.pickUpComments();
+        this.pickUpUuidRelacionados();
         this.pickUpCartaPorte();
 
         return ds;
@@ -210,6 +214,19 @@ public class FacturaRequest extends CfdiRequest {
 
             if ("COMENT".equals(p.getValue0())) {
                 List<String> l = (ArrayList<String>) this.ds.get("COMENTARIOS");
+                l.add(p.getValue1());
+            }
+        }
+    }
+
+    private void pickUpUuidRelacionados() {
+
+        for (Iterator<Pair<String, String>> it = this.kvs.iterator(); it.hasNext();) {
+
+            Pair<String, String> p = it.next();
+
+            if ("UUIDREL".equals(p.getValue0())) {
+                List<String> l = (ArrayList<String>) this.ds.get("RELACIONADOS");
                 l.add(p.getValue1());
             }
         }
