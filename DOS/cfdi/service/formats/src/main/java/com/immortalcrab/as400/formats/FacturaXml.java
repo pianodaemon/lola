@@ -56,7 +56,7 @@ public class FacturaXml {
             // var l = PairExtractor.go4it("/home/userd/Downloads/NV139360-cartaporte.txt");
             // var l = PairExtractor.go4it(isr);
             // var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140574_v2_211123_tir.txt")), StandardCharsets.UTF_8);
-            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV141590_scp.txt")), StandardCharsets.UTF_8);
+            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV999999 ejm con Version.Txt")), StandardCharsets.UTF_8);
             System.out.println(fileContent);
             System.out.println("***********------------------------------------------***********");
 
@@ -166,6 +166,8 @@ public class FacturaXml {
             } else {
                 throw new FormatError("EMPRESA desconocida: " + empresa);
             }
+
+            boolean isCpNsVer2 = ((String) ds.get("CPVER")).equals("2");
 
             // Comprobante
             var cfdiFactory = new ObjectFactory();
@@ -330,11 +332,18 @@ public class FacturaXml {
                 var cp = (HashMap<String, Object>) ds.get("CARTAPORTE");
                 var cartaPorteFactory = new mx.gob.sat.cartaporte20.ObjectFactory();
                 var cartaPorte = cartaPorteFactory.createCartaPorte();
+                boolean isTranspInternac = ((String) cp.get("TranspInternac")).equals("Si") ? true : false;
+
                 cartaPorte.setVersion("2.0");
-                cartaPorte.setTranspInternac(((String) cp.get("TranspInternac")).equals("Si") ? "Sí" : "No");
+                cartaPorte.setTranspInternac(isTranspInternac ? "Sí" : "No");
                 cartaPorte.setTotalDistRec(new BigDecimal((String) cp.get("TotalDistRec")));
-                cartaPorte.setEntradaSalidaMerc((String) cp.get("EntradaSalidaMerc"));
-                cartaPorte.setViaEntradaSalida((String) cp.get("ViaEntradaSalida"));
+                String entradaSalidaMerc = "";
+                if (isTranspInternac) {
+                    entradaSalidaMerc = (String) cp.get("EntradaSalidaMerc");
+                    cartaPorte.setEntradaSalidaMerc(entradaSalidaMerc);
+                    cartaPorte.setViaEntradaSalida((String) cp.get("ViaEntradaSalida"));
+                    cartaPorte.setPaisOrigenDestino(CPais.fromValue((String) cp.get("PaisOrigenDestino")));
+                }
 
                 // Complemento - Carta Porte - Ubicaciones
                 var cpUbicaciones = (HashMap<String, Object>) cp.get("UBICACIONES");
@@ -348,13 +357,19 @@ public class FacturaXml {
                 ubicacion.setRFCRemitenteDestinatario(cpOrigen.get("RFCRemitenteDestinatario"));
                 ubicacion.setFechaHoraSalidaLlegada(DatatypeFactory.newInstance().newXMLGregorianCalendar(cpOrigen.get("FechaHoraSalida")));
                 ubicacion.setNombreRemitenteDestinatario(cpOrigen.get("NombreRemitente"));
-                ubicacion.setNumRegIdTrib(cpOrigen.get("NumRegIdTrib"));
-                ubicacion.setResidenciaFiscal(CPais.fromValue(cpOrigen.get("ResidenciaFiscal")));
+                String numRegIdTrib = cpOrigen.get("NumRegIdTrib");
+                if (numRegIdTrib != null) {
+                    ubicacion.setNumRegIdTrib(numRegIdTrib);
+                    ubicacion.setResidenciaFiscal(CPais.fromValue(cpOrigen.get("ResidenciaFiscal")));
+                }
                 var domicilio = cartaPorteFactory.createCartaPorteUbicacionesUbicacionDomicilio();
                 domicilio.setCalle(cpOrigen.get("Calle"));
                 domicilio.setNumeroExterior(cpOrigen.get("NumeroExterior"));
                 domicilio.setColonia(cpOrigen.get("Colonia"));
-                domicilio.setLocalidad(cpOrigen.get("Localidad"));
+                String localidad = cpOrigen.get("Localidad");
+                if (localidad != null && !localidad.isBlank()) {
+                    domicilio.setLocalidad(localidad);
+                }
                 domicilio.setMunicipio(cpOrigen.get("Municipio"));
                 domicilio.setEstado(cpOrigen.get("Estado"));
                 domicilio.setPais(CPais.fromValue(cpOrigen.get("Pais")));
@@ -368,10 +383,21 @@ public class FacturaXml {
                 ubicacion.setTipoUbicacion(cpDestino.get("TipoUbicacion"));
                 ubicacion.setRFCRemitenteDestinatario(cpDestino.get("RFCRemitenteDestinatario"));
                 ubicacion.setFechaHoraSalidaLlegada(DatatypeFactory.newInstance().newXMLGregorianCalendar(cpDestino.get("FechaHoraProgLlegada")));
+                ubicacion.setDistanciaRecorrida(new BigDecimal(cpDestino.get("DistanciaRecorrida")));
+                ubicacion.setNombreRemitenteDestinatario(cpDestino.get("NombreDestinatario"));
+                numRegIdTrib = cpDestino.get("NumRegIdTrib");
+                if (numRegIdTrib != null) {
+                    ubicacion.setNumRegIdTrib(numRegIdTrib);
+                    ubicacion.setResidenciaFiscal(CPais.fromValue(cpDestino.get("ResidenciaFiscal")));
+                }
                 domicilio = cartaPorteFactory.createCartaPorteUbicacionesUbicacionDomicilio();
                 domicilio.setCalle(cpDestino.get("Calle"));
                 domicilio.setNumeroExterior(cpDestino.get("NumeroExterior"));
                 domicilio.setColonia(cpDestino.get("Colonia"));
+                localidad = cpDestino.get("Localidad");
+                if (localidad != null && !localidad.isBlank()) {
+                    domicilio.setLocalidad(localidad);
+                }
                 domicilio.setMunicipio(cpDestino.get("Municipio"));
                 domicilio.setEstado(cpDestino.get("Estado"));
                 domicilio.setPais(CPais.fromValue(cpDestino.get("Pais")));
@@ -398,13 +424,20 @@ public class FacturaXml {
                     mercancia.setClaveUnidad(item.get("ClaveUnidad"));
                     mercancia.setUnidad(item.get("Unidad"));
                     mercancia.setPesoEnKg(new BigDecimal(item.get("PesoEnKg")));
-                    mercancia.setFraccionArancelaria(item.get("FraccionArancelaria"));
                     if (item.get("CPHAZMAT").equals("Si")) {
                         mercancia.setMaterialPeligroso("Sí");
                         mercancia.setCveMaterialPeligroso(item.get("CPHAZMATC"));
-                    } else {
-                        mercancia.setMaterialPeligroso("No");
                     }
+                    if (isTranspInternac) {
+                        mercancia.setFraccionArancelaria(item.get("FraccionArancelaria"));
+                        if (entradaSalidaMerc.equals("Entrada")) {
+                            var pedimentosList = mercancia.getPedimentos();
+                            var pedimentos = cartaPorteFactory.createCartaPorteMercanciasMercanciaPedimentos();
+                            pedimentos.setPedimento(item.get("Pedimento"));
+                            pedimentosList.add(pedimentos);
+                        }
+                    }
+
                     mercanciaList.add(mercancia);
                 }
 
@@ -459,7 +492,7 @@ public class FacturaXml {
             JAXBContext context = JAXBContext.newInstance(contextPath);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty("jaxb.schemaLocation", schemaLocation);
-            marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new CfdiNamespaceMapper());
+            marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", isCpNsVer2 ? new CfdiNamespaceMapper2() : new CfdiNamespaceMapper());
             marshaller.setProperty("jaxb.formatted.output", true);
             marshaller.marshal(cfdi, sw);
 

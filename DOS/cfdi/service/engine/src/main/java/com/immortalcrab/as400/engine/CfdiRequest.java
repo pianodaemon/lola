@@ -51,6 +51,9 @@ public abstract class CfdiRequest {
 
     protected void captureControlSymbols() throws CfdiRequestError {
 
+        // Version del namespace (cartaporte20)
+        captureSymbol("CPVER");
+
         // "CFDI_CERT_NO"
         captureSymbol("CDIGITAL");
 
