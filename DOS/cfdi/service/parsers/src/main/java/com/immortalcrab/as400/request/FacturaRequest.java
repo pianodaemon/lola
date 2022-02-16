@@ -577,6 +577,14 @@ public class FacturaRequest extends CfdiRequest {
                     autoTransporte.put("CPQSEGRESCIVN", p.getValue1());
                     break;
                 }
+                case "CPQSEGMEDAMB": {
+                    autoTransporte.put("CPQSEGMEDAMB", p.getValue1());
+                    break;
+                }
+                case "CPQSEGMEDAMBN": {
+                    autoTransporte.put("CPQSEGMEDAMBN", p.getValue1());
+                    break;
+                }
                 case "CPSTPOREM": {
                     autoTransporte.put("CPSTPOREM", p.getValue1());
                     break;

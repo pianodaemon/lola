@@ -56,7 +56,7 @@ public class FacturaXml {
             // var l = PairExtractor.go4it("/home/userd/Downloads/NV139360-cartaporte.txt");
             // var l = PairExtractor.go4it(isr);
             // var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140574_v2_211123_tir.txt")), StandardCharsets.UTF_8);
-            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV999999 ejm con Version.Txt")), StandardCharsets.UTF_8);
+            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/MY040934-2.txt")), StandardCharsets.UTF_8);
             System.out.println(fileContent);
             System.out.println("***********------------------------------------------***********");
 
@@ -416,6 +416,8 @@ public class FacturaXml {
                 mercancias.setPesoBrutoTotal(new BigDecimal((String) cpMercancias.get("PESOBRUTOTOTAL")));
                 var mercanciaList = mercancias.getMercancia();
 
+                boolean hayMaterialPeligroso = false;
+
                 for (HashMap<String, String> item : cpMercanciaList) {
                     var mercancia = cartaPorteFactory.createCartaPorteMercanciasMercancia();
                     mercancia.setBienesTransp(item.get("BienesTransp"));
@@ -427,6 +429,8 @@ public class FacturaXml {
                     if (item.get("CPHAZMAT").equals("Si")) {
                         mercancia.setMaterialPeligroso("Sí");
                         mercancia.setCveMaterialPeligroso(item.get("CPHAZMATC"));
+                        mercancia.setEmbalaje(item.get("CPHAZMATE"));
+                        hayMaterialPeligroso = true;
                     }
                     if (isTranspInternac) {
                         mercancia.setFraccionArancelaria(item.get("FraccionArancelaria"));
@@ -448,6 +452,10 @@ public class FacturaXml {
                 var seguros = cartaPorteFactory.createCartaPorteMercanciasAutotransporteSeguros();
                 seguros.setAseguraRespCivil(cpAutotransporte.get("CPQSEGRESCIV"));
                 seguros.setPolizaRespCivil(cpAutotransporte.get("CPQSEGRESCIVN"));
+                if (hayMaterialPeligroso) {
+                    seguros.setAseguraMedAmbiente(cpAutotransporte.get("CPQSEGMEDAMB"));
+                    seguros.setPolizaMedAmbiente(cpAutotransporte.get("CPQSEGMEDAMBN"));
+                }
                 autotransporte.setSeguros(seguros);
                 var identificacionVehicular = cartaPorteFactory.createCartaPorteMercanciasAutotransporteIdentificacionVehicular();
                 identificacionVehicular.setConfigVehicular(CConfigAutotransporte.fromValue(cpAutotransporte.get("ConfigVehicular")));
