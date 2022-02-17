@@ -56,7 +56,7 @@ public class FacturaXml {
             // var l = PairExtractor.go4it("/home/userd/Downloads/NV139360-cartaporte.txt");
             // var l = PairExtractor.go4it(isr);
             // var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/NV140574_v2_211123_tir.txt")), StandardCharsets.UTF_8);
-            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/MY040934-2.txt")), StandardCharsets.UTF_8);
+            var fileContent = new String(Files.readAllBytes(Paths.get("/home/userd/Downloads/MY040941.Txt")), StandardCharsets.UTF_8);
             System.out.println(fileContent);
             System.out.println("***********------------------------------------------***********");
 
@@ -431,6 +431,8 @@ public class FacturaXml {
                         mercancia.setCveMaterialPeligroso(item.get("CPHAZMATC"));
                         mercancia.setEmbalaje(item.get("CPHAZMATE"));
                         hayMaterialPeligroso = true;
+                    } else if (item.get("CPHAZMAT").equals("No")) {
+                        mercancia.setMaterialPeligroso("No");
                     }
                     if (isTranspInternac) {
                         mercancia.setFraccionArancelaria(item.get("FraccionArancelaria"));
