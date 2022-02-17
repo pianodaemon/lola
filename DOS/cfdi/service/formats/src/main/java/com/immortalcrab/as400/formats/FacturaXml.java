@@ -431,8 +431,6 @@ public class FacturaXml {
                         mercancia.setCveMaterialPeligroso(item.get("CPHAZMATC"));
                         mercancia.setEmbalaje(item.get("CPHAZMATE"));
                         hayMaterialPeligroso = true;
-                    } else if (item.get("CPHAZMAT").equals("No")) {
-                        mercancia.setMaterialPeligroso("No");
                     }
                     if (isTranspInternac) {
                         mercancia.setFraccionArancelaria(item.get("FraccionArancelaria"));
